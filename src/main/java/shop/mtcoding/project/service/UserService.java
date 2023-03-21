@@ -45,11 +45,11 @@ public class UserService {
         userloginReqDto.setPassword(Sha256.encode(userloginReqDto.getPassword()));
         User principal = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
                 userloginReqDto.getPassword());
-        // if (principal == null) {
-        // throw new CustomException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");
-        // }
-        CheckValid.inNullApi(userloginReqDto.getEmail(), "이메일이 잘못 입력 되었습니다.");
-        CheckValid.inNullApi(userloginReqDto.getPassword(), "비밀번호가 잘못 입력 되었습니다.");
+        if (principal == null) {
+            throw new CustomException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");
+        }
+        // CheckValid.inNullApi(userloginReqDto.getEmail(), "이메일이 잘못 입력 되었습니다.");
+        // CheckValid.inNullApi(userloginReqDto.getPassword(), "비밀번호가 잘못 입력 되었습니다.");
         return principal;
     }
 

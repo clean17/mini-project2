@@ -70,7 +70,6 @@ public class UserController {
     public String join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
         userService.회원가입(userJoinReqDto);
         return Script.href("/user/login");
-        // return "zzzz";
     }
 
     @GetMapping("/user/emailCheck")
@@ -95,6 +94,7 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
+    @ResponseBody
     public String login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
         User principal = userService.로그인(userloginReqDto);
@@ -114,7 +114,8 @@ public class UserController {
             }
             session.setAttribute("compSession", null);
             session.setAttribute("principal", principal);
-            return "redirect:/";
+            return Script.href("/");
+            // return "redirect:/";
         }
     }
 
