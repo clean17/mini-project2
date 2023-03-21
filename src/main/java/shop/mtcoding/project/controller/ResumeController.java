@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -108,31 +109,13 @@ public class ResumeController {
     }
 
     @PostMapping("/user/resume/write")
-    public ResponseEntity<?> writeResume(@RequestBody ResumeWriteReqDto resumeWriteReqDto) {
-        // System.out.println("테스트 : "+ resumeWriteReqDto.toString());
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        if (resumeWriteReqDto.getEducation() == null || resumeWriteReqDto.getEducation().isEmpty()) {
-            throw new CustomApiException("학력을 입력해주세요");
-        }
-        if (resumeWriteReqDto.getCareer() == null || resumeWriteReqDto.getCareer().isEmpty()) {
-            throw new CustomApiException("경력을 입력해주세요");
-        }
-        if (resumeWriteReqDto.getTitle() == null || resumeWriteReqDto.getTitle().isEmpty()) {
-            throw new CustomApiException("제목을 입력해주세요");
-        }
-        if (!(resumeWriteReqDto.getState() == 0 || resumeWriteReqDto.getState() == 1)) {
-            throw new CustomApiException("공개여부를 선택해주세요");
-        }
-        if (ObjectUtils.isEmpty(resumeWriteReqDto.getSkillList())) {
-            throw new CustomApiException("기술을 선택해주세요");
-        }
+    public ResponseEntity<?> writeResume(@LoginUser User user, @Valid ResumeWriteReqDto resumeWriteReqDto) {
 
-        Integer resumeId = resumeService.이력서쓰기(resumeWriteReqDto, principal.getUserId());
+        // Integer resumeId = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
+        ResumeWriteReqDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", resumeId), HttpStatus.CREATED);
+        // return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", resumeId), HttpStatus.CREATED);
+        return ResponseEntity.ok().body(rDto);
     }
 
     @PutMapping("/user/resume/update")

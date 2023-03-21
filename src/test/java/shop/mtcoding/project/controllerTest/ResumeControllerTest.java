@@ -103,7 +103,7 @@ public class ResumeControllerTest {
     public void writeResume_test() throws Exception {
         // given
         ResumeWriteReqDto resumeWriteReqDto = new ResumeWriteReqDto();
-        resumeWriteReqDto.setUserId(1);
+        resumeWriteReqDto.getUser().getUserId();
         resumeWriteReqDto.setTitle("백엔드 이력서");
         resumeWriteReqDto.setContent("백엔드 이력서의 내용입니다.");
         resumeWriteReqDto.setEducation("고졸");
