@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,11 +66,19 @@ public class UserController {
     private final InterestRepository interestRepository;
     private final JobsRepository jobsRepository;
 
+    // @PostMapping("/user/join")
+    // @ResponseBody
+    // public String join(@Valid UserJoinReqDto userJoinReqDto, BindingResult
+    // bindingResult) {
+    // userService.회원가입(userJoinReqDto);
+    // return Script.href("/user/login");
+    // }
     @PostMapping("/user/join")
-    @ResponseBody
-    public String join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
-        userService.회원가입(userJoinReqDto);
-        return Script.href("/user/login");
+    public @ResponseBody ResponseEntity<?> join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
+        UserJoinReqDto userJoinOutDto = userService.회원가입(userJoinReqDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", userJoinOutDto), HttpStatus.OK);
+
+        // return Script.href("/user/login");
     }
 
     @GetMapping("/user/emailCheck")
@@ -115,7 +124,6 @@ public class UserController {
             session.setAttribute("compSession", null);
             session.setAttribute("principal", principal);
             return Script.href("/");
-            // return "redirect:/";
         }
     }
 

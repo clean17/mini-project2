@@ -27,17 +27,23 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void 회원가입(UserJoinReqDto userJoinReqDto) {
+    public UserJoinReqDto 회원가입(UserJoinReqDto userJoinReqDto) {
         User userPS = userRepository.findByUserEmail(userJoinReqDto.getEmail());
         if (userPS != null) {
             throw new CustomException("존재 하는 회원입니다.");
         }
         userJoinReqDto.setPassword(Sha256.encode(userJoinReqDto.getPassword()));
+        Integer id = 0;
         try {
             userRepository.insert(userJoinReqDto);
+            id = userJoinReqDto.getUserId();
         } catch (Exception e) {
             throw new CustomException("서버 에러가 발생 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        User userPS2 = userRepository.findById(id);
+        userJoinReqDto.setUserId(userPS2.getUserId());
+        userJoinReqDto.setCreatedAt(userPS2.getCreatedAt());
+        return userJoinReqDto;
     }
 
     @Transactional(readOnly = true)
@@ -48,8 +54,6 @@ public class UserService {
         if (principal == null) {
             throw new CustomException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");
         }
-        // CheckValid.inNullApi(userloginReqDto.getEmail(), "이메일이 잘못 입력 되었습니다.");
-        // CheckValid.inNullApi(userloginReqDto.getPassword(), "비밀번호가 잘못 입력 되었습니다.");
         return principal;
     }
 

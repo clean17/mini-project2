@@ -30,9 +30,9 @@
         select * from user_tb where user_id = #{userId} and password = #{password}
     </select>
 
-    <insert id="insert">
-        insert into user_tb ( email, password, name, birth, tel, address, created_at)
-            values ( #{uDto.email}, #{uDto.password}, #{uDto.name}, #{uDto.birth}, #{uDto.tel}, #{uDto.address}, now());
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uDto.userId">
+        insert into user_tb ( email, password, name, birth, tel, created_at)
+            values ( #{uDto.email}, #{uDto.password}, #{uDto.name}, #{uDto.birth}, #{uDto.tel}, now());
     </insert>
 
     <update id="updateById">
