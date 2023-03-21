@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApplytoCompRespDto;
@@ -41,6 +43,7 @@ import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.ResumeService;
+import shop.mtcoding.project.util.Script;
 
 @Controller
 public class ResumeController {
@@ -163,16 +166,13 @@ public class ResumeController {
     }
 
     @GetMapping("/user/resume/write")
-    public String writeResumeForm(Model model) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        UserDataRespDto userPS = userRepository.findByUserId(principal.getUserId());
+    @ResponseBody
+    public ResponseEntity<?> writeResumeForm(@LoginUser User user, Model model) {
+        UserDataRespDto userPS = userRepository.findByUserId(user.getUserId());
         model.addAttribute("rDto", userPS);
-        User userPS1 = userRepository.findById(principal.getUserId());
+        User userPS1 = userRepository.findById(user.getUserId());
         model.addAttribute("user", userPS1);
-        return "resume/writeResumeForm";
+        return ResponseEntity.ok().body(userPS);
     }
 
     @GetMapping("/user/resume/{id}/update")
@@ -200,18 +200,18 @@ public class ResumeController {
         }
 
         Comp compSession = (Comp) session.getAttribute("compSession");
-        ResumeDetailRespDto rDto ; 
+        ResumeDetailRespDto rDto;
         if (compSession != null) {
-             rDto = resumeRepository.findDetailPublicResumebyById(id, compSession.getCompId());
-        }else{
-             rDto = resumeRepository.findDetailPublicResumebyById(id, null);
+            rDto = resumeRepository.findDetailPublicResumebyById(id, compSession.getCompId());
+        } else {
+            rDto = resumeRepository.findDetailPublicResumebyById(id, null);
         }
         List<String> insertList = new ArrayList<>();
         for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
             insertList.add(skill.getSkill());
             rDto.setSkillList(insertList);
         }
-        
+
         compSession = (Comp) session.getAttribute("compSession");
         if (compSession != null) {
             try {
@@ -250,17 +250,21 @@ public class ResumeController {
             throw new CustomException("지원 결과 데이터가 없습니다.");
         }
         Comp compSession = (Comp) session.getAttribute("compSession");
-        ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(applyPS.getResumeId(), compSession.getCompId());
+        ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(applyPS.getResumeId(),
+                compSession.getCompId());
         List<String> insertList = new ArrayList<>();
+
         for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
             insertList.add(skill.getSkill());
             rDto.setSkillList(insertList);
         }
-         compSession = (Comp) session.getAttribute("compSession");
+
         if (compSession != null) {
             try {
-                rDto.setSuggestState(suggestRepository.findByCompIdAndResumeId(compSession.getCompId(), applyPS.getResumeId()).getState());
+                rDto.setSuggestState(suggestRepository
+                        .findByCompIdAndResumeId(compSession.getCompId(), applyPS.getResumeId()).getState());
             } catch (Exception e) {
+
             }
             try {
                 ApplytoCompRespDto aDto = applyRepository.findByCompIdAndApplyId(compSession.getCompId(), id);
