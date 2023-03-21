@@ -48,6 +48,7 @@ import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.UserService;
 import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.DateUtil;
+import shop.mtcoding.project.util.Script;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
@@ -67,7 +68,7 @@ public class UserController {
     @PostMapping("/user/join")
     public String join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
         userService.회원가입(userJoinReqDto);
-        return "redirect:/user/login";
+        return Script.href("user/login");
     }
 
     @GetMapping("/user/emailCheck")
@@ -89,7 +90,8 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public String login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult, HttpServletResponse httpServletResponse) {
+    public String login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
+            HttpServletResponse httpServletResponse) {
         User principal = userService.로그인(userloginReqDto);
         if (principal == null) {
             return "redirect:/loginForm";
@@ -112,7 +114,8 @@ public class UserController {
     }
 
     @PostMapping("/user/login2")
-    public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto,
+            HttpServletResponse httpServletResponse) {
         User principal = userService.ajax로그인(userloginReqDto);
         if (principal != null) {
             if (userloginReqDto.getRememberEmail() == null) {
