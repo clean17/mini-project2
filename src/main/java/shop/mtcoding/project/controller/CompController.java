@@ -132,6 +132,7 @@ public class CompController {
     }
 
     @PostMapping("/comp/login")
+    @ResponseBody
     public String login(CompLoginReqDto compLoginReqDto, HttpServletResponse httpServletResponse) {
         if (compLoginReqDto.getEmail() == null || compLoginReqDto.getEmail().isEmpty()) {
             throw new CustomException("email을 작성해주세요");
@@ -156,9 +157,10 @@ public class CompController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.setAttribute("principal", null);
+            session.invalidate();
             session.setAttribute("compSession", principal);
-            return "redirect:/";
+            // return "redirect:/";
+            return "기업 로그인 완료";
         }
     }
 
