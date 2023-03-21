@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusCompRespDto;
@@ -52,34 +53,18 @@ import shop.mtcoding.project.util.MockSession;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
+@RequiredArgsConstructor
 public class CompController {
 
-    @Autowired
-    private SkillRepository skillRepository;
-
-    @Autowired
-    private HttpSession session;
-
-    @Autowired
-    private ResumeRepository resumeRepository;
-
-    @Autowired
-    private JobsRepository jobsRepository;
-
-    @Autowired
-    private ApplyRepository applyRepository;
-
-    @Autowired
-    private ScrapRepository scrapRepository;
-
-    @Autowired
-    private SuggestRepository suggestRepository;
-
-    @Autowired
-    private CompService compService;
-
-    @Autowired
-    private CompRepository compRepository;
+    private final SkillRepository skillRepository;
+    private final HttpSession session;
+    private final ResumeRepository resumeRepository;
+    private final JobsRepository jobsRepository;
+    private final ApplyRepository applyRepository;
+    private final ScrapRepository scrapRepository;
+    private final SuggestRepository suggestRepository;
+    private final CompService compService;
+    private final CompRepository compRepository;
 
     @PostMapping("/comp/join")
     public String join(CompJoinReqDto compJoinReqDto) {
@@ -169,15 +154,14 @@ public class CompController {
 
     @GetMapping("/comp/comphome")
     public String compMyhome(Model model) {
-        Comp compSession = (Comp)session.getAttribute("compSession");
-        if ( compSession == null ){
+        Comp compSession = (Comp) session.getAttribute("compSession");
+        if (compSession == null) {
             return "redirect:/comp/login";
         }
         List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(compSession.getCompId());
         model.addAttribute("jDtos", jDtos);
         Comp compPS = compRepository.findByCompId(compSession.getCompId());
         model.addAttribute("comp", compPS);
-        
 
         Set<String> set = new HashSet<>();
         List<JobsIdRespDto> jobsIdList = jobsRepository.findJobsIdByCompId(compSession.getCompId());
@@ -206,25 +190,25 @@ public class CompController {
             List<String> insertList = new ArrayList<>();
             for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
                 insertList.add(skill.getSkill());
-                if ( set.contains(skill.getSkill())){
-                    count ++ ;
+                if (set.contains(skill.getSkill())) {
+                    count++;
                 }
             }
             rDto.setSkillList(insertList);
-            if ( count >= 5 ){
+            if (count >= 5) {
                 fiveMatchList.add(rDto);
-            }else if ( count >= 4 ){
+            } else if (count >= 4) {
                 fourMatchList.add(rDto);
-            }else if ( count >= 3 ){
+            } else if (count >= 3) {
                 threeMatchList.add(rDto);
-            }else if ( count >= 2 ){
+            } else if (count >= 2) {
                 twoMatchList.add(rDto);
-            }else if ( count >= 1 ){
+            } else if (count >= 1) {
                 oneMatchList.add(rDto);
             }
             count = 0;
-        }        
-        
+        }
+
         List<ResumeMatchRespDto> resultList = new ArrayList<>();
         resultList.addAll(fiveMatchList);
         resultList.addAll(fourMatchList);
@@ -232,7 +216,7 @@ public class CompController {
         resultList.addAll(twoMatchList);
         resultList.addAll(oneMatchList);
         model.addAttribute("rDtos", resultList);
-        
+
         return "comp/comphome";
     }
 
