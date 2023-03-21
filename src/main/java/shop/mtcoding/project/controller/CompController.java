@@ -70,9 +70,10 @@ public class CompController {
     private final CompRepository compRepository;
 
     @PostMapping("/comp/join")
+    @ResponseBody
     public String join(@Valid CompJoinReqDto compJoinReqDto, BindingResult bindingResult) {
         compService.회원가입(compJoinReqDto);
-        return Script.href("comp/login");
+        return Script.href("/comp/login");
     }
 
     @GetMapping("/comp/profileUpdateForm")

@@ -66,16 +66,21 @@ public class UserController {
     private final JobsRepository jobsRepository;
 
     @PostMapping("/user/join")
+    @ResponseBody
     public String join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
         userService.회원가입(userJoinReqDto);
-        return Script.href("user/login");
+        return Script.href("/user/login");
+        // return "zzzz";
     }
 
     @GetMapping("/user/emailCheck")
     public @ResponseBody ResponseEntity<?> sameEmailCheck(String email) {
-        CheckValid.inNullApi(email, "이메일이 비었습니다.");
+        CheckValid.inNullApi(email, "이메일을 입력해주세요.");
         User userPS = userRepository.findByUserEmail(email);
-        CheckValid.inNullApi(userPS, "동일한 email이 존재합니다.");
+        if (userPS != null) {
+            throw new CustomApiException("동일한 email이 존재합니다.");
+        }
+        // CheckValid.inNullApi(userPS, "동일한 email이 존재합니다.");
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 

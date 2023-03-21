@@ -6,12 +6,15 @@ import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class CompReq {
 
     @Getter
     @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class CompJoinReqDto {
         private Integer compId;
         @NotBlank(message = "이메일은 필수 입력 값입니다/")

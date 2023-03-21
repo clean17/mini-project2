@@ -29,7 +29,7 @@ public class UserService {
     public void 회원가입(UserJoinReqDto userJoinReqDto) {
         User userPS = userRepository.findByUserEmail(userJoinReqDto.getEmail());
         if (userPS != null) {
-            throw new CustomException("존재하지 않는 회원입니다.");
+            throw new CustomException("존재 하는 회원입니다.");
         }
         userJoinReqDto.setPassword(Sha256.encode(userJoinReqDto.getPassword()));
         try {
