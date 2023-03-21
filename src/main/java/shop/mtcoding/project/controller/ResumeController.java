@@ -27,6 +27,7 @@ import shop.mtcoding.project.dto.apply.ApplyResp.ApplytoCompRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeCheckboxReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
+import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
@@ -44,7 +45,6 @@ import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.ResumeService;
-import shop.mtcoding.project.util.Script;
 
 @Controller
 public class ResumeController {
@@ -111,11 +111,9 @@ public class ResumeController {
     @PostMapping("/user/resume/write")
     public ResponseEntity<?> writeResume(@LoginUser User user, @Valid ResumeWriteReqDto resumeWriteReqDto) {
 
-        // Integer resumeId = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
-        ResumeWriteReqDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
+        ResumeWriteOutDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
 
-        // return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", resumeId), HttpStatus.CREATED);
-        return ResponseEntity.ok().body(rDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", rDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/user/resume/update")

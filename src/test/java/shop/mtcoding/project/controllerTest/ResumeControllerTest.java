@@ -60,20 +60,19 @@ public class ResumeControllerTest {
         mockSession.setAttribute("principal", mockUser);
     }
 
-
     private void mockCompSession() {
         Comp mockcomp = new Comp(
-            1,
-            "kakao@kakao.com",
-            "1234",
-            "카카오(주)",
-            "홍은택",
-            "120-81-47521",
-            "/images/kakao.png",
-            "http://www.kakaocorp.com",
-            new Timestamp(System.currentTimeMillis()));
-            mockSession = new MockHttpSession();
-            mockSession.setAttribute("compSession", mockcomp);
+                1,
+                "kakao@kakao.com",
+                "1234",
+                "카카오(주)",
+                "홍은택",
+                "120-81-47521",
+                "/images/kakao.png",
+                "http://www.kakaocorp.com",
+                new Timestamp(System.currentTimeMillis()));
+        mockSession = new MockHttpSession();
+        mockSession.setAttribute("compSession", mockcomp);
     }
 
     @Test
@@ -103,7 +102,7 @@ public class ResumeControllerTest {
     public void writeResume_test() throws Exception {
         // given
         ResumeWriteReqDto resumeWriteReqDto = new ResumeWriteReqDto();
-        resumeWriteReqDto.getUser().getUserId();
+        resumeWriteReqDto.getUserId();
         resumeWriteReqDto.setTitle("백엔드 이력서");
         resumeWriteReqDto.setContent("백엔드 이력서의 내용입니다.");
         resumeWriteReqDto.setEducation("고졸");
@@ -176,20 +175,20 @@ public class ResumeControllerTest {
         resultActions.andExpect(jsonPath("$.code").value(1));
     }
 
-
     // @Test
     // @Transactional
     // public void searchCheckbox_test() throws Exception {
-    //     // given
-    //     mockCompSession();
-    //     String keyword = "address=서울,경기도,제주&career=신입";
-        
-    //     // when
-    //     ResultActions rs = mvc.perform(get("/comp/resume/search?"+keyword).session(mockSession));
-    
-    //     // then
-    //     String result = rs.andReturn().getResponse().getContentAsString();
-    //     System.out.println("테스트 : "+ result);
-    
+    // // given
+    // mockCompSession();
+    // String keyword = "address=서울,경기도,제주&career=신입";
+
+    // // when
+    // ResultActions rs =
+    // mvc.perform(get("/comp/resume/search?"+keyword).session(mockSession));
+
+    // // then
+    // String result = rs.andReturn().getResponse().getContentAsString();
+    // System.out.println("테스트 : "+ result);
+
     // }
 }

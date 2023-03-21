@@ -8,6 +8,7 @@ import org.springframework.util.ObjectUtils;
 
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
+import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
 import shop.mtcoding.project.model.resume.Resume;
 import shop.mtcoding.project.model.resume.ResumeRepository;
@@ -23,7 +24,7 @@ public class ResumeService {
     private ResumeRepository resumeRepository;
 
     @Transactional
-    public ResumeWriteReqDto 이력서쓰기(ResumeWriteReqDto rDto, Integer userId) {
+    public ResumeWriteOutDto 이력서쓰기(ResumeWriteReqDto rDto, Integer userId) {
         Integer resumeId = 0;
         if (rDto.getUserId() != userId) {
             throw new CustomApiException("이력서를 작성할 권한이 없습니다.", HttpStatus.FORBIDDEN);
@@ -40,8 +41,8 @@ public class ResumeService {
         } catch (Exception e) {
             throw new CustomApiException("이력서 작성 실패2", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-        return rDto;
+        ResumeWriteOutDto resumeWriteOutDto = resumeRepository.findDataByResumeId(resumeId);
+        return resumeWriteOutDto;
     }
 
     // @Transactional
