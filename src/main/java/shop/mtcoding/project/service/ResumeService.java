@@ -25,7 +25,7 @@ public class ResumeService {
     @Transactional
     public Integer 이력서쓰기(ResumeWriteReqDto rDto, Integer userId) {
         Integer resumeId = 0;
-        if (rDto.getUserId() != userId) {
+        if (rDto.getUser().getUserId() != userId) {
             throw new CustomApiException("이력서를 작성할 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
 

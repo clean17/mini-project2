@@ -13,7 +13,7 @@ public class ResumeReq {
     @ToString
     public static class ResumeWriteReqDto {
         private Integer resumeId; // 리턴용
-        private Integer userId;
+        private UserDto user;
         private String title;
         private String content;
         private String education;
@@ -22,6 +22,13 @@ public class ResumeReq {
         private Integer state;
         private Timestamp createdAt;
         private List<String> skillList;
+
+        @Getter
+        @Setter
+        public static class UserDto {
+            private Integer userId;
+        }
+
     }
 
     @Getter
@@ -43,9 +50,9 @@ public class ResumeReq {
     @Getter
     @Setter
     @ToString
-    public static class ResumeCheckboxReqDto{
+    public static class ResumeCheckboxReqDto {
         private List<String> address;
         private List<String> skillList;
-        private String career; 
+        private String career;
     }
 }
