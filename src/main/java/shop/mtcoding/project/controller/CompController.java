@@ -8,12 +8,14 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,6 +52,7 @@ import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.service.CompService;
 import shop.mtcoding.project.util.DateUtil;
 import shop.mtcoding.project.util.MockSession;
+import shop.mtcoding.project.util.Script;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
@@ -67,28 +70,9 @@ public class CompController {
     private final CompRepository compRepository;
 
     @PostMapping("/comp/join")
-    public String join(CompJoinReqDto compJoinReqDto) {
-        if (compJoinReqDto.getEmail() == null || compJoinReqDto.getEmail().isEmpty()) {
-            throw new CustomException("이메일을 작성해주세요");
-        }
-        if (compJoinReqDto.getPassword() == null || compJoinReqDto.getPassword().isEmpty()) {
-            throw new CustomException("패스워드를 작성해주세요");
-        }
-        if (compJoinReqDto.getPassword() == null || compJoinReqDto.getPassword().isEmpty()) {
-            throw new CustomException("동일한 패스워드를 작성해주세요");
-        }
-        if (compJoinReqDto.getCompName() == null || compJoinReqDto.getCompName().isEmpty()) {
-            throw new CustomException("회사이름을 작성해주세요");
-        }
-        if (compJoinReqDto.getRepresentativeName() == null || compJoinReqDto.getRepresentativeName().isEmpty()) {
-            throw new CustomException("대표자명을 작성해주세요");
-        }
-        if (compJoinReqDto.getBusinessNumber() == null || compJoinReqDto.getBusinessNumber().isEmpty()) {
-            throw new CustomException("사업자번호를 작성해주세요");
-        }
+    public String join(@Valid CompJoinReqDto compJoinReqDto, BindingResult bindingResult) {
         compService.회원가입(compJoinReqDto);
-
-        return "redirect:/comp/login";
+        return Script.href("comp/login");
     }
 
     @GetMapping("/comp/profileUpdateForm")
