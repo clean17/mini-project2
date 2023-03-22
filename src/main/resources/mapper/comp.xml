@@ -8,8 +8,19 @@
         select * from comp_tb
     </select>
 
-    <select id="findByIdToJobs" resultType="shop.mtcoding.project.dto.comp.CompResp$CompWriteJobsRespDto">
+    <!-- <select id="findByIdToJobs" resultType="shop.mtcoding.project.dto.comp.CompResp$CompWriteJobsRespDto">
       SELECT comp_name, representative_name, photo, homepage FROM comp_tb where comp_id = #{compId}
+    </select> -->
+    <resultMap id="writeJobsDto" type="shop.mtcoding.project.dto.comp.CompResp$CompWriteJobsRespDto">
+      <!-- <id property="compId" column="comp_id"/> -->
+      <result property="compName" column="comp_name"/>
+      <result property="representativeName" column="representative_name"/>
+      <result property="photo" column="photo"/>
+      <result property="homepage" column="homepage"/>
+    </resultMap>
+
+    <select id="findByIdToJobs" resultMap="writeJobsDto">
+      SELECT * FROM comp_tb where comp_id = #{compId}
     </select>
 
     <select id="findByCompId" resultType="shop.mtcoding.project.model.comp.Comp">

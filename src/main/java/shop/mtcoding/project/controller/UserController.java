@@ -89,6 +89,7 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
+    @ResponseBody
     public String login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult, HttpServletResponse httpServletResponse) {
         User principal = userService.로그인(userloginReqDto);
         if (principal == null) {
@@ -105,9 +106,11 @@ public class UserController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.setAttribute("compSession", null);
+            session.invalidate();
             session.setAttribute("principal", principal);
-            return "redirect:/";
+            // return "redirect:/";
+            return "유저 로그인 완료";
+
         }
     }
 

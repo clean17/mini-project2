@@ -8,13 +8,15 @@ import org.apache.ibatis.annotations.Param;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsCheckBoxReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsWriteReqDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsDetailRespDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsCheckOutDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsDetailOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsIdRespDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsManageJobsRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMatchRespDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchRespDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSuggestRespDto;
 
 @Mapper
@@ -41,18 +43,19 @@ public interface JobsRepository {
 
     public List<JobsMainRecommendRespDto> findAlltoMainRecommendRandom(Integer userId);
 
-    public List<JobsMainRespDto> findAlltoMain(Integer userId);
+    public List<JobsMainOutDto> findAlltoMain(Integer userId);
     public List<JobsMainRespDto> findAlltoMainRamdom(Integer userId);
 
-    public List<JobsSearchRespDto> findBySearch(
+    public List<JobsSearchOutDto> findBySearch(
         @Param("keyword") String keyword,
         @Param("userId") Integer userId
         );
         
-    public List<JobsSearchRespDto> findByCheckBox(
-        @Param("jDto") JobsCheckBoxReqDto jDto
+    public List<JobsCheckOutDto> findByCheckBox(
+        @Param("jDto") JobsCheckBoxReqDto jDto,
+        @Param("userId") Integer userId
         );
-    public JobsDetailRespDto findByJobsDetail(
+    public JobsDetailOutDto findByJobsDetail(
         @Param("jobsId") Integer jobsId,
         @Param("userId") Integer userId
     );

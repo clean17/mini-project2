@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.interceptor.LoginInterceptor;
+import shop.mtcoding.project.config.resolver.CompLoginArgumentResolver;
 import shop.mtcoding.project.config.resolver.MyLoginArgumentResolver;
 
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ import shop.mtcoding.project.config.resolver.MyLoginArgumentResolver;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final MyLoginArgumentResolver myLoginArgumentResolver;
+    private final CompLoginArgumentResolver compLoginArgumentResolver;
     private final LoginInterceptor loginInterceptor;
 
     @Override
@@ -32,5 +34,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(myLoginArgumentResolver);
+        resolvers.add(compLoginArgumentResolver);
     }
 }   
