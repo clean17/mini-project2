@@ -56,7 +56,7 @@ public class CompService {
     }
 
     @Transactional
-    public void 회사정보수정(CompUpdateReqDto compUpdateReqDto, Integer compId) {
+    public CompUpdateReqDto 회사정보수정(CompUpdateReqDto compUpdateReqDto, Integer compId) {
         if (compId != compUpdateReqDto.getCompId()) {
             throw new CustomApiException("정상적인 접근이 아닙니다.", HttpStatus.FORBIDDEN);
         }
@@ -68,6 +68,7 @@ public class CompService {
         } catch (Exception e) {
             throw new CustomException("서버 에러가 발생 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return compUpdateReqDto;
     }
 
     @Transactional

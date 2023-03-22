@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusCompRespDto;
@@ -224,28 +225,14 @@ public class CompController {
     }
 
     @PutMapping("/comp/update")
-    public ResponseEntity<?> updateComp(@RequestBody CompUpdateReqDto compUpdateReqDto) {
+    public @ResponseBody ResponseEntity<?> updateComp(@LoginComp Comp comp,
+            @Valid @RequestBody CompUpdateReqDto compUpdateReqDto, BindingResult bindingResult) {
         compUpdateReqDto.setPassword(Sha256.encode(compUpdateReqDto.getPassword()));
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        if (compSession == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        if (compUpdateReqDto.getPassword() == null || compUpdateReqDto.getPassword().isEmpty()) {
-            throw new CustomApiException("비밀번호를 입력하세요");
-        }
-        if (compUpdateReqDto.getCompName() == null || compUpdateReqDto.getCompName().isEmpty()) {
-            throw new CustomApiException("회사이름을 입력하세요");
-        }
-        if (compUpdateReqDto.getRepresentativeName() == null || compUpdateReqDto.getRepresentativeName().isEmpty()) {
-            throw new CustomApiException("대표자명을 입력하세요");
-        }
-        if (compUpdateReqDto.getBusinessNumber() == null || compUpdateReqDto.getBusinessNumber().isEmpty()) {
-            throw new CustomApiException("사업자 번호을 입력하세요");
-        }
-        compService.회사정보수정(compUpdateReqDto, compSession.getCompId());
-        compSession = compRepository.findByCompId(compSession.getCompId());
+
+        CompUpdateReqDto compPS = compService.회사정보수정(compUpdateReqDto, comp.getCompId());
+        Comp compSession = compRepository.findByCompId(compPS.getCompId());
         session.setAttribute("compSession", compSession);
-        return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", compPS), HttpStatus.OK);
     }
 
     @PutMapping("/comp/profileUpdate")
