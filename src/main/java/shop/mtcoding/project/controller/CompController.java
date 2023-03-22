@@ -79,15 +79,11 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", compJoinOutDto), HttpStatus.OK);
     }
 
+    // 완료
     @GetMapping("/comp/profileUpdateForm")
-    public String profileUpdateForm(Model model) {
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        if (compSession == null) {
-            return "redirect:/comp/login";
-        }
-        Comp compPS = compRepository.findByCompId(compSession.getCompId());
-        model.addAttribute("comp", compPS);
-        return "comp/profileUpdateForm";
+    public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginComp Comp comp) {
+        Comp compPS = compRepository.findByCompId(comp.getCompId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS), HttpStatus.OK);
     }
 
     // 완료
@@ -206,6 +202,7 @@ public class CompController {
         return "comp/comphome";
     }
 
+    // 완료
     @PostMapping("/comp/passwordCheck")
     public @ResponseBody ResponseEntity<?> samePasswordCheck(@RequestBody CompPasswordReqDto compPasswordReqDto) {
         compPasswordReqDto.setPassword(Sha256.encode(compPasswordReqDto.getPassword()));
