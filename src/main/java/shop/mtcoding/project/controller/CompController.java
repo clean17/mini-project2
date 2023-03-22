@@ -87,6 +87,7 @@ public class CompController {
         return "comp/profileUpdateForm";
     }
 
+    // 완료
     @GetMapping("/comp/emailCheck")
     public @ResponseBody ResponseEntity<?> sameEmailCheck(String email) {
         Comp compPS = compRepository.findByCompEmail(email);

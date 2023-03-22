@@ -97,12 +97,12 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    @ResponseBody
-    public String login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
+    public @ResponseBody ResponseEntity<?> login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
         User principal = userService.로그인(userloginReqDto);
         if (principal == null) {
-            return "redirect:/loginForm";
+            throw new CustomApiException("존재하지 않는 회원입니다.");
+            // return "redirect:/loginForm";
         } else {
             if (userloginReqDto.getRememberEmail() == null) {
                 userloginReqDto.setRememberEmail("");
@@ -117,7 +117,8 @@ public class UserController {
             }
             session.setAttribute("compSession", null);
             session.setAttribute("principal", principal);
-            return Script.href("/");
+            // return Script.href("/");
+            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", null), HttpStatus.OK);
         }
     }
 
