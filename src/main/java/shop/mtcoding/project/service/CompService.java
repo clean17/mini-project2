@@ -6,40 +6,48 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.comp.CompReq.CompJoinReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompLoginReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
 import shop.mtcoding.project.util.PathUtil;
 import shop.mtcoding.project.util.Sha256;
 
+@RequiredArgsConstructor
 @Service
 public class CompService {
 
-    @Autowired
-    private CompRepository compRepository;
+    private final CompRepository compRepository;
 
     @Transactional
-    public void 회원가입(CompJoinReqDto compJoinReqDto) {
+    public CompJoinReqDto 회원가입(CompJoinReqDto compJoinReqDto) {
         Comp compPS = compRepository.findByCompEmail(compJoinReqDto.getEmail());
         if (compPS != null) {
-            throw new CustomException("존재하는 회원입니다.");
+            throw new CustomException("존재 하는 회원입니다.");
         }
         compJoinReqDto.setPassword(Sha256.encode(compJoinReqDto.getPassword()));
+        Integer id = 0;
         try {
             compRepository.insert(compJoinReqDto);
+            id = compJoinReqDto.getCompId();
         } catch (Exception e) {
             throw new CustomException("서버 에러가 발생 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        Comp compPS2 = compRepository.findByCompId(id);
+        compJoinReqDto.setCompId(compPS2.getCompId());
+        compJoinReqDto.setCreatedAt(compPS2.getCreatedAt());
+        return compJoinReqDto;
     }
 
     @Transactional(readOnly = true)
-    public Comp 로그인(CompLoginReqDto compLoginReqDto) {
+    public CompLoginRespDto 로그인(CompLoginReqDto compLoginReqDto) {
         compLoginReqDto.setPassword(Sha256.encode(compLoginReqDto.getPassword()));
-        Comp principal = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
+        CompLoginRespDto principal = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
                 compLoginReqDto.getPassword());
         if (principal == null) {
             throw new CustomException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");

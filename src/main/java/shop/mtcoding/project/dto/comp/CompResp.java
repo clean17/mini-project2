@@ -4,7 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class CompResp {
-   
+
+    @Getter
+    @Setter
+    public static class CompLoginRespDto {
+        private Integer compId;
+        private String email;
+        private String password;
+    }
+
     @Getter
     @Setter
     public static class CompWriteJobsRespDto {

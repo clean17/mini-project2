@@ -8,12 +8,14 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusCompRespDto;
@@ -29,6 +32,7 @@ import shop.mtcoding.project.dto.comp.CompReq.CompJoinReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompLoginReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompPasswordReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsIdRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsManageJobsRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchRespDto;
@@ -49,61 +53,28 @@ import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.service.CompService;
 import shop.mtcoding.project.util.DateUtil;
 import shop.mtcoding.project.util.MockSession;
+import shop.mtcoding.project.util.Script;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
+@RequiredArgsConstructor
 public class CompController {
 
-    @Autowired
-    private SkillRepository skillRepository;
+    private final SkillRepository skillRepository;
+    private final HttpSession session;
+    private final ResumeRepository resumeRepository;
+    private final JobsRepository jobsRepository;
+    private final ApplyRepository applyRepository;
+    private final ScrapRepository scrapRepository;
+    private final SuggestRepository suggestRepository;
+    private final CompService compService;
+    private final CompRepository compRepository;
 
-    @Autowired
-    private HttpSession session;
-
-    @Autowired
-    private ResumeRepository resumeRepository;
-
-    @Autowired
-    private JobsRepository jobsRepository;
-
-    @Autowired
-    private ApplyRepository applyRepository;
-
-    @Autowired
-    private ScrapRepository scrapRepository;
-
-    @Autowired
-    private SuggestRepository suggestRepository;
-
-    @Autowired
-    private CompService compService;
-
-    @Autowired
-    private CompRepository compRepository;
-
+    // 완료
     @PostMapping("/comp/join")
-    public String join(CompJoinReqDto compJoinReqDto) {
-        if (compJoinReqDto.getEmail() == null || compJoinReqDto.getEmail().isEmpty()) {
-            throw new CustomException("이메일을 작성해주세요");
-        }
-        if (compJoinReqDto.getPassword() == null || compJoinReqDto.getPassword().isEmpty()) {
-            throw new CustomException("패스워드를 작성해주세요");
-        }
-        if (compJoinReqDto.getPassword() == null || compJoinReqDto.getPassword().isEmpty()) {
-            throw new CustomException("동일한 패스워드를 작성해주세요");
-        }
-        if (compJoinReqDto.getCompName() == null || compJoinReqDto.getCompName().isEmpty()) {
-            throw new CustomException("회사이름을 작성해주세요");
-        }
-        if (compJoinReqDto.getRepresentativeName() == null || compJoinReqDto.getRepresentativeName().isEmpty()) {
-            throw new CustomException("대표자명을 작성해주세요");
-        }
-        if (compJoinReqDto.getBusinessNumber() == null || compJoinReqDto.getBusinessNumber().isEmpty()) {
-            throw new CustomException("사업자번호를 작성해주세요");
-        }
-        compService.회원가입(compJoinReqDto);
-
-        return "redirect:/comp/login";
+    public @ResponseBody ResponseEntity<?> join(@Valid CompJoinReqDto compJoinReqDto, BindingResult bindingResult) {
+        CompJoinReqDto compJoinOutDto = compService.회원가입(compJoinReqDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", compJoinOutDto), HttpStatus.OK);
     }
 
     @GetMapping("/comp/profileUpdateForm")
@@ -117,6 +88,7 @@ public class CompController {
         return "comp/profileUpdateForm";
     }
 
+    // 완료
     @GetMapping("/comp/emailCheck")
     public @ResponseBody ResponseEntity<?> sameEmailCheck(String email) {
         Comp compPS = compRepository.findByCompEmail(email);
@@ -126,25 +98,27 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
+    // 완료
     @GetMapping("/comp/join")
     public String joinComp() {
         return "comp/joinForm";
     }
 
+    // 완료
     @PostMapping("/comp/login")
-    @ResponseBody
-    public String login(CompLoginReqDto compLoginReqDto, HttpServletResponse httpServletResponse) {
+    public @ResponseBody ResponseEntity<?> login(@Valid CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
+            HttpServletResponse httpServletResponse) {
+        CompLoginRespDto principal = compService.로그인(compLoginReqDto);
+
         if (compLoginReqDto.getEmail() == null || compLoginReqDto.getEmail().isEmpty()) {
             throw new CustomException("email을 작성해주세요");
         }
         if (compLoginReqDto.getPassword() == null || compLoginReqDto.getPassword().isEmpty()) {
             throw new CustomException("password 작성해주세요");
         }
-
-        Comp principal = compService.로그인(compLoginReqDto);
-
         if (principal == null) {
-            return "redirect:/loginForm";
+            throw new CustomApiException("존재하지 않는 회원입니다.");
+            // return "redirect:/loginForm";
         } else {
             if (compLoginReqDto.getRememberEmail() == null) {
                 compLoginReqDto.setRememberEmail("");
@@ -159,11 +133,12 @@ public class CompController {
             }
             session.invalidate();
             session.setAttribute("compSession", principal);
-            // return "redirect:/";
-            return "기업 로그인 완료";
+            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
+
         }
     }
 
+    // 완료
     @GetMapping("/comp/login")
     public String loginComp() {
         return "comp/loginForm";
@@ -171,15 +146,14 @@ public class CompController {
 
     @GetMapping("/comp/comphome")
     public String compMyhome(Model model) {
-        Comp compSession = (Comp)session.getAttribute("compSession");
-        if ( compSession == null ){
+        Comp compSession = (Comp) session.getAttribute("compSession");
+        if (compSession == null) {
             return "redirect:/comp/login";
         }
         List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(compSession.getCompId());
         model.addAttribute("jDtos", jDtos);
         Comp compPS = compRepository.findByCompId(compSession.getCompId());
         model.addAttribute("comp", compPS);
-        
 
         Set<String> set = new HashSet<>();
         List<JobsIdRespDto> jobsIdList = jobsRepository.findJobsIdByCompId(compSession.getCompId());
@@ -208,25 +182,25 @@ public class CompController {
             List<String> insertList = new ArrayList<>();
             for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
                 insertList.add(skill.getSkill());
-                if ( set.contains(skill.getSkill())){
-                    count ++ ;
+                if (set.contains(skill.getSkill())) {
+                    count++;
                 }
             }
             rDto.setSkillList(insertList);
-            if ( count >= 5 ){
+            if (count >= 5) {
                 fiveMatchList.add(rDto);
-            }else if ( count >= 4 ){
+            } else if (count >= 4) {
                 fourMatchList.add(rDto);
-            }else if ( count >= 3 ){
+            } else if (count >= 3) {
                 threeMatchList.add(rDto);
-            }else if ( count >= 2 ){
+            } else if (count >= 2) {
                 twoMatchList.add(rDto);
-            }else if ( count >= 1 ){
+            } else if (count >= 1) {
                 oneMatchList.add(rDto);
             }
             count = 0;
-        }        
-        
+        }
+
         List<ResumeMatchRespDto> resultList = new ArrayList<>();
         resultList.addAll(fiveMatchList);
         resultList.addAll(fourMatchList);
@@ -234,7 +208,7 @@ public class CompController {
         resultList.addAll(twoMatchList);
         resultList.addAll(oneMatchList);
         model.addAttribute("rDtos", resultList);
-        
+
         return "comp/comphome";
     }
 

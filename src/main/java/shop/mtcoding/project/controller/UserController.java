@@ -36,6 +36,7 @@ import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
+import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.interest.InterestRepository;
 import shop.mtcoding.project.model.jobs.JobsRepository;
@@ -65,36 +66,46 @@ public class UserController {
     private final InterestRepository interestRepository;
     private final JobsRepository jobsRepository;
 
+    // 완료
     @PostMapping("/user/join")
-    public String join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
-        userService.회원가입(userJoinReqDto);
-        return "redirect:/user/login";
+    public @ResponseBody ResponseEntity<?> join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
+        UserJoinReqDto userJoinOutDto = userService.회원가입(userJoinReqDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", userJoinOutDto), HttpStatus.OK);
     }
 
+    // 완료
     @GetMapping("/user/emailCheck")
     public @ResponseBody ResponseEntity<?> sameEmailCheck(String email) {
-        CheckValid.inNullApi(email, "이메일이 비었습니다.");
+        CheckValid.inNullApi(email, "이메일을 입력해주세요.");
         User userPS = userRepository.findByUserEmail(email);
-        CheckValid.inNullApi(userPS, "동일한 email이 존재합니다.");
+        if (userPS != null) {
+            throw new CustomApiException("동일한 email이 존재합니다.");
+        }
+        // CheckValid.inNullApi(userPS, "동일한 email이 존재합니다.");
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
+    // 완료
     @GetMapping("/user/join")
     public String joinForm() {
         return "user/joinForm";
     }
 
+    // 완료
     @GetMapping("/user/login")
     public String loginForm() {
         return "user/loginForm";
     }
 
+    // 완료
     @PostMapping("/user/login")
-    @ResponseBody
-    public String login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult, HttpServletResponse httpServletResponse) {
-        User principal = userService.로그인(userloginReqDto);
+    public @ResponseBody ResponseEntity<?> login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
+            HttpServletResponse httpServletResponse) {
+        UserLoginRespDto principal = userService.로그인(userloginReqDto);
+
         if (principal == null) {
-            return "redirect:/loginForm";
+            throw new CustomApiException("존재하지 않는 회원입니다.");
+            // return "redirect:/loginForm";
         } else {
             if (userloginReqDto.getRememberEmail() == null) {
                 userloginReqDto.setRememberEmail("");
@@ -107,18 +118,22 @@ public class UserController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.invalidate();
-            session.setAttribute("principal", principal);
-            // return "redirect:/";
-            return "유저 로그인 완료";
+            session.setAttribute("compSession", null);
+            User user = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
+                    userloginReqDto.getPassword());
+            session.setAttribute("principal", user);
+            // return Script.href("/");
+            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
 
         }
     }
 
+    // 완료
     @PostMapping("/user/login2")
     public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto,
             HttpServletResponse httpServletResponse) {
-        User principal = userService.ajax로그인(userloginReqDto);
+        UserLoginRespDto principal = userService.ajax로그인(userloginReqDto);
+
         if (principal != null) {
             if (userloginReqDto.getRememberEmail() == null) {
                 userloginReqDto.setRememberEmail("");
@@ -136,6 +151,7 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", null), HttpStatus.OK);
     }
 
+    // 완료
     @PostMapping("/user/passwordCheck")
     public @ResponseBody ResponseEntity<?> samePasswordCheck(@RequestBody UserPasswordReqDto userPasswordReqDto) {
         userPasswordReqDto.setPassword(Sha256.encode(userPasswordReqDto.getPassword()));
@@ -150,32 +166,14 @@ public class UserController {
     }
 
     @PutMapping("/user/update")
-    public ResponseEntity<?> updateUser(@RequestBody UserUpdateReqDto userUpdateReqDto) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        if (userUpdateReqDto.getPassword() == null || userUpdateReqDto.getPassword().isEmpty()) {
-            throw new CustomApiException("비밀번호를 입력하세요");
-        }
-
-        if (userUpdateReqDto.getName() == null || userUpdateReqDto.getName().isEmpty()) {
-            throw new CustomApiException("이름을 입력하세요");
-        }
-        if (userUpdateReqDto.getBirth() == null || userUpdateReqDto.getBirth().isEmpty()) {
-            throw new CustomApiException("생년월일을 입력하세요");
-        }
-        if (userUpdateReqDto.getTel() == null || userUpdateReqDto.getTel().isEmpty()) {
-            throw new CustomApiException("휴대전화를 입력하세요");
-        }
-        if (userUpdateReqDto.getAddress() == null || userUpdateReqDto.getAddress().isEmpty()) {
-            throw new CustomApiException("주소를 입력하세요");
-        }
+    public @ResponseBody ResponseEntity<?> updateUser(@LoginUser User user,
+            @RequestBody @Valid UserUpdateReqDto userUpdateReqDto, BindingResult bindingResult) {
         userUpdateReqDto.setPassword(Sha256.encode(userUpdateReqDto.getPassword()));
-        userService.개인정보수정(userUpdateReqDto, principal.getUserId());
-        principal = userRepository.findById(principal.getUserId());
+
+        UserUpdateReqDto userPS = userService.개인정보수정(userUpdateReqDto, user.getUserId());
+        User principal = userRepository.findById(userPS.getUserId());
         session.setAttribute("principal", principal);
-        return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", userPS), HttpStatus.OK);
 
     }
 

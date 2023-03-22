@@ -6,16 +6,18 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
-import shop.mtcoding.project.dto.user.UserReq.UserUpdatePhotoReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserDataRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserDeleteRespDto;
+import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 
 @Mapper
 public interface UserRepository {
     public List<User> findAll();
 
     public User findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+
+    public UserLoginRespDto findByEmailAndPassword2(@Param("email") String email, @Param("password") String password);
 
     public User findByUseridAndPassword(@Param("userId") Integer userId, @Param("password") String password);
 
