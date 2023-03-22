@@ -282,18 +282,7 @@ public class JobsResp {
         private Integer userScrapId;
     }
 
-    @Getter
-    @Setter
-    public static class JobsManageJobsRespDto {
-        private Integer num;
-        private Integer jobsId;
-        private String title;
-        private String position;
-        private String career;
-        private Timestamp endDate;
-        private List<String> skillList;
-        private Long leftTime;
-    }
+
 
     @Getter
     @Setter

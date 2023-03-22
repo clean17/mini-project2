@@ -8,6 +8,10 @@
         select * from comp_tb
     </select>
 
+    <!-- <select id="findCompDescAndMatchResume">
+
+    </select> -->
+
     <!-- <select id="findByIdToJobs" resultType="shop.mtcoding.project.dto.comp.CompResp$CompWriteJobsRespDto">
       SELECT comp_name, representative_name, photo, homepage FROM comp_tb where comp_id = #{compId}
     </select> -->
@@ -21,6 +25,10 @@
 
     <select id="findByIdToJobs" resultMap="writeJobsDto">
       SELECT * FROM comp_tb where comp_id = #{compId}
+    </select>
+
+    <select id="findCompPhoto" resultType="shop.mtcoding.project.dto.comp.CompResp$CompProfileOutDto">
+      select comp_id, photo from comp_tb where comp_id = #{compId};
     </select>
 
     <select id="findByCompId" resultType="shop.mtcoding.project.model.comp.Comp">

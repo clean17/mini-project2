@@ -37,7 +37,7 @@
 </resultMap>
 
     <select id="findByResumeSkill" resultType="java.lang.String">
-        select skill from resume_skill_tb 
+        select distinct skill from resume_skill_tb 
             where resume_id = #{resumeId}
     </select>
 
@@ -135,14 +135,28 @@
         )
         group by r.resume_id
     </select>
+    <resultMap id="matchResumeDto" type="shop.mtcoding.project.dto.comp.CompResp$CompHomeOutDto$ResumeMatchOutDto">
+            <id property="resumeId" column="resume_id"/>
+            <result property="address" column="address"/>
+            <result property="title" column="title"/>
+            <result property="education" column="education"/>
+            <result property="career" column="career"/>
+            <result property="state" column="state"/>
+            <association property="userDto" javaType="shop.mtcoding.project.dto.comp.CompResp$CompHomeOutDto$ResumeMatchOutDto$UserDto">
+                <id property="userId" column="user_id"/>
+                <result property="name" column="name"/>
+                <result property="photo" column="photo"/>
+            </association>
+            <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    </resultMap>
 
-    <select id="findMatchResumeByCompId" resultType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeMatchRespDto">
-        select r.resume_id, u.name, u.photo, r.title, r.education, r.career, u.address, r.state from resume_tb r join user_tb u
+    <select id="findMatchResumeByCompId" resultMap="matchResumeDto">
+        select * from resume_tb r join user_tb u
             on r.user_id = u.user_id
             where resume_id in
-            ( select resume_id from resume_skill_tb
+            ( select distinct resume_id from resume_skill_tb
             where skill in
-            ( select skill from required_skill_tb r join jobs_tb j
+            ( select distinct skill from required_skill_tb r join jobs_tb j
             on r.jobs_id = j.jobs_id
             where j.comp_id = #{compId} ) 
             )

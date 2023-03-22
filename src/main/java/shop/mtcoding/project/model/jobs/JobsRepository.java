@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto.JobsManageJobsRespDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsCheckBoxReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsWriteReqDto;
@@ -14,7 +15,6 @@ import shop.mtcoding.project.dto.jobs.JobsResp.JobsIdRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRespDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsManageJobsRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMatchRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSuggestRespDto;
@@ -25,7 +25,7 @@ public interface JobsRepository {
     public Jobs findById(Integer jobsId);
     public List<JobsMatchRespDto> findMatchJobsByUserId(Integer userId);
 
-    public  List<JobsManageJobsRespDto> findByIdtoManageJobs(Integer compId);
+    public List<JobsManageJobsRespDto> findByIdtoManageJobs(Integer compId);
 
     public List<JobsSuggestRespDto> findAllToSuggestReq(Integer compId);
 

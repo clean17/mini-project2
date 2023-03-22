@@ -11,6 +11,31 @@ import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 
 public class ResumeResp {
 
+    @Getter @Setter
+    public static class ResumeMatchOutDto{
+        private Integer resumeId;
+        private String title;
+        private String address;
+        private String education;
+        private String career;
+        private Integer state;
+        private List<String> skillList;
+        private UserDto userDto;
+        private CompScrapDto compScrapDto;
+
+        @Getter @Setter
+        public static class UserDto{
+            private Integer userId;
+            private String name;
+            private String photo;
+        }
+
+        @Getter @Setter
+        public static class CompScrapDto{
+            private Integer compScrapId;
+        }
+    }
+
     @Getter
     @Setter
     public static class ResumeIdRespDto{
@@ -146,6 +171,8 @@ public class ResumeResp {
         private List<String> skillList;
         private Integer compScrapId;
     }
+
+
 
     @Getter
     @Setter

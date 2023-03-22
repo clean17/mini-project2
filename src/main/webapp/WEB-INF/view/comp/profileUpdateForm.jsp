@@ -61,12 +61,8 @@
                 }
             </style>
         </head>
-
         <body>
-        
-        
             <div class="">
-
                 <div class="container">
                     <h2 class="text-center">프로필 사진 변경</h2>
                     <form id="profileForm">
@@ -82,7 +78,6 @@
                             변경</button>
                     </form>
                 </div>
-
             </div>
 
             <script>

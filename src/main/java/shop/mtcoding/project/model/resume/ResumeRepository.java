@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto.ResumeMatchOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeCheckboxReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
@@ -12,7 +13,6 @@ import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeIdRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeReadRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSaveRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSearchRespDto;
@@ -26,7 +26,7 @@ public interface ResumeRepository {
 
         public List<ResumeIdRespDto> findResumeIdByUserId(Integer userId);
 
-        public List<ResumeMatchRespDto> findMatchResumeByCompId(Integer compId);
+        public List<ResumeMatchOutDto> findMatchResumeByCompId(Integer compId);
 
         public ResumeUpdateRespDto findUpdateById(Integer resumeId);
 
