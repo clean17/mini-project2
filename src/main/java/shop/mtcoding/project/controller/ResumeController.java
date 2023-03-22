@@ -98,7 +98,7 @@ public class ResumeController {
 
         ResumeUpdateInDto rDto = resumeService.이력서수정(resumeUpdateReqDto, user.getUserId());
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", rDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ResponseDto<>(1, "수정 완료!", rDto), HttpStatus.CREATED);
     }
 
     // 완료
@@ -110,21 +110,14 @@ public class ResumeController {
     }
 
     @GetMapping("/user/resume/{id}/update")
-    public String updateResumeForm(@PathVariable Integer id, Model model) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
+    public ResponseEntity<?> updateResumeForm(@LoginUser User user, @PathVariable Integer id) {
+        if (user == null) {
             throw new CustomException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
         }
 
         ResumeSaveRespDto rDto = resumeRepository.findById(id);
-        List<String> insertList = new ArrayList<>();
-        for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
-            insertList.add(skill.getSkill());
-            rDto.setSkillList(insertList);
-        }
-        model.addAttribute("rDto", rDto);
 
-        return "resume/updateResumeForm";
+        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 수정 정보", rDto), HttpStatus.OK);
     }
 
     // 완료

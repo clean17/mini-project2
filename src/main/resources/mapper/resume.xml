@@ -85,8 +85,35 @@
             where r.resume_id = #{resumeId}
     </select>
 
-    <select id="findById" resultType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSaveRespDto">
-        select r.resume_id, r.user_id, r.title, r.content, r.education, r.career, r.link, r.state, r.created_at, u.photo, u.name, u.tel, u.email, u.address, u.birth from resume_tb r 
+<resultMap id="ResumeSaveRespDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSaveRespDto">
+        <id property="resumeId" column="resume_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="education" column="education"/>
+        <result property="career" column="career"/>
+        <result property="link" column="link"/>
+        <result property="state" column="state"/>
+        <result property="createdAt" column="created_at"/>
+
+		<association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSaveRespDto$UserDto">
+	        	  <id property="userId" column="user_id"/>
+        		  <result property="email" column="email"/>
+	  		      <result property="password" column="password"/>
+        		  <result property="name" column="name"/>
+        		  <result property="birth" column="birth"/>
+        		  <result property="tel" column="tel"/>
+        		  <result property="photo" column="photo"/>
+        		  <result property="address" column="address"/>
+	  		  <result property="createdAt" column="created_at"/>
+
+        	</association> 
+
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    
+</resultMap>
+
+    <select id="findById" resultMap="ResumeSaveRespDto">
+        select * from resume_tb r 
             join user_tb u
             on r.user_id= u.user_id
             where r.resume_id = #{resumeId}
