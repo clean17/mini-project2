@@ -3,6 +3,8 @@ package shop.mtcoding.project.dto.resume;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +15,7 @@ public class ResumeResp {
 
     @Getter
     @Setter
-    public static class ResumeIdRespDto{
+    public static class ResumeIdRespDto {
         private Integer resumeId;
     }
 
@@ -33,34 +35,39 @@ public class ResumeResp {
         private ApplyDto apply;
         private SuggestDto suggest;
 
-        //유저
-        @Getter @Setter
-        public static class UserDto{
+        // 유저
+        @Getter
+        @Setter
+        public static class UserDto {
             private String userId;
             private String photo;
             private String name;
             private String birth;
             private String address;
         }
+
         // 회사스크랩
-        @Getter @Setter
-        public static class CompScrapDto{
+        @Getter
+        @Setter
+        public static class CompScrapDto {
             private String compScrapId;
         }
 
         // 지원
-        @Getter @Setter
-        public static class ApplyDto{
+        @Getter
+        @Setter
+        public static class ApplyDto {
             private Integer applyId;
             private Integer applyState;
         }
+
         // 제안
-        @Getter @Setter
-        public static class SuggestDto{
+        @Getter
+        @Setter
+        public static class SuggestDto {
             private Integer suggestId;
             private Integer suggestState;
         }
-
     }
 
     @Getter
@@ -73,7 +80,7 @@ public class ResumeResp {
         public ResumeManageOutDto(List<ResumeManageRespDto> resumeManageRespDtos) {
             this.resumeManageRespDtos = resumeManageRespDtos;
         }
-        
+
     }
 
     @Getter
@@ -88,14 +95,14 @@ public class ResumeResp {
         private String address;
         private List<String> skillList;
 
-        @Getter @Setter
-        public static class UserDto{
+        @Getter
+        @Setter
+        public static class UserDto {
             private Integer userId;
             private String name;
         }
-    
-    }
 
+    }
 
     @Getter
     @Setter
@@ -186,6 +193,5 @@ public class ResumeResp {
         private Integer state;
         private List<String> skillList;
     }
-
 
 }

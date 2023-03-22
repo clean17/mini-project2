@@ -145,15 +145,56 @@
             and r.state = 1
     </select>
 
-    <select id="findDetailPublicResumebyById" resultType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeDetailRespDto">
-        select distinct r.resume_id, u.photo, u.name, r.title, u.birth, r.education, r.career, u.address, r.content, r.link
+    <resultMap id="ResumeDetailRespDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumeDetailRespDto">
+                 <id property="resumeId" column="resume_id"/>
+                <result property="title" column="title"/>
+                <result property="content" column="content"/>
+                <result property="education" column="education"/>
+                <result property="career" column="career"/>
+                <result property="link" column="link"/>
+        
+	        <association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeDetailRespDto$UserDto">
+	            <id property="userId" column="user_id"/>
+	            <result property="photo" column="photo"/>
+	            <result property="name" column="name"/>
+	            <result property="birth" column="birth"/>
+	            <result property="address" column="address"/>
+            </association>
+
+	        <association property="compScrap" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeDetailRespDto$CompScrapDto">
+	            <id property="compScrapId" column="comp_scrap_id"/>
+            </association>
+    
+	        <association property="apply" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeDetailRespDto$ApplyDto">
+	            <id property="applyId" column="apply_id"/>
+	            <result property="applyState" column="state"/>
+            </association>
+
+	        <association property="suggest" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeDetailRespDto$SuggestDto">
+	            <id property="suggestId" column="suggest_id"/>
+	            <result property="suggestState" column="state"/>
+            </association>
+
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+
+    </resultMap>
+
+
+    <select id="findDetailPublicResumebyById" resultMap="ResumeDetailRespDto">
+         select distinct r.resume_id, u.user_id, u.photo, u.name, r.title, u.birth, r.education, r.career, u.address, r.content, r.link, a.apply_id, a.state, s.suggest_id, s.state, c.comp_scrap_id
         <if test="#{compId != null}">
             ,ifnull(( select comp_scrap_id from comp_scrap_tb s  join resume_tb r on s.resume_id = r.resume_id 
           where s.comp_id = #{compId} and r.resume_id = #{resumeId} ),null) comp_scrap_id 
         </if>
-          from user_tb u 
-          join resume_tb r
+          from resume_tb r
+          join  user_tb u 
           on u.user_id = r.user_id
+          join comp_scrap_tb c
+          on r.resume_id = c.resume_id
+          join apply_tb a
+          on r.resume_id = a.resume_id
+          join suggest_tb s
+          on r.resume_id = s.resume_id
           where r.state = 1
           and r.resume_id = #{resumeId}
       </select>

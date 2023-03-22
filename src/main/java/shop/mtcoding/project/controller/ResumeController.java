@@ -59,7 +59,7 @@ public class ResumeController {
     private final ApplyRepository applyRepository;
     private final HttpSession session;
 
-    //완료
+    // 완료
     @DeleteMapping("/resume/{id}/delete")
     public ResponseEntity<?> deleteResume(@LoginUser User user, @PathVariable int id) {
         resumeService.이력서삭제(id, user.getUserId());
@@ -76,7 +76,7 @@ public class ResumeController {
         return new ResponseEntity<>(new ResponseDto<>(1, "이력서 목록 보기 성공", rDto), HttpStatus.OK);
     }
 
-    //완료
+    // 완료
     @GetMapping("/user/request/resume") // 공고에 지원할 이력서 불러오기
     public ResponseEntity<?> requestResume(@LoginUser User user) {
         List<ResumeManageRespDto> rDtos = resumeRepository.findAllByUserId(user.getUserId());
@@ -84,9 +84,10 @@ public class ResumeController {
         return new ResponseEntity<>(new ResponseDto<>(1, "이력서 불러오기 성공", rLists), HttpStatus.OK);
     }
 
-    //완료
+    // 완료
     @PostMapping("/user/resume/write")
-    public @ResponseBody ResponseEntity<?> writeResume(@LoginUser User user, @Valid ResumeWriteReqDto resumeWriteReqDto) {
+    public @ResponseBody ResponseEntity<?> writeResume(@LoginUser User user,
+            @Valid ResumeWriteReqDto resumeWriteReqDto) {
 
         ResumeWriteOutDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
 
@@ -123,7 +124,7 @@ public class ResumeController {
         return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", null), HttpStatus.CREATED);
     }
 
-    //완료
+    // 완료
     @GetMapping("/user/resume/write")
     @ResponseBody
     public ResponseEntity<?> writeResumeForm(@LoginUser User user) {
@@ -150,7 +151,7 @@ public class ResumeController {
     }
 
     @GetMapping("/resume/{id}")
-    public ResponseEntity<?> resumeDetail(@PathVariable Integer id, Model model, @LoginComp Comp comp) {
+    public ResponseEntity<?> resumeDetail(@PathVariable Integer id, @LoginComp Comp comp) {
         if (ObjectUtils.isEmpty(resumeRepository.findByResumeId(id))) {
             throw new CustomException("존재하지 않는 이력서 입니다.");
         }
@@ -158,15 +159,14 @@ public class ResumeController {
         Integer num = null;
 
         // if (comp != null) {
-        //     rDto = resumeRepository.findDetailPublicResumebyById(id, comp.getCompId());
+        // rDto = resumeRepository.findDetailPublicResumebyById(id, comp.getCompId());
         // } else {
-        //     rDto = resumeRepository.findDetailPublicResumebyById(id, null);
+        // rDto = resumeRepository.findDetailPublicResumebyById(id, null);
         // }
-        if (comp != null) num = comp.getCompId();
+        if (comp != null)
+            num = comp.getCompId();
         rDto = resumeRepository.findDetailPublicResumebyById(id, num);
-        return new ResponseEntity<>(new ResponseDto<>(1, "ddd", rDto), HttpStatus.OK);
-        // model.addAttribute("rDto", rDto);
-        // return "/resume/resumeDetail";
+        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 상세보기 완료", rDto), HttpStatus.OK);
     }
 
     @GetMapping("/comp/resume/search")
@@ -205,18 +205,20 @@ public class ResumeController {
         }
 
         // if (compSession != null) {
-        //     try {
-        //         rDto.setSuggestState(suggestRepository
-        //                 .findByCompIdAndResumeId(compSession.getCompId(), applyPS.getResumeId()).getState());
-        //     } catch (Exception e) {
+        // try {
+        // rDto.setSuggestState(suggestRepository
+        // .findByCompIdAndResumeId(compSession.getCompId(),
+        // applyPS.getResumeId()).getState());
+        // } catch (Exception e) {
 
-        //     }
-        //     try {
-        //         ApplytoCompRespDto aDto = applyRepository.findByCompIdAndApplyId(compSession.getCompId(), id);
-        //         rDto.setApplyState(aDto.getState());
-        //         rDto.setApplyId(aDto.getApplyId());
-        //     } catch (Exception e) {
-        //     }
+        // }
+        // try {
+        // ApplytoCompRespDto aDto =
+        // applyRepository.findByCompIdAndApplyId(compSession.getCompId(), id);
+        // rDto.setApplyState(aDto.getState());
+        // rDto.setApplyId(aDto.getApplyId());
+        // } catch (Exception e) {
+        // }
         // }
         model.addAttribute("rDto", rDto);
         return "/resume/resumeDetail";
