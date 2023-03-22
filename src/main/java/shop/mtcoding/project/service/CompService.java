@@ -12,6 +12,7 @@ import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.comp.CompReq.CompJoinReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompLoginReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
 import shop.mtcoding.project.util.PathUtil;
@@ -44,9 +45,9 @@ public class CompService {
     }
 
     @Transactional(readOnly = true)
-    public Comp 로그인(CompLoginReqDto compLoginReqDto) {
+    public CompLoginRespDto 로그인(CompLoginReqDto compLoginReqDto) {
         compLoginReqDto.setPassword(Sha256.encode(compLoginReqDto.getPassword()));
-        Comp principal = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
+        CompLoginRespDto principal = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
                 compLoginReqDto.getPassword());
         if (principal == null) {
             throw new CustomException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");

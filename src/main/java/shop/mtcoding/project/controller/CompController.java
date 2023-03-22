@@ -32,6 +32,7 @@ import shop.mtcoding.project.dto.comp.CompReq.CompJoinReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompLoginReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompPasswordReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsIdRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsManageJobsRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchRespDto;
@@ -106,15 +107,13 @@ public class CompController {
     @PostMapping("/comp/login")
     public @ResponseBody ResponseEntity<?> login(@Valid CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
+        CompLoginRespDto principal = compService.로그인(compLoginReqDto);
         if (compLoginReqDto.getEmail() == null || compLoginReqDto.getEmail().isEmpty()) {
             throw new CustomException("email을 작성해주세요");
         }
         if (compLoginReqDto.getPassword() == null || compLoginReqDto.getPassword().isEmpty()) {
             throw new CustomException("password 작성해주세요");
         }
-
-        Comp principal = compService.로그인(compLoginReqDto);
-
         if (principal == null) {
             throw new CustomApiException("존재하지 않는 회원입니다.");
             // return "redirect:/loginForm";
@@ -132,7 +131,7 @@ public class CompController {
             }
             session.setAttribute("principal", null);
             session.setAttribute("compSession", principal);
-            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", compLoginReqDto), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
         }
     }
 
