@@ -37,7 +37,34 @@
         where u.user_id = #{userId}
     </select>
 
-    <insert id="insert">
+    <resultMap id="suggestResumeDto" type="shop.mtcoding.project.dto.suggest.SuggestResp$SuggestResumeOutDto">
+      <id property="suggestId" column="suggest_id"/>
+      <result property="state" column="state"/>
+      <result property="createdAt" column="created_at"/>
+      <association property="jobsDto" javaType="shop.mtcoding.project.dto.suggest.SuggestResp$SuggestResumeOutDto$JobsDto">
+        <id property="jobsId" column="jobs_id"/>
+        <result property="title" column="title"/>
+        <result property="position" column="position"/>
+      </association>
+      <association property="resumeDto" javaType="shop.mtcoding.project.dto.suggest.SuggestResp$SuggestResumeOutDto$ResumeDto">
+        <id property="resumeId" column="resume_id"/>
+        <result property="title" column="title"/>
+        <association property="userDto" javaType="shop.mtcoding.project.dto.suggest.SuggestResp$SuggestResumeOutDto$ResumeDto$UserDto">
+          <id property="userId" column="user_id"/>
+          <result property="name" column="name"/>
+        </association>
+      </association>
+    </resultMap>
+
+    <select id="findBySuggestId" resultMap="suggestResumeDto">
+      select * from suggest_tb s join jobs_tb j
+        on s.jobs_id = j.jobs_id join resume_tb r
+        on s.resume_id = r.resume_id join user_tb u
+        on u.user_id = r.user_id 
+        where suggest_id = #{suggestId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="sDto.suggestId">
       insert into suggest_tb ( resume_id, jobs_id, state, created_at ) 
       values ( #{sDto.resumeId}, #{sDto.jobsId}, 0, now() )
     </insert>

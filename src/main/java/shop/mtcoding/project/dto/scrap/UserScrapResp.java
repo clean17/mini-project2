@@ -8,6 +8,33 @@ import lombok.Setter;
 
 public class UserScrapResp {
 
+    @Getter @Setter
+    public static class UserScrapOutDto{
+        private Integer userScrapId;
+        private UserDto userDto;
+        private JobsDto jobsDto;
+        private Timestamp createdAt;
+
+        @Getter @Setter
+        public static class UserDto{
+            private Integer userId;
+            private String name;
+        }
+
+        @Getter @Setter
+        public static class JobsDto{
+            private Integer jobsId;
+            private String title;
+            private CompDto compDto;
+
+            @Getter @Setter
+            public static class CompDto{
+                private Integer compId;
+                private String compName;
+            }
+        }
+    }
+
     @Getter
     @Setter
     public static class UserScrapRespDto {

@@ -130,6 +130,7 @@
             <result property="compName" column="comp_name"/>
             <result property="photo" column="photo"/>
         </association>
+
         <collection property="skillList" column="jobs_id" select="findByJobsSkill"/>
     </resultMap> 
       <!-- // collection select쿼리의 조건으로 들어가는 값을 column 에 입력-->

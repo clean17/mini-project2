@@ -37,7 +37,6 @@ public class ApplyController {
         if (!(aDto.getState() == 1 || aDto.getState() == -1)) {
             throw new CustomApiException("상태정보가 다릅니다.");
         }
-        Integer result = 0;
         if (aDto.getState() == 1) {
             ApplyOutDto applyDto = applyService.합격(aDto, comp.getCompId());
             return new ResponseEntity<>(new ResponseDto<>(1, "지원 결과는 합격입니다.", applyDto), HttpStatus.OK);

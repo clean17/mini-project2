@@ -10,6 +10,32 @@ import lombok.ToString;
 
 public class JobsResp {
 
+    @Getter @Setter
+    public static class JobsMainOutDto{
+        private Integer jobsId;
+        private String title;
+        private String career;
+        private String education;
+        private String position;
+        private String address;
+        private Timestamp endDate;
+        private Long leftTime;
+        private List<String> skillList;
+        private CompDto compDto;
+        private UserScrapDto userScrapDto;
+
+        @Getter @Setter
+        public static class CompDto{
+            private String compName;
+            private String photo;
+        }
+
+        @Getter @Setter
+        public static class UserScrapDto{
+            private Integer userScrapId;
+        }
+    }
+
     @Getter
     public static class JobsSearchkeyOutDto {
         private String keyword;
@@ -78,35 +104,6 @@ public class JobsResp {
 
     @Getter
     @Setter
-    public static class JobsMainOutDto{
-        private Integer jobsId;
-        private String title;
-        private String career;
-        private String education;
-        private String position;
-        private String address;
-        private Timestamp endDate;
-        private Long leftTime;
-        private CompDto compDto;
-        private UserScrapDto userScrapDto;
-        private List<String> skillList;
-        
-        @Getter
-        @Setter
-        public static class CompDto{
-            private String compName;
-            private String photo;
-        }
-        
-        @Getter
-        @Setter
-        public static class UserScrapDto{
-            private Integer userScrapId;
-        }
-    }
-
-    @Getter
-    @Setter
     @ToString
     public static class JobsMainRecommendRespDto {
         private Integer jobsId;
@@ -122,6 +119,8 @@ public class JobsResp {
         private Long leftTime;
         private Timestamp endDate;
     }
+
+
 
     @Getter
     @Setter

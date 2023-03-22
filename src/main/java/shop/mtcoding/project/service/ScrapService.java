@@ -1,13 +1,15 @@
 package shop.mtcoding.project.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.scrap.CompScrapReq.CompInsertScrapReqDto;
+import shop.mtcoding.project.dto.scrap.CompScrapResp.CompScrapOutDto;
 import shop.mtcoding.project.dto.scrap.UserScrapReq.UserInsertScrapReqDto;
+import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapOutDto;
 import shop.mtcoding.project.model.jobs.Jobs;
 import shop.mtcoding.project.model.jobs.JobsRepository;
 import shop.mtcoding.project.model.resume.Resume;
@@ -18,19 +20,14 @@ import shop.mtcoding.project.model.scrap.UserScrap;
 
 @Transactional(readOnly = true)
 @Service
+@RequiredArgsConstructor
 public class ScrapService {
-    
-    @Autowired
-    private ScrapRepository scrapRepository;
-
-    @Autowired
-    private JobsRepository jobsRepository;
-
-    @Autowired
-    private ResumeRepository resumeRepository;
+    private final ScrapRepository scrapRepository;
+    private final JobsRepository jobsRepository;
+    private final ResumeRepository resumeRepository;
 
     @Transactional
-    public Integer 공고스크랩(Integer userId, UserInsertScrapReqDto sDto ){
+    public UserScrapOutDto 공고스크랩(Integer userId, UserInsertScrapReqDto sDto ){
         Integer userScrapId = 0;
         if ( userId != sDto.getUserId()){
             throw new CustomApiException("권한이 없습니다.", HttpStatus.FORBIDDEN);
@@ -45,7 +42,8 @@ public class ScrapService {
         } catch (Exception e) {
             throw new CustomApiException("서버에 일시적인 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return userScrapId;
+        UserScrapOutDto reseult = scrapRepository.findByJobsScrapId(userScrapId);
+        return reseult;
     }
 
     @Transactional
@@ -65,7 +63,7 @@ public class ScrapService {
     }
 
     @Transactional
-    public Integer 이력서스크랩(Integer compId, CompInsertScrapReqDto sDto ){
+    public CompScrapOutDto 이력서스크랩(Integer compId, CompInsertScrapReqDto sDto ){
         Integer compScrapId = 0;
         if ( compId != sDto.getCompId()){
             throw new CustomApiException("권한이 없습니다.", HttpStatus.FORBIDDEN);
@@ -80,7 +78,8 @@ public class ScrapService {
         } catch (Exception e) {
             throw new CustomApiException("서버에 일시적인 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return compScrapId;
+        CompScrapOutDto result = scrapRepository.findByResumeScrapId(compScrapId);
+        return result;
     }
 
     @Transactional

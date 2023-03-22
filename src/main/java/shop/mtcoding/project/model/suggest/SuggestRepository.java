@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import shop.mtcoding.project.dto.suggest.SuggestReq.SuggestReqDto;
 import shop.mtcoding.project.dto.suggest.SuggestReq.SuggestUpdateReqDto;
+import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestResumeOutDto;
 import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToCompRespDto;
 import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToCompRespIdDto;
 import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
@@ -15,6 +16,7 @@ import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
 public interface SuggestRepository {
     public void findAll();
 
+    public SuggestResumeOutDto findBySuggestId(Integer suggestId);
     public Suggest findById(Integer suggestId);
 
     public SuggestToCompRespIdDto findByCompIdAndResumeId(

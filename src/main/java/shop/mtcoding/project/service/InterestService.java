@@ -8,6 +8,7 @@ import org.springframework.util.ObjectUtils;
 
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.interest.InterestReq.InterestChangeReqDto;
+import shop.mtcoding.project.dto.interest.InterestResp.InterestChangeOutDto;
 import shop.mtcoding.project.model.interest.InterestRepository;
 
 @Service
@@ -17,12 +18,12 @@ public class InterestService {
     private InterestRepository interestRepository;
 
     @Transactional
-    public void 관심수정(InterestChangeReqDto iDto, Integer userId) {
+    public InterestChangeOutDto 관심수정(InterestChangeReqDto iDto, Integer userId) {
         if( userId != iDto.getUserId()){
             throw new CustomApiException("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
         try {
-            interestRepository.deleteById(iDto.getUserId());
+            interestRepository.deleteById(userId);
         } catch (Exception e) {
             throw new CustomApiException("서버에 일시적인 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -33,5 +34,7 @@ public class InterestService {
                 throw new CustomApiException("서버에 일시적인 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+        InterestChangeOutDto interDto = interestRepository.findByInterestId(userId);
+        return interDto;
     }
 }
