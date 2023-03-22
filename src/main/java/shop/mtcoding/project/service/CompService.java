@@ -47,7 +47,7 @@ public class CompService {
     @Transactional(readOnly = true)
     public CompLoginRespDto 로그인(CompLoginReqDto compLoginReqDto) {
         compLoginReqDto.setPassword(Sha256.encode(compLoginReqDto.getPassword()));
-        CompLoginRespDto principal = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
+        CompLoginRespDto principal = compRepository.findByEmailAndPassword2(compLoginReqDto.getEmail(),
                 compLoginReqDto.getPassword());
         if (principal == null) {
             throw new CustomException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");
@@ -56,7 +56,7 @@ public class CompService {
     }
 
     @Transactional
-    public void 회사정보수정(CompUpdateReqDto compUpdateReqDto, Integer compId) {
+    public CompUpdateReqDto 회사정보수정(CompUpdateReqDto compUpdateReqDto, Integer compId) {
         if (compId != compUpdateReqDto.getCompId()) {
             throw new CustomApiException("정상적인 접근이 아닙니다.", HttpStatus.FORBIDDEN);
         }
@@ -64,10 +64,11 @@ public class CompService {
         if (compPS == null)
             throw new CustomException("존재하지 않는 회원입니다.");
         try {
-            compRepository.updateByCompId(compUpdateReqDto, compId);
+            compRepository.updateByCompId(compUpdateReqDto);
         } catch (Exception e) {
             throw new CustomException("서버 에러가 발생 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return compUpdateReqDto;
     }
 
     @Transactional

@@ -105,7 +105,6 @@ public class UserController {
 
         if (principal == null) {
             throw new CustomApiException("존재하지 않는 회원입니다.");
-            // return "redirect:/loginForm";
         } else {
             if (userloginReqDto.getRememberEmail() == null) {
                 userloginReqDto.setRememberEmail("");
@@ -118,11 +117,9 @@ public class UserController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.setAttribute("compSession", null);
             User user = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
                     userloginReqDto.getPassword());
             session.setAttribute("principal", user);
-            // return Script.href("/");
             return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
 
         }
@@ -165,6 +162,7 @@ public class UserController {
                 null), HttpStatus.OK);
     }
 
+    // 완료
     @PutMapping("/user/update")
     public @ResponseBody ResponseEntity<?> updateUser(@LoginUser User user,
             @RequestBody @Valid UserUpdateReqDto userUpdateReqDto, BindingResult bindingResult) {
@@ -177,17 +175,11 @@ public class UserController {
 
     }
 
+    // 완료
     @GetMapping("/user/update")
-    @ResponseBody
-    public String updateForm(Model model) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        User userPS = userRepository.findById(principal.getUserId());
-        model.addAttribute("uDto", userPS);
-        // return "user/updateForm";
-        return Script.href("user/updateForm");
+    public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user) {
+        User userPS = userRepository.findById(user.getUserId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
     @GetMapping("/user/myhome")
@@ -286,19 +278,20 @@ public class UserController {
         return "redirect:/";
     }
 
+    // 완료
     @GetMapping("/user/profileUpdateForm")
-    public String profileUpdateForm(@LoginUser User user, Model model) {
+    public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User user) {
         User userPS = userRepository.findById(user.getUserId());
-        model.addAttribute("user", userPS);
-        return "user/profileUpdateForm";
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
+    // 완료
     @PutMapping("/user/profileUpdate")
-    public ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo) throws Exception {
+    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo) throws Exception {
         CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
         User userPS = userService.프로필사진수정(photo, user.getUserId());
         session.setAttribute("principal", userPS);
-        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", userPS), HttpStatus.OK);
     }
 }
 

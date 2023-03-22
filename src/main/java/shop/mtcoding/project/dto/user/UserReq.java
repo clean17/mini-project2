@@ -65,14 +65,7 @@ public class UserReq {
     @Setter
     public static class UserUpdatePhotoReqDto {
         private Integer userId;
-        private String email;
-        private String password;
-        private String name;
-        private String birth;
-        private String tel;
         private String photo;
-        private String address;
-        private Timestamp createdAt;
     }
 
     @Getter

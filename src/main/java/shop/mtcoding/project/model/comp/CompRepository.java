@@ -17,10 +17,12 @@ public interface CompRepository {
 
         public Comp findByCompEmail(@Param("email") String email);
 
-        public CompLoginRespDto findByEmailAndPassword(@Param("email") String email,
+        public CompLoginRespDto findByEmailAndPassword2(@Param("email") String email,
                         @Param("password") String password);
         public Comp findByEmailAndPassword2(@Param("email") String email,
                         @Param("password") String password);
+
+        public Comp findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
         public CompWriteJobsRespDto findByIdToJobs(Integer CompId);
 
@@ -37,8 +39,7 @@ public interface CompRepository {
                         @Param("compId") Integer compId);
 
         public int updateByCompId(
-                        @Param("compUpdateReqDto") CompUpdateReqDto compUpdateReqDto,
-                        @Param("compId") Integer compId);
+                        @Param("compUpdateReqDto") CompUpdateReqDto compUpdateReqDto);
 
         public Comp findByCompidAndPassword(@Param("compId") Integer compId, @Param("password") String password);
 }
