@@ -22,20 +22,45 @@ public class ResumeResp {
     @ToString
     public static class ResumeDetailRespDto {
         private Integer resumeId;
-        private Integer applyId;
-        private String photo;
-        private String name;
         private String title;
-        private String birth;
+        private String content;
         private String education;
         private String career;
-        private List<String> skillList;
-        private String compScrapId;
-        private String address;
-        private String content;
         private String link;
-        private Integer suggestState;
-        private Integer applyState;
+        private List<String> skillList;
+        private UserDto user;
+        private CompScrapDto compScrap;
+        private ApplyDto apply;
+        private SuggestDto suggest;
+
+        //유저
+        @Getter @Setter
+        public static class UserDto{
+            private String userId;
+            private String photo;
+            private String name;
+            private String birth;
+            private String address;
+        }
+        // 회사스크랩
+        @Getter @Setter
+        public static class CompScrapDto{
+            private String compScrapId;
+        }
+
+        // 지원
+        @Getter @Setter
+        public static class ApplyDto{
+            private Integer applyId;
+            private Integer applyState;
+        }
+        // 제안
+        @Getter @Setter
+        public static class SuggestDto{
+            private Integer suggestId;
+            private Integer suggestState;
+        }
+
     }
 
     @Getter
