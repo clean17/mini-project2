@@ -69,11 +69,11 @@ public class CompController {
     private final CompService compService;
     private final CompRepository compRepository;
 
+    // 완료
     @PostMapping("/comp/join")
-    @ResponseBody
-    public String join(@Valid CompJoinReqDto compJoinReqDto, BindingResult bindingResult) {
-        compService.회원가입(compJoinReqDto);
-        return Script.href("/comp/login");
+    public @ResponseBody ResponseEntity<?> join(@Valid CompJoinReqDto compJoinReqDto, BindingResult bindingResult) {
+        CompJoinReqDto compJoinOutDto = compService.회원가입(compJoinReqDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", compJoinOutDto), HttpStatus.OK);
     }
 
     @GetMapping("/comp/profileUpdateForm")
@@ -96,6 +96,7 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
+    // 완료
     @GetMapping("/comp/join")
     public String joinComp() {
         return "comp/joinForm";

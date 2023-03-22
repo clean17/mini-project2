@@ -20,7 +20,7 @@ public interface CompRepository {
 
     public CompWriteJobsRespDto findByIdToJobs(Integer CompId);
 
-    public Comp findByCompId(Integer compId);
+    public Comp findByCompId(@Param("compId") Integer compId);
 
     public int insert(@Param("uDto") CompJoinReqDto uDto);
 
@@ -29,9 +29,8 @@ public interface CompRepository {
     public int deleteById();
 
     public int updatePhotoById(
-        @Param("photo") String photo,
-        @Param("compId") Integer compId
-    );
+            @Param("photo") String photo,
+            @Param("compId") Integer compId);
 
     public int updateByCompId(
             @Param("compUpdateReqDto") CompUpdateReqDto compUpdateReqDto,

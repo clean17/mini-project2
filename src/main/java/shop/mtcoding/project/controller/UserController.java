@@ -66,21 +66,14 @@ public class UserController {
     private final InterestRepository interestRepository;
     private final JobsRepository jobsRepository;
 
-    // @PostMapping("/user/join")
-    // @ResponseBody
-    // public String join(@Valid UserJoinReqDto userJoinReqDto, BindingResult
-    // bindingResult) {
-    // userService.회원가입(userJoinReqDto);
-    // return Script.href("/user/login");
-    // }
+    // 완료
     @PostMapping("/user/join")
     public @ResponseBody ResponseEntity<?> join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
         UserJoinReqDto userJoinOutDto = userService.회원가입(userJoinReqDto);
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", userJoinOutDto), HttpStatus.OK);
-
-        // return Script.href("/user/login");
     }
 
+    // 완료
     @GetMapping("/user/emailCheck")
     public @ResponseBody ResponseEntity<?> sameEmailCheck(String email) {
         CheckValid.inNullApi(email, "이메일을 입력해주세요.");
@@ -92,6 +85,7 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
+    // 완료
     @GetMapping("/user/join")
     public String joinForm() {
         return "user/joinForm";
@@ -127,6 +121,7 @@ public class UserController {
         }
     }
 
+    // 완료
     @PostMapping("/user/login2")
     public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto,
             HttpServletResponse httpServletResponse) {
@@ -148,6 +143,7 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", null), HttpStatus.OK);
     }
 
+    // 완료
     @PostMapping("/user/passwordCheck")
     public @ResponseBody ResponseEntity<?> samePasswordCheck(@RequestBody UserPasswordReqDto userPasswordReqDto) {
         userPasswordReqDto.setPassword(Sha256.encode(userPasswordReqDto.getPassword()));

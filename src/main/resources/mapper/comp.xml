@@ -16,7 +16,7 @@
       select * from comp_tb where comp_id = #{compId}
     </select>
 
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uDto.compId">
       insert into comp_tb ( email, password, comp_name, representative_name, business_number, created_at)
             values ( #{uDto.email}, #{uDto.password}, #{uDto.compName}, #{uDto.representativeName}, #{uDto.businessNumber}, now());
     </insert>
