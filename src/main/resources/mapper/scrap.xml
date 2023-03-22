@@ -8,6 +8,60 @@
         select * from user_scrap_tb
     </select>
 
+    <resultMap id="userJobsScrapDto" type="shop.mtcoding.project.dto.scrap.UserScrapResp$UserScrapOutDto">
+        <id property="userScrapId" column="user_scrap_id"/>
+        <result property="createdAt" column="created_at"/>
+
+        <association property="userDto" javaType="shop.mtcoding.project.dto.scrap.UserScrapResp$UserScrapOutDto$UserDto">
+          <id property="userId" column="user_id"/>
+          <result property="name" column="name"/>
+        </association>
+
+        <association property="jobsDto" javaType="shop.mtcoding.project.dto.scrap.UserScrapResp$UserScrapOutDto$JobsDto">
+          <id property="jobsId" column="jobs_id"/>
+          <result property="title" column="title"/>
+          <association property="compDto" javaType="shop.mtcoding.project.dto.scrap.UserScrapResp$UserScrapOutDto$JobsDto$CompDto">
+            <id property="compId" column="comp_id"/>
+            <result property="compName" column="comp_name"/>
+          </association>
+        </association>
+    </resultMap>
+
+    <select id="findByJobsScrapId" resultMap="userJobsScrapDto">
+        select * from user_scrap_tb s join user_tb u
+          on s.user_id = u.user_id join jobs_tb j
+          on j.jobs_id = s.jobs_id join comp_tb c
+          on c.comp_id = j.comp_id 
+          where user_scrap_id = #{userScrapId}
+    </select>
+
+    <resultMap id="compResumeScrapDto" type="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapOutDto">
+      <id property="compScrapId" column="comp_scrap_id"/>
+      <result property="createdAt" column="created_at"/>
+
+      <association property="compDto" javaType="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapOutDto$CompDto">
+        <id property="compId" column="comp_id"/>
+        <result property="compName" column="comp_name"/>
+      </association>
+
+      <association property="resumeDto" javaType="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapOutDto$ResumeDto">
+        <id property="resumeId" column="resume_id"/>
+        <result property="title" column="title"/>
+        <association property="userDto" javaType="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapOutDto$ResumeDto$UserDto">
+          <id property="userId" column="user_id"/>
+          <result property="name" column="name"/>
+        </association>
+      </association>
+    </resultMap>
+
+    <select id="findByResumeScrapId" resultMap="compResumeScrapDto">
+        select * from comp_scrap_tb s join comp_tb c
+          on s.comp_id = c.comp_id join resume_tb r
+          on s.resume_id = r.resume_id join user_tb u
+          on r.user_id = u.user_id 
+          where comp_scrap_id = #{compScrapId}
+    </select>
+
     <select id="findAllScrapByCompId" resultType="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapResumeRespDto">
       select s.comp_scrap_id, s.resume_id, u.name, u.birth, r.title, r.career, r.education,  u.address  from comp_scrap_tb s join resume_tb r
         on s.resume_id = r.resume_id join user_tb u
