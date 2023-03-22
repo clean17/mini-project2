@@ -90,8 +90,8 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public String login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
-            HttpServletResponse httpServletResponse) {
+    @ResponseBody
+    public String login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult, HttpServletResponse httpServletResponse) {
         User principal = userService.로그인(userloginReqDto);
         if (principal == null) {
             return "redirect:/loginForm";
@@ -107,9 +107,11 @@ public class UserController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.setAttribute("compSession", null);
+            session.invalidate();
             session.setAttribute("principal", principal);
-            return "redirect:/";
+            // return "redirect:/";
+            return "유저 로그인 완료";
+
         }
     }
 
