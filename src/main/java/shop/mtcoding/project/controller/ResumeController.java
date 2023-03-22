@@ -80,19 +80,20 @@ public class ResumeController {
 
     // 완료
     @GetMapping("/user/resume") // 이력서관리
-    public ResponseEntity<?> manageResume(@LoginUser User user ,Model model) {
+    public ResponseEntity<?> manageResume(@LoginUser User user) {
 
         List<ResumeManageRespDto> rLists = resumeRepository.findAllByUserId(user.getUserId());
 
         ResumeManageOutDto rDto = ResumeManageOutDto.builder().resumeManageRespDtos(rLists).build();
-        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 목록 보기", rDto), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 목록 보기 성공", rDto), HttpStatus.OK);
     }
 
+    //완료
     @GetMapping("/user/request/resume") // 공고에 지원할 이력서 불러오기
-    public ResponseEntity<?> requestResume(Model model) {
-        User principal = (User) session.getAttribute("principal");
-        List<ResumeManageRespDto> rDtos = resumeRepository.findAllByUserId(principal.getUserId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 불러오기 성공", rDtos), HttpStatus.OK);
+    public ResponseEntity<?> requestResume(@LoginUser User user) {
+        List<ResumeManageRespDto> rDtos = resumeRepository.findAllByUserId(user.getUserId());
+        ResumeManageOutDto rLists = ResumeManageOutDto.builder().resumeManageRespDtos(rDtos).build();
+        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 불러오기 성공", rLists), HttpStatus.OK);
     }
 
     //완료
@@ -137,7 +138,7 @@ public class ResumeController {
     //완료
     @GetMapping("/user/resume/write")
     @ResponseBody
-    public ResponseEntity<?> writeResumeForm(@LoginUser User user, Model model) {
+    public ResponseEntity<?> writeResumeForm(@LoginUser User user) {
         UserDataRespDto userPS = userRepository.findByUserId(user.getUserId());
         return ResponseEntity.ok().body(userPS);
     }
