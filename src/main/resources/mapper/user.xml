@@ -55,11 +55,6 @@
         update user_tb set 
             password =  #{uDto.password}, 
             name = #{uDto.name}, 
-
-    <sql id="findByEmailAndPassword2">
-          
-    </sql>
-
             birth = #{uDto.birth},
             tel =  #{uDto.tel},
             address = #{uDto.address}

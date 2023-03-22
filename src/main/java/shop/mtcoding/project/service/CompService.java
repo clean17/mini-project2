@@ -47,7 +47,7 @@ public class CompService {
     @Transactional(readOnly = true)
     public CompLoginRespDto 로그인(CompLoginReqDto compLoginReqDto) {
         compLoginReqDto.setPassword(Sha256.encode(compLoginReqDto.getPassword()));
-        CompLoginRespDto principal = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
+        CompLoginRespDto principal = compRepository.findByEmailAndPassword2(compLoginReqDto.getEmail(),
                 compLoginReqDto.getPassword());
         if (principal == null) {
             throw new CustomException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");
