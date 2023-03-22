@@ -71,12 +71,8 @@ public class ResumeController {
     private HttpSession session;
 
     @DeleteMapping("/resume/{id}/delete")
-    public ResponseEntity<?> deleteResume(@PathVariable int id) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        resumeService.이력서삭제(id, principal.getUserId());
+    public ResponseEntity<?> deleteResume(@LoginUser User user, @PathVariable int id) {
+        resumeService.이력서삭제(id, user.getUserId());
         return new ResponseEntity<>(new ResponseDto<>(1, "삭제성공", null), HttpStatus.OK);
     }
 
@@ -150,9 +146,6 @@ public class ResumeController {
     @ResponseBody
     public ResponseEntity<?> writeResumeForm(@LoginUser User user, Model model) {
         UserDataRespDto userPS = userRepository.findByUserId(user.getUserId());
-        model.addAttribute("rDto", userPS);
-        User userPS1 = userRepository.findById(user.getUserId());
-        model.addAttribute("user", userPS1);
         return ResponseEntity.ok().body(userPS);
     }
 
