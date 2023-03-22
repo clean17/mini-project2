@@ -216,6 +216,7 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "인증에 성공하였습니다.", null), HttpStatus.OK);
     }
 
+    // 완료
     @PutMapping("/comp/update")
     public @ResponseBody ResponseEntity<?> updateComp(@LoginComp Comp comp,
             @Valid @RequestBody CompUpdateReqDto compUpdateReqDto, BindingResult bindingResult) {
