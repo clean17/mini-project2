@@ -32,6 +32,7 @@ import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompJoinReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompLoginReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompPasswordReqDto;
+import shop.mtcoding.project.dto.comp.CompReq.CompUpdatePhotoReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsIdRespDto;
@@ -80,13 +81,6 @@ public class CompController {
     }
 
     // 완료
-    @GetMapping("/comp/profileUpdateForm")
-    public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginComp Comp comp) {
-        Comp compPS = compRepository.findByCompId(comp.getCompId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS), HttpStatus.OK);
-    }
-
-    // 완료
     @GetMapping("/comp/emailCheck")
     public @ResponseBody ResponseEntity<?> sameEmailCheck(String email) {
         Comp compPS = compRepository.findByCompEmail(email);
@@ -96,11 +90,11 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
-    // 완료
-    @GetMapping("/comp/join")
-    public String joinComp() {
-        return "comp/joinForm";
-    }
+    // 수정
+    // @GetMapping("/comp/join")
+    // public String joinComp() {
+    // return "comp/joinForm";
+    // }
 
     // 완료
     @PostMapping("/comp/login")
@@ -128,11 +122,11 @@ public class CompController {
         }
     }
 
-    // 완료
-    @GetMapping("/comp/login")
-    public String loginComp() {
-        return "comp/loginForm";
-    }
+    // 수정
+    // @GetMapping("/comp/login")
+    // public String loginComp() {
+    // return "comp/loginForm";
+    // }
 
     @GetMapping("/comp/comphome")
     public String compMyhome(Model model) {
@@ -226,21 +220,34 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", compPS), HttpStatus.OK);
     }
 
-    // 완료
-    @PutMapping("/comp/profileUpdate")
-    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginComp Comp comp, MultipartFile photo) throws Exception {
-        CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
-        Comp compPS = compService.프로필사진수정(photo, comp.getCompId());
-        session.setAttribute("compSession", compPS);
-        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", compPS), HttpStatus.OK);
-    }
+    // 수정
+    // @GetMapping("/comp/profileUpdateForm")
+    // public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginComp Comp
+    // comp, CompUpdatePhotoReqDto compUpdatePhotoReqDto) {
+    // CompUpdatePhotoReqDto compPS =
+    // compRepository.findByCompId(compUpdatePhotoReqDto, comp.getCompId());
+    // return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS),
+    // HttpStatus.OK);
+    // }
 
-    // 완료
-    @GetMapping("/comp/update")
-    public @ResponseBody ResponseEntity<?> updateForm(@LoginComp Comp comp) {
-        Comp compPS = compRepository.findByCompId(comp.getCompId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS), HttpStatus.OK);
-    }
+    // 수정
+    // @PutMapping("/comp/profileUpdate")
+    // public @ResponseBody ResponseEntity<?> profileUpdate(@LoginComp Comp comp,
+    // MultipartFile photo) throws Exception {
+    // CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
+    // Comp compPS = compService.프로필사진수정(photo, comp.getCompId());
+    // session.setAttribute("compSession", compPS);
+    // return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", compPS),
+    // HttpStatus.OK);
+    // }
+
+    // 수정
+    // @GetMapping("/comp/update")
+    // public @ResponseBody ResponseEntity<?> updateForm(@LoginComp Comp comp) {
+    // Comp compPS = compRepository.findByCompId(comp.getCompId());
+    // return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS),
+    // HttpStatus.OK);
+    // }
 
     @GetMapping("/comp/apply")
     public String apply(Model model) {

@@ -37,6 +37,7 @@ import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
+import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.interest.InterestRepository;
 import shop.mtcoding.project.model.jobs.JobsRepository;
@@ -85,17 +86,17 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
-    // 완료
-    @GetMapping("/user/join")
-    public String joinForm() {
-        return "user/joinForm";
-    }
+    // 수정
+    // @GetMapping("/user/join")
+    // public String joinForm() {
+    // return "user/joinForm";
+    // }
 
-    // 완료
-    @GetMapping("/user/login")
-    public String loginForm() {
-        return "user/loginForm";
-    }
+    // 수정
+    // @GetMapping("/user/login")
+    // public String loginForm() {
+    // return "user/loginForm";
+    // }
 
     // 완료
     @PostMapping("/user/login")
@@ -175,12 +176,14 @@ public class UserController {
 
     }
 
-    // 완료
-    @GetMapping("/user/update")
-    public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user) {
-        User userPS = userRepository.findById(user.getUserId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
-    }
+    // 수정
+    // @GetMapping("/user/update")
+    // public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user,
+    // UserUpdateReqDto userUpdateReqDto) {
+    // UserUpdateRespDto userPS = userRepository.findById(user.getUserId());
+    // return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS),
+    // HttpStatus.OK);
+    // }
 
     @GetMapping("/user/myhome")
     public String myhome(Model model) {
@@ -272,11 +275,12 @@ public class UserController {
         return "user/offer";
     }
 
-    @GetMapping("/logout")
-    public String logout() {
-        session.invalidate();
-        return "redirect:/";
-    }
+    // 수정
+    // @GetMapping("/logout")
+    // public String logout() {
+    // session.invalidate();
+    // return "redirect:/";
+    // }
 
     // 완료
     @GetMapping("/user/profileUpdateForm")
