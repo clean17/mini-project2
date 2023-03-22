@@ -1,13 +1,14 @@
 package shop.mtcoding.project.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.apply.ApplyReq.ApplyReqDto;
 import shop.mtcoding.project.dto.apply.ApplyReq.ApplyUpdateReqDto;
+import shop.mtcoding.project.dto.apply.ApplyResp.ApplyOutDto;
 import shop.mtcoding.project.model.apply.Apply;
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.jobs.Jobs;
@@ -18,22 +19,15 @@ import shop.mtcoding.project.model.resume.ResumeRepository;
 
 @Transactional(readOnly = true)
 @Service
-public class ApplyService {
-    
-    @Autowired
-    private ApplyRepository applyRepository;
-
-    @Autowired
-    private ResumeRepository resumeRepository;
-
-    @Autowired
-    private JobsRepository jobsRepository;
-
-    @Autowired
-    private NotifyRepository notifyRepository;
+@RequiredArgsConstructor
+public class ApplyService {    
+    private final ApplyRepository applyRepository;
+    private final ResumeRepository resumeRepository;
+    private final JobsRepository jobsRepository;
+    private final NotifyRepository notifyRepository;
 
     @Transactional
-    public void 지원하기(ApplyReqDto aDto, Integer userId){
+    public ApplyOutDto 지원하기(ApplyReqDto aDto, Integer userId){
         if ( userId != aDto.getUserId()){
             throw new CustomApiException("정상적인 접근이 아닙니다." , HttpStatus.FORBIDDEN);
         }
@@ -53,15 +47,17 @@ public class ApplyService {
             throw new CustomApiException("서버에 일시적인 오류가 발생했습니다.111", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         try {
-            System.out.println("테스트 : "+ result);
             notifyRepository.insert(result, null);
         } catch (Exception e) {
             throw new CustomApiException("서버에 일시적인 오류가 발생했습니다.222", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+            ApplyOutDto applyDto = applyRepository.findByApplyDto(result);
+            return applyDto;
+
     }
 
     @Transactional
-    public Integer 합격(ApplyUpdateReqDto aDto, Integer compId) {
+    public ApplyOutDto 합격(ApplyUpdateReqDto aDto, Integer compId) {
         if (compId != aDto.getCompId()){
             throw new CustomApiException("수정 권한이 없습니다." , HttpStatus.FORBIDDEN);
         }
@@ -74,11 +70,12 @@ public class ApplyService {
         } catch (Exception e) {
             throw new CustomApiException("서버에 일시적인 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return 1;
+        ApplyOutDto applyDto = applyRepository.findByApplyDto(aDto.getApplyId());
+        return applyDto;
     }
 
     @Transactional
-    public Integer 불합격(ApplyUpdateReqDto aDto, Integer compId) {
+    public ApplyOutDto 불합격(ApplyUpdateReqDto aDto, Integer compId) {
         if (compId != aDto.getCompId()){
             throw new CustomApiException("수정 권한이 없습니다." , HttpStatus.FORBIDDEN);
         }
@@ -91,7 +88,8 @@ public class ApplyService {
         } catch (Exception e) {
             throw new CustomApiException("서버에 일시적인 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return 1;
+        ApplyOutDto applyDto = applyRepository.findByApplyDto(aDto.getApplyId());
+        return applyDto;
     }
 }
 

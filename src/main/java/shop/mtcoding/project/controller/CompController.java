@@ -109,6 +109,7 @@ public class CompController {
     public @ResponseBody ResponseEntity<?> login(@Valid CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
         CompLoginRespDto principal = compService.로그인(compLoginReqDto);
+
         if (compLoginReqDto.getEmail() == null || compLoginReqDto.getEmail().isEmpty()) {
             throw new CustomException("email을 작성해주세요");
         }
@@ -130,9 +131,10 @@ public class CompController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.setAttribute("principal", null);
+            session.invalidate();
             session.setAttribute("compSession", principal);
             return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
+
         }
     }
 

@@ -17,7 +17,8 @@
 
 
 
-    <select id="findAlltoMain" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsMainRespDto">
+
+    <!-- <select id="findAlltoMain" resultType="shop.mtcoding.project.dto.jobs.JobsResp$findAlltoMain">
       select j.jobs_id, ( select comp_name from comp_tb where comp_id = j.comp_id) compName, 
         ( select photo from comp_tb where comp_id = j.comp_id ) photo,
         title, career, education, position, address, end_date
@@ -25,6 +26,34 @@
           ,ifnull(( select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = j.jobs_id ),null) user_scrap_id
         </if>
         from jobs_tb j
+    </select> -->
+
+    <resultMap id="mainOutDto" type="shop.mtcoding.project.dto.jobs.JobsResp$JobsMainOutDto">
+        <id property="jobsId" column="jobs_id"/>
+        <result property="title" column="title"/>
+        <result property="career" column="career"/>
+        <result property="education" column="education"/>
+        <result property="position" column="position"/>
+        <result property="address" column="address"/>
+        <result property="endDate" column="end_date"/>
+        <association property="userScrapDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsMainOutDto$UserScrapDto">
+            <id property="userScrapId" column="user_scrap_id"/>
+        </association>
+        <association property="compDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsMainOutDto$CompDto">
+            <result property="compName" column="comp_name"/>
+            <result property="photo" column="photo"/>
+        </association>
+        <collection property="skillList" column="jobs_id" select="findByJobsSkill"/>
+    </resultMap> 
+
+    <select id="findAlltoMain" resultMap="mainOutDto">
+      select *
+        <if test="userId != null">
+          ,ifnull(( select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = j.jobs_id ),null) user_scrap_id
+        </if>
+        from jobs_tb 
+        j join comp_tb c 
+        on j.comp_id = c.comp_id
     </select>
 
     <select id="findAlltoMainRamdom" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsMainRespDto">
@@ -70,8 +99,8 @@
       order by 1 asc
     </select>
   
-    <select id="findBySearch" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchRespDto">
-      select j.jobs_id, c.comp_name, c.photo,        
+    <!-- <select id="findBySearch" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchRespDto">
+      select j.jobs_id, c.comp_name, c.photo,        java
       title, career, education, position, address, end_date
         <if test="userId != null">
           ,ifnull(( select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = j.jobs_id ),null) user_scrap_id
@@ -84,9 +113,50 @@
         education regexp #{keyword} or
         position regexp #{keyword} or
         address regexp #{keyword} 
+    </select> -->
+
+    <resultMap id="searchDto" type="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchOutDto">
+        <id property="jobsId" column="jobs_id"/>
+        <result property="title" column="title"/>
+        <result property="career" column="career"/>
+        <result property="education" column="education"/>
+        <result property="position" column="position"/>
+        <result property="address" column="address"/>
+        <result property="endDate" column="end_date"/>
+        <association property="userScrapOutDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchOutDto$UserScrapOutDto">
+            <id property="userScrapId" column="user_scrap_id"/>
+        </association>
+        <association property="compOutDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchOutDto$CompOutDto">
+            <result property="compName" column="comp_name"/>
+            <result property="photo" column="photo"/>
+        </association>
+        <collection property="skillList" column="jobs_id" select="findByJobsSkill"/>
+    </resultMap> 
+      <!-- // collection select쿼리의 조건으로 들어가는 값을 column 에 입력-->
+
+    <select id="findByJobsSkill" resultType="java.lang.String">
+        select skill from required_skill_tb where jobs_id = #{jobsId}
     </select>
 
-    <select id="findByCheckBox" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchRespDto">
+    <select id="findBySearch" resultMap="searchDto" >
+      select *
+        <if test="userId != null">
+          ,ifnull(( select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = j.jobs_id ),null) user_scrap_id
+        </if>
+        from jobs_tb 
+        j join comp_tb c 
+        on j.comp_id = c.comp_id
+        where title regexp #{keyword} or
+        c.comp_name regexp #{keyword} or
+        career regexp #{keyword} or
+        education regexp #{keyword} or
+        position regexp #{keyword} or
+        address regexp #{keyword} 
+    </select>
+
+
+
+    <!-- <select id="findByCheckBox" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchRespDto">
       select j.jobs_id, ( select comp_name from comp_tb where comp_id = j.comp_id) compName, 
         ( select photo from comp_tb where comp_id = j.comp_id ) photo,
         title, career, education, position, address, end_date
@@ -118,9 +188,64 @@
         </if>
         career regexp #{jDto.career} 
         )
+    </select> -->
+
+    <resultMap id="checkDto" type="shop.mtcoding.project.dto.jobs.JobsResp$JobsCheckOutDto">
+      <id property="jobsId" column="jobs_id"/>
+        <result property="title" column="title"/>
+        <result property="career" column="career"/>
+        <result property="education" column="education"/>
+        <result property="position" column="position"/>
+        <result property="address" column="address"/>
+        <result property="endDate" column="end_date"/>
+        <association property="userScrapDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsCheckOutDto$UserScrapDto">
+            <id property="userScrapId" column="user_scrap_id"/>
+        </association>
+        <association property="compDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsCheckOutDto$CompDto">
+            <result property="compName" column="comp_name"/>
+            <result property="photo" column="photo"/>
+        </association>
+        <collection property="skillList" column="jobs_id" select="findByJobsSkill"/>
+    </resultMap> 
+
+    <select id="findByCheckBox" resultMap="checkDto">
+      select *
+        <if test="userId != null">
+          ,ifnull(( select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = j.jobs_id ),null) user_scrap_id
+        </if>
+        from jobs_tb 
+        j join comp_tb c 
+        on j.comp_id = c.comp_id
+          where j.jobs_id  in ( select j.jobs_id
+        from jobs_tb j join required_skill_tb r
+        on j.jobs_id = r.jobs_id
+        where 
+        <if test="jDto.address != null and jDto.address.size() > 0">
+          address in 
+          <foreach collection="jDto.address" item="address" open="(" close=")" separator=",">
+            #{address} 
+          </foreach>
+          and
+        </if>
+        <if test="jDto.skill != null and jDto.skill.size() > 0">
+          skill in
+          <foreach collection="jDto.skill" item="skill" open="(" close=")" separator=",">
+            #{skill} 
+          </foreach>
+          and
+        </if>
+        <if test="jDto.position != null and jDto.position.size() > 0">
+          position in 
+          <foreach collection="jDto.position" item="position" open="(" close=")" separator=",">
+            #{position} 
+          </foreach>
+          and
+        </if>
+        career regexp #{jDto.career} 
+        )
     </select>
 
-    <select id="findByJobsDetail" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsDetailRespDto">
+    <!-- <select id="findByJobsDetail" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsDetailRespDto">
       select j.jobs_id, c.photo, c.comp_name,
         j.title, j.content, j.comp_id,
         j.career, j.education, j.position,
@@ -128,6 +253,47 @@
         c.homepage, c.representative_name, j.end_date
         <if test="userId != null">
           ,ifnull(( select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = j.jobs_id ),null) user_scrap_id
+        </if>
+        from comp_tb c 
+        join jobs_tb j 
+        on c.comp_id = j.comp_id
+        where j.jobs_id = #{jobsId}
+    </select> -->
+
+    <resultMap id="jobsDetailDto" type="shop.mtcoding.project.dto.jobs.JobsResp$JobsDetailOutDto">
+      <id property="jobsId" column="jobs_id"/>
+      <result property="title" column="title"/>
+      <result property="content" column="content"/>
+      <result property="career" column="career"/>
+      <result property="education" column="education"/>
+      <result property="position" column="position"/>
+      <result property="address" column="address"/>
+      <result property="receipt" column="receipt"/>
+      <result property="address" column="address"/>
+      <result property="homepage" column="homepage"/>
+      <result property="endDate" column="end_date"/>
+      <association property="userScrapDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsDetailOutDto$UserScrapDto">
+          <id property="userScrapId" column="user_scrap_id"/>
+      </association>
+      <association property="compDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsDetailOutDto$CompDto">
+          <result property="compId" column="comp_id"/>
+          <result property="compName" column="comp_name"/>
+          <result property="photo" column="photo"/>
+          <result property="representativeName" column="representative_name"/>
+      </association>
+      <association property="applyDto" javaType="shop.mtcoding.project.dto.jobs.JobsResp$JobsDetailOutDto$ApplyDto">
+          <id property="state" column="state"/>
+      </association>
+      <collection property="skillList" column="jobs_id" select="findByJobsSkill"/>
+  </resultMap> 
+
+    <select id="findByJobsDetail" resultMap="jobsDetailDto">
+      select *
+        <if test="userId != null">
+          , ifnull(( select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = j.jobs_id ),null) user_scrap_id
+          , ifnull(( SELECT a.state state FROM apply_tb a join resume_tb r
+          on a.resume_id = r.resume_id
+          where r.user_id = #{userId} and a.jobs_id = #{jobsId} ),null) state
         </if>
         from comp_tb c 
         join jobs_tb j 

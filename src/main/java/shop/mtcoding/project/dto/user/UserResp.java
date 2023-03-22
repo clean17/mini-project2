@@ -20,14 +20,13 @@ public class UserResp {
     @Setter
     public static class UserDataRespDto {
         private Integer userId;
-        private Integer resumeId;
         private String email;
-        private String password;
         private String name;
         private String birth;
         private String tel;
         private String photo;
         private String address;
+
     }
 
     @Getter

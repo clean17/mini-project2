@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,13 +18,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApplytoCompRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeCheckboxReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
+import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
@@ -67,12 +71,8 @@ public class ResumeController {
     private HttpSession session;
 
     @DeleteMapping("/resume/{id}/delete")
-    public ResponseEntity<?> deleteResume(@PathVariable int id) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        resumeService.이력서삭제(id, principal.getUserId());
+    public ResponseEntity<?> deleteResume(@LoginUser User user, @PathVariable int id) {
+        resumeService.이력서삭제(id, user.getUserId());
         return new ResponseEntity<>(new ResponseDto<>(1, "삭제성공", null), HttpStatus.OK);
     }
 
@@ -105,31 +105,11 @@ public class ResumeController {
     }
 
     @PostMapping("/user/resume/write")
-    public ResponseEntity<?> writeResume(@RequestBody ResumeWriteReqDto resumeWriteReqDto) {
-        // System.out.println("테스트 : "+ resumeWriteReqDto.toString());
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        if (resumeWriteReqDto.getEducation() == null || resumeWriteReqDto.getEducation().isEmpty()) {
-            throw new CustomApiException("학력을 입력해주세요");
-        }
-        if (resumeWriteReqDto.getCareer() == null || resumeWriteReqDto.getCareer().isEmpty()) {
-            throw new CustomApiException("경력을 입력해주세요");
-        }
-        if (resumeWriteReqDto.getTitle() == null || resumeWriteReqDto.getTitle().isEmpty()) {
-            throw new CustomApiException("제목을 입력해주세요");
-        }
-        if (!(resumeWriteReqDto.getState() == 0 || resumeWriteReqDto.getState() == 1)) {
-            throw new CustomApiException("공개여부를 선택해주세요");
-        }
-        if (ObjectUtils.isEmpty(resumeWriteReqDto.getSkillList())) {
-            throw new CustomApiException("기술을 선택해주세요");
-        }
+    public @ResponseBody ResponseEntity<?> writeResume(@LoginUser User user, @Valid ResumeWriteReqDto resumeWriteReqDto) {
 
-        Integer resumeId = resumeService.이력서쓰기(resumeWriteReqDto, principal.getUserId());
+        ResumeWriteOutDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
 
-        return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", resumeId), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", rDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/user/resume/update")
@@ -163,16 +143,10 @@ public class ResumeController {
     }
 
     @GetMapping("/user/resume/write")
-    public String writeResumeForm(Model model) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        UserDataRespDto userPS = userRepository.findByUserId(principal.getUserId());
-        model.addAttribute("rDto", userPS);
-        User userPS1 = userRepository.findById(principal.getUserId());
-        model.addAttribute("user", userPS1);
-        return "resume/writeResumeForm";
+    @ResponseBody
+    public ResponseEntity<?> writeResumeForm(@LoginUser User user, Model model) {
+        UserDataRespDto userPS = userRepository.findByUserId(user.getUserId());
+        return ResponseEntity.ok().body(userPS);
     }
 
     @GetMapping("/user/resume/{id}/update")
@@ -200,18 +174,18 @@ public class ResumeController {
         }
 
         Comp compSession = (Comp) session.getAttribute("compSession");
-        ResumeDetailRespDto rDto ; 
+        ResumeDetailRespDto rDto;
         if (compSession != null) {
-             rDto = resumeRepository.findDetailPublicResumebyById(id, compSession.getCompId());
-        }else{
-             rDto = resumeRepository.findDetailPublicResumebyById(id, null);
+            rDto = resumeRepository.findDetailPublicResumebyById(id, compSession.getCompId());
+        } else {
+            rDto = resumeRepository.findDetailPublicResumebyById(id, null);
         }
         List<String> insertList = new ArrayList<>();
         for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
             insertList.add(skill.getSkill());
             rDto.setSkillList(insertList);
         }
-        
+
         compSession = (Comp) session.getAttribute("compSession");
         if (compSession != null) {
             try {
@@ -250,17 +224,21 @@ public class ResumeController {
             throw new CustomException("지원 결과 데이터가 없습니다.");
         }
         Comp compSession = (Comp) session.getAttribute("compSession");
-        ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(applyPS.getResumeId(), compSession.getCompId());
+        ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(applyPS.getResumeId(),
+                compSession.getCompId());
         List<String> insertList = new ArrayList<>();
+
         for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
             insertList.add(skill.getSkill());
             rDto.setSkillList(insertList);
         }
-         compSession = (Comp) session.getAttribute("compSession");
+
         if (compSession != null) {
             try {
-                rDto.setSuggestState(suggestRepository.findByCompIdAndResumeId(compSession.getCompId(), applyPS.getResumeId()).getState());
+                rDto.setSuggestState(suggestRepository
+                        .findByCompIdAndResumeId(compSession.getCompId(), applyPS.getResumeId()).getState());
             } catch (Exception e) {
+
             }
             try {
                 ApplytoCompRespDto aDto = applyRepository.findByCompIdAndApplyId(compSession.getCompId(), id);

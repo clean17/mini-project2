@@ -11,8 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRespDto;
 import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
 import shop.mtcoding.project.model.jobs.JobsRepository;
 import shop.mtcoding.project.model.skill.SkillRepository;
@@ -79,8 +79,8 @@ public class MainController {
             }
             model.addAttribute("rDtos", rDtos);
 
-            List<JobsMainRespDto> jDtos = jobsRepository.findAlltoMain(principal.getUserId());
-            for (JobsMainRespDto jDto : jDtos) {
+            List<JobsMainOutDto> jDtos = jobsRepository.findAlltoMain(principal.getUserId());
+            for (JobsMainOutDto jDto : jDtos) {
                 long dDay = DateUtil.dDay(jDto.getEndDate());
                 jDto.setLeftTime(dDay);
                 List<String> insertList = new ArrayList<>();
@@ -91,8 +91,8 @@ public class MainController {
             }
             model.addAttribute("jDtos", jDtos);
         } else {
-            List<JobsMainRespDto> jDtost = jobsRepository.findAlltoMain(null);
-            for (JobsMainRespDto jDto : jDtost) {
+            List<JobsMainOutDto> jDtost = jobsRepository.findAlltoMain(null);
+            for (JobsMainOutDto jDto : jDtost) {
                 long dDay = DateUtil.dDay(jDto.getEndDate());
                 jDto.setLeftTime(dDay);
                 List<String> insertList = new ArrayList<>();
@@ -104,8 +104,8 @@ public class MainController {
             // 랜덤으로 공고에서 몇개만 추려서 상단에 뿌려도 괜찮을듯 ??
             model.addAttribute("rDtos", jDtost);
 
-            List<JobsMainRespDto> jDtosb = jobsRepository.findAlltoMain(null);
-            for (JobsMainRespDto jDto : jDtosb) {
+            List<JobsMainOutDto> jDtosb = jobsRepository.findAlltoMain(null);
+            for (JobsMainOutDto jDto : jDtosb) {
                 long dDay = DateUtil.dDay(jDto.getEndDate());
                 jDto.setLeftTime(dDay);
                 List<String> insertList = new ArrayList<>();

@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsCheckBoxReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsWriteReqDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRespDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchRespDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSuggestRespDto;
 import shop.mtcoding.project.model.jobs.Jobs;
 import shop.mtcoding.project.model.jobs.JobsRepository;
@@ -33,11 +33,11 @@ public class JobsRepositoryTest {
         String keyword = "백";
     
         // when
-        List<JobsSearchRespDto> sDtos = jobsRepository.findBySearch(keyword, null);
+        List<JobsSearchOutDto> sDtos = jobsRepository.findBySearch(keyword, null);
         
         // then
         System.out.println("테스트 : "+ sDtos.size());
-        sDtos.forEach(System.out::print);
+        // sDtos.forEach(System.out::print);
     
     }
 
@@ -54,11 +54,11 @@ public class JobsRepositoryTest {
         // List<String> position = Arrays.asList("서울");
 
         // when
-        List<JobsSearchRespDto> jDtos = jobsRepository.findByCheckBox(j);
-        for (JobsSearchRespDto jDto : jDtos) {
-            System.out.println("테스트 : "+ jDto.toString());
-            }
-        System.out.println("테스트 : "+ jDtos.size());
+        // List<JobsSearchRespDto> jDtos = jobsRepository.findByCheckBox(j);
+        // for (JobsSearchRespDto jDto : jDtos) {
+        //     System.out.println("테스트 : "+ jDto.toString());
+        //     }
+        // System.out.println("테스트 : "+ jDtos.size());
 
         //then
     }
@@ -70,7 +70,7 @@ public class JobsRepositoryTest {
         Integer test = null ;
 
         //when
-        List<JobsMainRespDto> t = jobsRepository.findAlltoMain(test);
+        List<JobsMainOutDto> t = jobsRepository.findAlltoMain(test);
 
         //then
         System.out.println("테스트 : "+ t.size());
@@ -83,7 +83,7 @@ public class JobsRepositoryTest {
         Integer test = null ;
 
         //when
-        List<JobsMainRespDto> t = jobsRepository.findAlltoMain(test);
+        List<JobsMainOutDto> t = jobsRepository.findAlltoMain(test);
 
         //then
         System.out.println("테스트 : "+ t.size());

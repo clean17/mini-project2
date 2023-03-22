@@ -12,11 +12,23 @@
         select * from user_tb where user_id = #{userId}
     </select>
 
-    <select id="findByUserId" resultType="shop.mtcoding.project.dto.user.UserResp$UserDataRespDto">
-        select user_id, name, birth, tel, photo, address, email
-          from user_tb 
-          where user_id = #{userId}
+    <resultMap id="UserDataRespDto" type="shop.mtcoding.project.dto.user.UserResp$UserDataRespDto">
+        <id property="userId" column="user_id"/>
+        <result property="email" column="email"/>
+        <result property="name" column="name"/>
+        <result property="birth" column="birth"/>
+        <result property="tel" column="tel"/>
+        <result property="photo" column="photo"/>
+        <result property="address" column="address"/>
+        
+    </resultMap>
+
+    <select id="findByUserId" resultMap="UserDataRespDto">
+        select *
+        from user_tb 
+        where user_id = #{userId}
     </select>
+
 
     <select id="findByUserEmail" resultType="shop.mtcoding.project.model.user.User">
         select * from user_tb where email = #{email}
