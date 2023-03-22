@@ -150,6 +150,7 @@ public class ResumeController {
         return "resume/updateResumeForm";
     }
 
+    // 완료
     @GetMapping("/resume/{id}")
     public ResponseEntity<?> resumeDetail(@PathVariable Integer id, @LoginComp Comp comp) {
         if (ObjectUtils.isEmpty(resumeRepository.findByResumeId(id))) {
@@ -158,11 +159,6 @@ public class ResumeController {
         ResumeDetailRespDto rDto;
         Integer num = null;
 
-        // if (comp != null) {
-        // rDto = resumeRepository.findDetailPublicResumebyById(id, comp.getCompId());
-        // } else {
-        // rDto = resumeRepository.findDetailPublicResumebyById(id, null);
-        // }
         if (comp != null)
             num = comp.getCompId();
         rDto = resumeRepository.findDetailPublicResumebyById(id, num);
