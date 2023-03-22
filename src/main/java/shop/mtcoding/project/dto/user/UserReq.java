@@ -49,13 +49,16 @@ public class UserReq {
     @ToString
     public static class UserUpdateReqDto {
         private Integer userId;
-        private String email;
+        @NotBlank(message = "비밀번호를 입력해 주세요/")
         private String password;
+        @NotBlank(message = "이름을 입력해 주세요/")
         private String name;
+        @NotBlank(message = "생년월일을 입력해 주세요/")
         private String birth;
+        @NotBlank(message = "전화번호를 입력해 주세요/")
         private String tel;
+        @NotBlank(message = "주소를 입력해 주세요/")
         private String address;
-        private Timestamp createdAt;
     }
 
     @Getter

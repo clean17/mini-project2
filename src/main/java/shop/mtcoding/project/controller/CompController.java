@@ -104,6 +104,7 @@ public class CompController {
         return "comp/joinForm";
     }
 
+    // 완료
     @PostMapping("/comp/login")
     public @ResponseBody ResponseEntity<?> login(@Valid CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
@@ -135,6 +136,7 @@ public class CompController {
         }
     }
 
+    // 완료
     @GetMapping("/comp/login")
     public String loginComp() {
         return "comp/loginForm";
