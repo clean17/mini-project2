@@ -36,7 +36,7 @@
         <foreach collection="skillList" item="skill" separator=",">
             (#{resumeId}, #{skill})
        </foreach>
-    </insert> 
+    </insert>  
 
     <!-- <update id="updateRequiredSkillById">
         update required_skill_tb set

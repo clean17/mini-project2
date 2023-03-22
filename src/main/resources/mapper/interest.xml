@@ -11,12 +11,28 @@
     <select id="findById" resultType="shop.mtcoding.project.dto.interest.InterestResp$InterestChangeRespDto">
       select interest_ct from interest_tb where user_id = #{userId}
     </select>
+    
+    <resultMap id="interestDto" type="shop.mtcoding.project.dto.interest.InterestResp$InterestChangeOutDto">
+        <association property="userDto" javaType="shop.mtcoding.project.dto.interest.InterestResp$InterestChangeOutDto$UserDto">
+            <id property="userId" column="user_id"/>
+            <result property="name" column="name"/>
+        </association>
+        <collection property="interestList" column="user_id" select="findByUserId"/>
+    </resultMap>
+
+    <select id="findByInterestId" resultMap="interestDto">
+      select * from user_tb where user_id = #{userId}
+    </select>
+    
+    <select id="findByUserId" resultType="java.lang.String">
+      select interest_ct from interest_tb where user_id = #{userId}
+    </select>
 
     <insert id="insert">
       insert into interest_tb ( user_id , interest_ct )
         values
         <foreach collection="iDto.interestList" item="interest" separator=",">
-          (#{iDto.userId}, #{interest})
+          ( #{iDto.userId}, #{interest} )
         </foreach>
     </insert>
 

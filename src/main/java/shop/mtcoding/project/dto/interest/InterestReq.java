@@ -12,6 +12,7 @@ public class InterestReq {
     @Setter
     @ToString
     public static class InterestChangeReqDto{
+        private Integer interestId;
         private Integer userId;
         private List<String> interestList;
     }
