@@ -1,6 +1,9 @@
 package shop.mtcoding.project.service;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,20 +11,27 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
+import shop.mtcoding.project.dto.common.ResponseDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
+import shop.mtcoding.project.model.jobs.JobsRepository;
+import shop.mtcoding.project.model.skill.SkillRepository;
 import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
+import shop.mtcoding.project.util.DateUtil;
 import shop.mtcoding.project.util.PathUtil;
 import shop.mtcoding.project.util.Sha256;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
+    private final JobsRepository jobsRepository;
+    private final SkillRepository skillRepository;
 
     @Transactional
     public UserJoinReqDto 회원가입(UserJoinReqDto userJoinReqDto) {
@@ -97,5 +107,35 @@ public class UserService {
             throw new CustomException("사진 수정에 실패 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return userPS;
+    }
+
+    @Transactional
+    public List<JobsMainOutDto> 메인화면공고(User user) {
+        // if (user.getUserId() != null) {
+            // List<JobsMainRecommendRespDto> rDtos = jobsRepository.findAlltoMainRecommend(user.getUserId());
+            // for (JobsMainRecommendRespDto jDto : rDtos) {
+            //     jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
+            // }
+            // List<JobsMainRecommendRespDto> rDtos2 = jobsRepository.findAlltoMainRecommendRandom(user.getUserId());
+            // for (JobsMainRecommendRespDto jDto : rDtos2) {
+            //     jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
+            //     rDtos.add(jDto);
+            // }
+            // Integer num = null;
+            // if( user != null ) num = user.getUserId();    
+            // List<JobsMainOutDto> jDtos = jobsRepository.findAlltoMain(num);
+            // for (JobsMainOutDto jDto1 : jDtos) {
+            //     jDto1.setLeftTime(DateUtil.dDay(jDto1.getEndDate()));
+            // }
+            // return jDtos;
+        // } else {
+            Integer num = null;
+            if( user != null ) num = user.getUserId();    
+            List<JobsMainOutDto> jDtos = jobsRepository.findAlltoMain(num);
+            for (JobsMainOutDto jDto1 : jDtos) {
+                jDto1.setLeftTime(DateUtil.dDay(jDto1.getEndDate()));
+            }
+            return jDtos;
+        // }
     }
 }
