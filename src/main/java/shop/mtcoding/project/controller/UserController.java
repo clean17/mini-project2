@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +36,7 @@ import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
+import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.interest.InterestRepository;
 import shop.mtcoding.project.model.jobs.JobsRepository;
@@ -49,7 +49,6 @@ import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.UserService;
 import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.DateUtil;
-import shop.mtcoding.project.util.Script;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
@@ -91,15 +90,17 @@ public class UserController {
         return "user/joinForm";
     }
 
+    // 완료
     @GetMapping("/user/login")
     public String loginForm() {
         return "user/loginForm";
     }
 
+    // 완료
     @PostMapping("/user/login")
     public @ResponseBody ResponseEntity<?> login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
-        User principal = userService.로그인(userloginReqDto);
+        UserLoginRespDto principal = userService.로그인(userloginReqDto);
         if (principal == null) {
             throw new CustomApiException("존재하지 않는 회원입니다.");
             // return "redirect:/loginForm";
@@ -118,7 +119,7 @@ public class UserController {
             session.setAttribute("compSession", null);
             session.setAttribute("principal", principal);
             // return Script.href("/");
-            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", null), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
         }
     }
 
@@ -126,7 +127,7 @@ public class UserController {
     @PostMapping("/user/login2")
     public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto,
             HttpServletResponse httpServletResponse) {
-        User principal = userService.ajax로그인(userloginReqDto);
+        UserLoginRespDto principal = userService.ajax로그인(userloginReqDto);
         if (principal != null) {
             if (userloginReqDto.getRememberEmail() == null) {
                 userloginReqDto.setRememberEmail("");

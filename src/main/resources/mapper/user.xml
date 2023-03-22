@@ -22,7 +22,7 @@
         select * from user_tb where email = #{email}
     </select>
 
-    <select id="findByEmailAndPassword" resultType="shop.mtcoding.project.model.user.User">
+    <select id="findByEmailAndPassword" resultType="shop.mtcoding.project.dto.user.UserResp$UserLoginRespDto">
         select * from user_tb where email = #{email} and password = #{password}
     </select>
 

@@ -104,7 +104,8 @@ public class CompController {
     }
 
     @PostMapping("/comp/login")
-    public String login(CompLoginReqDto compLoginReqDto, HttpServletResponse httpServletResponse) {
+    public @ResponseBody ResponseEntity<?> login(@Valid CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
+            HttpServletResponse httpServletResponse) {
         if (compLoginReqDto.getEmail() == null || compLoginReqDto.getEmail().isEmpty()) {
             throw new CustomException("email을 작성해주세요");
         }
@@ -115,7 +116,8 @@ public class CompController {
         Comp principal = compService.로그인(compLoginReqDto);
 
         if (principal == null) {
-            return "redirect:/loginForm";
+            throw new CustomApiException("존재하지 않는 회원입니다.");
+            // return "redirect:/loginForm";
         } else {
             if (compLoginReqDto.getRememberEmail() == null) {
                 compLoginReqDto.setRememberEmail("");
@@ -130,7 +132,7 @@ public class CompController {
             }
             session.setAttribute("principal", null);
             session.setAttribute("compSession", principal);
-            return "redirect:/";
+            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", compLoginReqDto), HttpStatus.OK);
         }
     }
 

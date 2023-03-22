@@ -1,6 +1,5 @@
 package shop.mtcoding.project.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,13 +10,11 @@ import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
-import shop.mtcoding.project.dto.user.UserReq.UserUpdatePhotoReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
+import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
-import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.PathUtil;
-
 import shop.mtcoding.project.util.Sha256;
 
 @RequiredArgsConstructor
@@ -47,9 +44,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User 로그인(UserLoginReqDto userloginReqDto) {
+    public UserLoginRespDto 로그인(UserLoginReqDto userloginReqDto) {
         userloginReqDto.setPassword(Sha256.encode(userloginReqDto.getPassword()));
-        User principal = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
+        UserLoginRespDto principal = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
                 userloginReqDto.getPassword());
         if (principal == null) {
             throw new CustomException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");
@@ -58,9 +55,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User ajax로그인(UserLoginReqDto userloginReqDto) {
+    public UserLoginRespDto ajax로그인(UserLoginReqDto userloginReqDto) {
         userloginReqDto.setPassword(Sha256.encode(userloginReqDto.getPassword()));
-        User principal = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
+        UserLoginRespDto principal = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
                 userloginReqDto.getPassword());
         if (principal == null) {
             throw new CustomApiException("이메일 혹은 패스워드가 잘못 입력 되었습니다.");

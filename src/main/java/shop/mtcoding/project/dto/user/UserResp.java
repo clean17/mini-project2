@@ -10,6 +10,14 @@ public class UserResp {
 
     @Getter
     @Setter
+    public static class UserLoginRespDto {
+        private Integer userId;
+        private String email;
+        private String password;
+    }
+
+    @Getter
+    @Setter
     public static class UserDataRespDto {
         private Integer userId;
         private Integer resumeId;
