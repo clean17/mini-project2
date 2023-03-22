@@ -57,6 +57,13 @@ public class CompReq {
 
     @Getter
     @Setter
+    public static class CompUpdatePhotoReqDto {
+        private Integer compId;
+        private String photo;
+    }
+
+    @Getter
+    @Setter
     public static class CompPasswordReqDto {
         private Integer compId;
         private String password;
