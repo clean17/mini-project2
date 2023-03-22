@@ -48,6 +48,7 @@ import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.UserService;
 import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.DateUtil;
+import shop.mtcoding.project.util.Script;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
@@ -115,7 +116,8 @@ public class UserController {
     }
 
     @PostMapping("/user/login2")
-    public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto,
+            HttpServletResponse httpServletResponse) {
         User principal = userService.ajax로그인(userloginReqDto);
         if (principal != null) {
             if (userloginReqDto.getRememberEmail() == null) {
@@ -178,6 +180,7 @@ public class UserController {
     }
 
     @GetMapping("/user/update")
+    @ResponseBody
     public String updateForm(Model model) {
         User principal = (User) session.getAttribute("principal");
         if (principal == null) {
@@ -185,7 +188,8 @@ public class UserController {
         }
         User userPS = userRepository.findById(principal.getUserId());
         model.addAttribute("uDto", userPS);
-        return "user/updateForm";
+        // return "user/updateForm";
+        return Script.href("user/updateForm");
     }
 
     @GetMapping("/user/myhome")

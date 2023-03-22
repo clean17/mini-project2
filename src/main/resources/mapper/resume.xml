@@ -7,6 +7,47 @@
     <select id="findAll" resultType="shop.mtcoding.project.model.resume.Resume">
         select * from resume_tb
     </select>
+
+<resultMap id="ResumeWriteOutDto" type="shop.mtcoding.project.dto.resume.ResumeReq$ResumeWriteOutDto">
+        <id property="resumeId" column="resume_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="education" column="education"/>
+        <result property="career" column="career"/>
+        <result property="link" column="link"/>
+        <result property="state" column="state"/>
+        <result property="createdAt" column="created_at"/>
+
+        
+		<association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeReq$ResumeWriteOutDto$UserDto">
+	        	  <id property="userId" column="user_id"/>
+        		  <result property="email" column="email"/>
+	  		      <result property="password" column="password"/>
+        		  <result property="name" column="name"/>
+        		  <result property="birth" column="birth"/>
+        		  <result property="tel" column="tel"/>
+        		  <result property="photo" column="photo"/>
+        		  <result property="address" column="address"/>
+	  		  <result property="createdAt" column="created_at"/>
+
+        	</association> 
+
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    
+</resultMap>
+
+    <select id="findByResumeSkill" resultType="java.lang.String">
+        select skill from resume_skill_tb 
+            where resume_id = #{resumeId}
+    </select>
+
+    <select id="findDataByResumeId" resultMap="ResumeWriteOutDto">
+        select *
+        from resume_tb r inner join user_tb u
+				on r.user_id=u.user_id
+        where resume_id = #{resumeId}
+    </select>
+
     <select id="findByResumeId" resultType="shop.mtcoding.project.model.resume.Resume">
         select * from resume_tb where resume_id = #{resumeId}
     </select>
