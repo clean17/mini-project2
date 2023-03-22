@@ -243,15 +243,21 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", null), HttpStatus.OK);
     }
 
+    // @GetMapping("/comp/update")
+    // public String updateForm(Model model) {
+    // Comp compSession = (Comp) session.getAttribute("compSession");
+    // if (compSession == null) {
+    // throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
+    // }
+    // Comp compPS = compRepository.findByCompId(compSession.getCompId());
+    // model.addAttribute("comp", compPS);
+    // return "comp/updateForm";
+    // }
+
     @GetMapping("/comp/update")
-    public String updateForm(Model model) {
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        if (compSession == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        Comp compPS = compRepository.findByCompId(compSession.getCompId());
-        model.addAttribute("comp", compPS);
-        return "comp/updateForm";
+    public @ResponseBody ResponseEntity<?> updateForm(@LoginComp Comp comp) {
+        Comp compPS = compRepository.findByCompId(comp.getCompId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS), HttpStatus.OK);
     }
 
     @GetMapping("/comp/apply")

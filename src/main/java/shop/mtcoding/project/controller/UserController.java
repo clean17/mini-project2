@@ -175,6 +175,7 @@ public class UserController {
 
     }
 
+    // 완료
     @GetMapping("/user/update")
     public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user) {
         User userPS = userRepository.findById(user.getUserId());
