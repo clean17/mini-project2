@@ -52,6 +52,7 @@ import shop.mtcoding.project.model.scrap.ScrapRepository;
 import shop.mtcoding.project.model.skill.SkillRepository;
 import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.service.CompService;
+import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.DateUtil;
 import shop.mtcoding.project.util.MockSession;
 import shop.mtcoding.project.util.Script;
@@ -228,32 +229,16 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", compPS), HttpStatus.OK);
     }
 
+    // 완료
     @PutMapping("/comp/profileUpdate")
-    public ResponseEntity<?> profileUpdate(MultipartFile photo) throws Exception {
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        if (compSession == null) {
-            throw new CustomApiException("로그인이 필요한 페이지 입니다.", HttpStatus.UNAUTHORIZED);
-        }
-        if (photo.isEmpty()) {
-            throw new CustomApiException("사진이 전송 되지 않았습니다.");
-        }
-
-        Comp compPS = compService.프로필사진수정(photo, compSession.getCompId());
+    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginComp Comp comp, MultipartFile photo) throws Exception {
+        CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
+        Comp compPS = compService.프로필사진수정(photo, comp.getCompId());
         session.setAttribute("compSession", compPS);
-        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", compPS), HttpStatus.OK);
     }
 
-    // @GetMapping("/comp/update")
-    // public String updateForm(Model model) {
-    // Comp compSession = (Comp) session.getAttribute("compSession");
-    // if (compSession == null) {
-    // throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-    // }
-    // Comp compPS = compRepository.findByCompId(compSession.getCompId());
-    // model.addAttribute("comp", compPS);
-    // return "comp/updateForm";
-    // }
-
+    // 완료
     @GetMapping("/comp/update")
     public @ResponseBody ResponseEntity<?> updateForm(@LoginComp Comp comp) {
         Comp compPS = compRepository.findByCompId(comp.getCompId());
