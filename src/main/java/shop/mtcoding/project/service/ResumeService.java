@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import shop.mtcoding.project.config.exception.CustomApiException;
+import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateInDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
@@ -70,7 +71,7 @@ public class ResumeService {
     // }
 
     @Transactional
-    public void 이력서수정(ResumeUpdateReqDto rDto, Integer userId) {
+    public ResumeUpdateInDto 이력서수정(ResumeUpdateReqDto rDto, Integer userId) {
         Resume resumePS = resumeRepository.findByResumeId(rDto.getResumeId());
         if (resumePS == null) {
             throw new CustomApiException("해당 이력서를 찾을 수 없습니다.");
@@ -100,6 +101,8 @@ public class ResumeService {
                 throw new CustomApiException("이력서 수정에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+        ResumeUpdateInDto resumeUpdateInDto = resumeRepository.findUpdateDataByResumeId(rDto.getResumeId());
+        return resumeUpdateInDto;
     }
 
     @Transactional

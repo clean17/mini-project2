@@ -48,6 +48,28 @@
         where resume_id = #{resumeId}
     </select>
 
+    <resultMap id="ResumeUpdateInDto" type="shop.mtcoding.project.dto.resume.ResumeReq$ResumeUpdateInDto">
+        <id property="resumeId" column="resume_id"/>
+        <id property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="education" column="education"/>
+        <result property="career" column="career"/>
+        <result property="link" column="link"/>
+        <result property="state" column="state"/>
+        <result property="createdAt" column="created_at"/>
+
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    
+</resultMap>
+
+    <select id="findUpdateDataByResumeId" resultMap="ResumeUpdateInDto">
+        select *
+        from resume_tb r inner join user_tb u
+				on r.user_id=u.user_id
+        where resume_id = #{resumeId}
+    </select>
+
     <select id="findByResumeId" resultType="shop.mtcoding.project.model.resume.Resume">
         select * from resume_tb where resume_id = #{resumeId}
     </select>

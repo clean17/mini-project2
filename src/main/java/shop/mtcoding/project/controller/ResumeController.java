@@ -16,17 +16,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.annotation.LoginUser;
-import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApplytoCompRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeCheckboxReqDto;
+import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateInDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
@@ -95,33 +93,12 @@ public class ResumeController {
     }
 
     @PutMapping("/user/resume/update")
-    public ResponseEntity<?> saveTempResume(@RequestBody ResumeUpdateReqDto resumeWriteReqDto) {
+    public ResponseEntity<?> saveTempResume(@LoginUser User user,
+            @Valid ResumeUpdateReqDto resumeUpdateReqDto) {
 
-        // System.out.println("테스트 : "+ resumeWriteReqDto.toString());
+        ResumeUpdateInDto rDto = resumeService.이력서수정(resumeUpdateReqDto, user.getUserId());
 
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        if (resumeWriteReqDto.getEducation() == null || resumeWriteReqDto.getEducation().isEmpty()) {
-            throw new CustomApiException("학력을 입력해주세요");
-        }
-        if (resumeWriteReqDto.getCareer() == null || resumeWriteReqDto.getCareer().isEmpty()) {
-            throw new CustomApiException("경력을 입력해주세요");
-        }
-        if (resumeWriteReqDto.getTitle() == null || resumeWriteReqDto.getTitle().isEmpty()) {
-            throw new CustomApiException("제목을 입력해주세요");
-        }
-        if (!(resumeWriteReqDto.getState() == 0 || resumeWriteReqDto.getState() == 1)) {
-            throw new CustomApiException("공개여부를 선택해주세요");
-        }
-        if (ObjectUtils.isEmpty(resumeWriteReqDto.getSkillList())) {
-            throw new CustomApiException("기술을 선택해주세요");
-        }
-
-        resumeService.이력서수정(resumeWriteReqDto, principal.getUserId());
-
-        return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", null), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", rDto), HttpStatus.CREATED);
     }
 
     // 완료
