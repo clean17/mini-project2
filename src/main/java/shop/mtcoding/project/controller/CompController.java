@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusCompRespDto;
@@ -109,16 +110,8 @@ public class CompController {
     public @ResponseBody ResponseEntity<?> login(@Valid CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
         CompLoginRespDto principal = compService.로그인(compLoginReqDto);
-
-        if (compLoginReqDto.getEmail() == null || compLoginReqDto.getEmail().isEmpty()) {
-            throw new CustomException("email을 작성해주세요");
-        }
-        if (compLoginReqDto.getPassword() == null || compLoginReqDto.getPassword().isEmpty()) {
-            throw new CustomException("password 작성해주세요");
-        }
         if (principal == null) {
             throw new CustomApiException("존재하지 않는 회원입니다.");
-            // return "redirect:/loginForm";
         } else {
             if (compLoginReqDto.getRememberEmail() == null) {
                 compLoginReqDto.setRememberEmail("");
@@ -131,10 +124,10 @@ public class CompController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.invalidate();
-            session.setAttribute("compSession", principal);
+            Comp comp = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
+                    compLoginReqDto.getPassword());
+            session.setAttribute("compSession", comp);
             return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
-
         }
     }
 
@@ -223,29 +216,16 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "인증에 성공하였습니다.", null), HttpStatus.OK);
     }
 
+    // 완료
     @PutMapping("/comp/update")
-    public ResponseEntity<?> updateComp(@RequestBody CompUpdateReqDto compUpdateReqDto) {
+    public @ResponseBody ResponseEntity<?> updateComp(@LoginComp Comp comp,
+            @Valid @RequestBody CompUpdateReqDto compUpdateReqDto, BindingResult bindingResult) {
         compUpdateReqDto.setPassword(Sha256.encode(compUpdateReqDto.getPassword()));
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        if (compSession == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        if (compUpdateReqDto.getPassword() == null || compUpdateReqDto.getPassword().isEmpty()) {
-            throw new CustomApiException("비밀번호를 입력하세요");
-        }
-        if (compUpdateReqDto.getCompName() == null || compUpdateReqDto.getCompName().isEmpty()) {
-            throw new CustomApiException("회사이름을 입력하세요");
-        }
-        if (compUpdateReqDto.getRepresentativeName() == null || compUpdateReqDto.getRepresentativeName().isEmpty()) {
-            throw new CustomApiException("대표자명을 입력하세요");
-        }
-        if (compUpdateReqDto.getBusinessNumber() == null || compUpdateReqDto.getBusinessNumber().isEmpty()) {
-            throw new CustomApiException("사업자 번호을 입력하세요");
-        }
-        compService.회사정보수정(compUpdateReqDto, compSession.getCompId());
-        compSession = compRepository.findByCompId(compSession.getCompId());
+
+        CompUpdateReqDto compPS = compService.회사정보수정(compUpdateReqDto, comp.getCompId());
+        Comp compSession = compRepository.findByCompId(compPS.getCompId());
         session.setAttribute("compSession", compSession);
-        return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", compPS), HttpStatus.OK);
     }
 
     @PutMapping("/comp/profileUpdate")
@@ -263,15 +243,21 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", null), HttpStatus.OK);
     }
 
+    // @GetMapping("/comp/update")
+    // public String updateForm(Model model) {
+    // Comp compSession = (Comp) session.getAttribute("compSession");
+    // if (compSession == null) {
+    // throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
+    // }
+    // Comp compPS = compRepository.findByCompId(compSession.getCompId());
+    // model.addAttribute("comp", compPS);
+    // return "comp/updateForm";
+    // }
+
     @GetMapping("/comp/update")
-    public String updateForm(Model model) {
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        if (compSession == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        Comp compPS = compRepository.findByCompId(compSession.getCompId());
-        model.addAttribute("comp", compPS);
-        return "comp/updateForm";
+    public @ResponseBody ResponseEntity<?> updateForm(@LoginComp Comp comp) {
+        Comp compPS = compRepository.findByCompId(comp.getCompId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS), HttpStatus.OK);
     }
 
     @GetMapping("/comp/apply")

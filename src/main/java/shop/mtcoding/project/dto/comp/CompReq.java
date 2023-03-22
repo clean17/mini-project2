@@ -45,9 +45,13 @@ public class CompReq {
     @Setter
     public static class CompUpdateReqDto {
         private Integer compId;
+        @NotBlank(message = "비밀번호를 입력해 주세요/")
         private String password;
+        @NotBlank(message = "회사명을 입력해 주세요/")
         private String compName;
+        @NotBlank(message = "대표자명을 입력해 주세요/")
         private String representativeName;
+        @NotBlank(message = "사업자번호를 입력해 주세요/")
         private String businessNumber;
     }
 

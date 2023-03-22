@@ -36,7 +36,11 @@
       select * from comp_tb where email = #{email}
     </select>
 
-    <select id="findByEmailAndPassword" resultType="shop.mtcoding.project.dto.comp.CompResp$CompLoginRespDto">
+    <select id="findByEmailAndPassword" resultType="shop.mtcoding.project.model.comp.Comp">
+      select * from comp_tb where email = #{email} and password = #{password}
+    </select>
+    
+    <select id="findByEmailAndPassword2" resultType="shop.mtcoding.project.dto.comp.CompResp$CompLoginRespDto">
       select * from comp_tb where email = #{email} and password = #{password}
     </select>
 
