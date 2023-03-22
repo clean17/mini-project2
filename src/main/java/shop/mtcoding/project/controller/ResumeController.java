@@ -109,7 +109,7 @@ public class ResumeController {
     }
 
     @PostMapping("/user/resume/write")
-    public ResponseEntity<?> writeResume(@LoginUser User user, @Valid ResumeWriteReqDto resumeWriteReqDto) {
+    public @ResponseBody ResponseEntity<?> writeResume(@LoginUser User user, @Valid ResumeWriteReqDto resumeWriteReqDto) {
 
         ResumeWriteOutDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
 

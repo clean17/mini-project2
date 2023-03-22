@@ -19,10 +19,10 @@
         <result property="createdAt" column="created_at"/>
 
         
-		<association property="resume" javaType="shop.mtcoding.project.dto.resume.ResumeReq$ResumeWriteOutDto$UserDto">
+		<association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeReq$ResumeWriteOutDto$UserDto">
 	        	  <id property="userId" column="user_id"/>
         		  <result property="email" column="email"/>
-	  		  <result property="password" column="password"/>
+	  		      <result property="password" column="password"/>
         		  <result property="name" column="name"/>
         		  <result property="birth" column="birth"/>
         		  <result property="tel" column="tel"/>
@@ -32,17 +32,20 @@
 
         	</association> 
 
-    	<collection property="skillList" ofType="java.lang.String">
-        	<result column="skill" />
-   	 </collection>
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
     
 </resultMap>
 
+    <select id="findByResumeSkill" resultType="java.lang.String">
+        select skill from resume_skill_tb 
+            where resume_id = #{resumeId}
+    </select>
+
     <select id="findDataByResumeId" resultMap="ResumeWriteOutDto">
         select *
-        from resume_tb r inner join user_id u
+        from resume_tb r inner join user_tb u
 				on r.user_id=u.user_id
-        where r.resume_id = #{resumeId}
+        where resume_id = #{resumeId}
     </select>
 
     <select id="findByResumeId" resultType="shop.mtcoding.project.model.resume.Resume">
