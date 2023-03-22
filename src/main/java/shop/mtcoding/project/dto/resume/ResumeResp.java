@@ -3,9 +3,11 @@ package shop.mtcoding.project.dto.resume;
 import java.sql.Timestamp;
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 
 public class ResumeResp {
 
@@ -39,6 +41,19 @@ public class ResumeResp {
     @Getter
     @Setter
     @ToString
+    public static class ResumeManageOutDto {
+        private List<ResumeManageRespDto> resumeManageRespDtos;
+
+        @Builder
+        public ResumeManageOutDto(List<ResumeManageRespDto> resumeManageRespDtos) {
+            this.resumeManageRespDtos = resumeManageRespDtos;
+        }
+        
+    }
+
+    @Getter
+    @Setter
+    @ToString
     public static class ResumeManageRespDto {
         private Integer resumeId;
         private UserDto user;
@@ -55,6 +70,7 @@ public class ResumeResp {
         }
     
     }
+
 
     @Getter
     @Setter
