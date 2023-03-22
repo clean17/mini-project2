@@ -285,6 +285,7 @@ public class UserController {
         return "user/profileUpdateForm";
     }
 
+    // 완료
     @PutMapping("/user/profileUpdate")
     public ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo) throws Exception {
         CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
