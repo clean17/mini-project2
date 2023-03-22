@@ -278,19 +278,20 @@ public class UserController {
         return "redirect:/";
     }
 
+    // 완료
     @GetMapping("/user/profileUpdateForm")
-    public String profileUpdateForm(@LoginUser User user, Model model) {
+    public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User user) {
         User userPS = userRepository.findById(user.getUserId());
-        model.addAttribute("user", userPS);
-        return "user/profileUpdateForm";
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
+    // 완료
     @PutMapping("/user/profileUpdate")
-    public ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo) throws Exception {
+    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo) throws Exception {
         CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
         User userPS = userService.프로필사진수정(photo, user.getUserId());
         session.setAttribute("principal", userPS);
-        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", userPS), HttpStatus.OK);
     }
 }
 
