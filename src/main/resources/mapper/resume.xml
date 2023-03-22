@@ -77,10 +77,6 @@
                 <result property="education" column="education"/>
                 <result property="career" column="career"/>
                 <result property="address" column="address"/>
-
-        <!-- <collection property="ResumeManageRespDto" column="resume_id" select="findAllByUserId"/> -->
-    
-        
         
 		<association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeManageRespDto$UserDto">
 	        	  <id property="userId" column="user_id"/>

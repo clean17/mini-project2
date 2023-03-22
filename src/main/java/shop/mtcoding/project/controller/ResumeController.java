@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import lombok.RequiredArgsConstructor;
+import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
@@ -35,7 +36,6 @@ import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSaveRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSearchRespDto;
 import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillRespDto;
-import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToCompRespIdDto;
 import shop.mtcoding.project.dto.user.UserResp.UserDataRespDto;
 import shop.mtcoding.project.model.apply.Apply;
 import shop.mtcoding.project.model.apply.ApplyRepository;
@@ -48,28 +48,16 @@ import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.ResumeService;
 
 @Controller
+@RequiredArgsConstructor
 public class ResumeController {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ResumeService resumeService;
-
-    @Autowired
-    private ResumeRepository resumeRepository;
-
-    @Autowired
-    private SkillRepository skillRepository;
-
-    @Autowired
-    private SuggestRepository suggestRepository;
-
-    @Autowired
-    private ApplyRepository applyRepository;
-
-    @Autowired
-    private HttpSession session;
+    private final UserRepository userRepository;
+    private final ResumeService resumeService;
+    private final ResumeRepository resumeRepository;
+    private final SkillRepository skillRepository;
+    private final SuggestRepository suggestRepository;
+    private final ApplyRepository applyRepository;
+    private final HttpSession session;
 
     //완료
     @DeleteMapping("/resume/{id}/delete")
@@ -162,34 +150,23 @@ public class ResumeController {
     }
 
     @GetMapping("/resume/{id}")
-    public String resumeDetail(@PathVariable Integer id, Model model) {
+    public ResponseEntity<?> resumeDetail(@PathVariable Integer id, Model model, @LoginComp Comp comp) {
         if (ObjectUtils.isEmpty(resumeRepository.findByResumeId(id))) {
             throw new CustomException("존재하지 않는 이력서 입니다.");
         }
-
-        Comp compSession = (Comp) session.getAttribute("compSession");
         ResumeDetailRespDto rDto;
-        if (compSession != null) {
-            rDto = resumeRepository.findDetailPublicResumebyById(id, compSession.getCompId());
-        } else {
-            rDto = resumeRepository.findDetailPublicResumebyById(id, null);
-        }
-        List<String> insertList = new ArrayList<>();
-        for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
-            insertList.add(skill.getSkill());
-            rDto.setSkillList(insertList);
-        }
+        Integer num = null;
 
-        compSession = (Comp) session.getAttribute("compSession");
-        if (compSession != null) {
-            try {
-                SuggestToCompRespIdDto sDto = suggestRepository.findByCompIdAndResumeId(compSession.getCompId(), id);
-                rDto.setSuggestState(sDto.getState());
-            } catch (Exception e) {
-            }
-        }
-        model.addAttribute("rDto", rDto);
-        return "/resume/resumeDetail";
+        // if (comp != null) {
+        //     rDto = resumeRepository.findDetailPublicResumebyById(id, comp.getCompId());
+        // } else {
+        //     rDto = resumeRepository.findDetailPublicResumebyById(id, null);
+        // }
+        if (comp != null) num = comp.getCompId();
+        rDto = resumeRepository.findDetailPublicResumebyById(id, num);
+        return new ResponseEntity<>(new ResponseDto<>(1, "ddd", rDto), HttpStatus.OK);
+        // model.addAttribute("rDto", rDto);
+        // return "/resume/resumeDetail";
     }
 
     @GetMapping("/comp/resume/search")
@@ -227,20 +204,20 @@ public class ResumeController {
             rDto.setSkillList(insertList);
         }
 
-        if (compSession != null) {
-            try {
-                rDto.setSuggestState(suggestRepository
-                        .findByCompIdAndResumeId(compSession.getCompId(), applyPS.getResumeId()).getState());
-            } catch (Exception e) {
+        // if (compSession != null) {
+        //     try {
+        //         rDto.setSuggestState(suggestRepository
+        //                 .findByCompIdAndResumeId(compSession.getCompId(), applyPS.getResumeId()).getState());
+        //     } catch (Exception e) {
 
-            }
-            try {
-                ApplytoCompRespDto aDto = applyRepository.findByCompIdAndApplyId(compSession.getCompId(), id);
-                rDto.setApplyState(aDto.getState());
-                rDto.setApplyId(aDto.getApplyId());
-            } catch (Exception e) {
-            }
-        }
+        //     }
+        //     try {
+        //         ApplytoCompRespDto aDto = applyRepository.findByCompIdAndApplyId(compSession.getCompId(), id);
+        //         rDto.setApplyState(aDto.getState());
+        //         rDto.setApplyId(aDto.getApplyId());
+        //     } catch (Exception e) {
+        //     }
+        // }
         model.addAttribute("rDto", rDto);
         return "/resume/resumeDetail";
     }
