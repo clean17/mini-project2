@@ -168,14 +168,14 @@ public class JobsController {
 
     @PostMapping("/comp/jobs/write")
     public ResponseEntity<?> writeJobs(@Valid @RequestBody JobsWriteReqDto jDto, @LoginComp Comp comp) {
-        Integer jobsId = jobsService.공고작성(jDto, comp.getCompId());
+        JobsDetailOutDto jobsId = jobsService.공고작성(jDto, comp.getCompId());
         return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료", jobsId), HttpStatus.CREATED);
     }
 
     @PutMapping("/comp/jobs/update")
     public ResponseEntity<?> updateJobs(@Valid @RequestBody JobsUpdateReqDto jDto, @LoginComp Comp comp) {
-        Integer jobdId = jobsService.공고수정(jDto, comp.getCompId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료", jobdId), HttpStatus.CREATED);
+        JobsDetailOutDto jobdId = jobsService.공고수정(jDto, comp.getCompId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "수정 완료", jobdId), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/jobs/{id}/delete")

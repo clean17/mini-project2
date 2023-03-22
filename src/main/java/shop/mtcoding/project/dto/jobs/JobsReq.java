@@ -70,6 +70,7 @@ public class JobsReq {
     @Setter
     @ToString
     public static class JobsUpdateReqDto{
+        @NotNull(message = "공고번호가 필요합니다/")
         private Integer jobsId; // 임시저장에 필요
         @NotNull(message = "회사계정이 필요합니다/")
         private Integer compId;
