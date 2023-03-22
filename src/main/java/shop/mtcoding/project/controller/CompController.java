@@ -125,7 +125,7 @@ public class CompController {
                 httpServletResponse.addCookie(cookie);
             }
             session.invalidate();
-            Comp comp = compRepository.findByEmailAndPassword2(compLoginReqDto.getEmail(), compLoginReqDto.getPassword());
+            Comp comp = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(), compLoginReqDto.getPassword());
             session.setAttribute("compSession", comp);
             return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
         }

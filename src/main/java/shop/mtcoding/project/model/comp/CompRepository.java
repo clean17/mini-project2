@@ -19,8 +19,6 @@ public interface CompRepository {
 
         public CompLoginRespDto findByEmailAndPassword2(@Param("email") String email,
                         @Param("password") String password);
-        public Comp findByEmailAndPassword2(@Param("email") String email,
-                        @Param("password") String password);
 
         public Comp findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 

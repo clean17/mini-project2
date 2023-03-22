@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
-import shop.mtcoding.project.model.jobs.JobsRepository;
-import shop.mtcoding.project.model.skill.SkillRepository;
 import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.service.UserService;
 
