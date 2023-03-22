@@ -30,6 +30,7 @@ import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageOutDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSaveRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSearchRespDto;
@@ -70,31 +71,21 @@ public class ResumeController {
     @Autowired
     private HttpSession session;
 
+    //완료
     @DeleteMapping("/resume/{id}/delete")
     public ResponseEntity<?> deleteResume(@LoginUser User user, @PathVariable int id) {
         resumeService.이력서삭제(id, user.getUserId());
         return new ResponseEntity<>(new ResponseDto<>(1, "삭제성공", null), HttpStatus.OK);
     }
 
+    // 완료
     @GetMapping("/user/resume") // 이력서관리
-    public String manageResume(Model model) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        List<ResumeManageRespDto> rLists = resumeRepository.findAllByUserId(principal.getUserId());
-        for (ResumeManageRespDto rList : rLists) {
-            List<String> insertList = new ArrayList<>();
-            for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rList.getResumeId())) {
-                insertList.add(skill.getSkill());
-                rList.setSkillList(insertList);
-            }
-        }
-        model.addAttribute("rDtos", rLists);
-        User userPS = userRepository.findById(principal.getUserId());
-        model.addAttribute("user", userPS);
-        // rList.forEach((s)->{System.out.println("테스트 : "+ s.toString());});
-        return "resume/manageResume";
+    public ResponseEntity<?> manageResume(@LoginUser User user ,Model model) {
+
+        List<ResumeManageRespDto> rLists = resumeRepository.findAllByUserId(user.getUserId());
+
+        ResumeManageOutDto rDto = ResumeManageOutDto.builder().resumeManageRespDtos(rLists).build();
+        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 목록 보기", rDto), HttpStatus.OK);
     }
 
     @GetMapping("/user/request/resume") // 공고에 지원할 이력서 불러오기
@@ -104,6 +95,7 @@ public class ResumeController {
         return new ResponseEntity<>(new ResponseDto<>(1, "이력서 불러오기 성공", rDtos), HttpStatus.OK);
     }
 
+    //완료
     @PostMapping("/user/resume/write")
     public @ResponseBody ResponseEntity<?> writeResume(@LoginUser User user, @Valid ResumeWriteReqDto resumeWriteReqDto) {
 
@@ -142,6 +134,7 @@ public class ResumeController {
         return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", null), HttpStatus.CREATED);
     }
 
+    //완료
     @GetMapping("/user/resume/write")
     @ResponseBody
     public ResponseEntity<?> writeResumeForm(@LoginUser User user, Model model) {
