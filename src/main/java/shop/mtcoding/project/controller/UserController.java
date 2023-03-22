@@ -105,7 +105,6 @@ public class UserController {
 
         if (principal == null) {
             throw new CustomApiException("존재하지 않는 회원입니다.");
-            // return "redirect:/loginForm";
         } else {
             if (userloginReqDto.getRememberEmail() == null) {
                 userloginReqDto.setRememberEmail("");
@@ -118,11 +117,9 @@ public class UserController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.setAttribute("compSession", null);
             User user = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
                     userloginReqDto.getPassword());
             session.setAttribute("principal", user);
-            // return Script.href("/");
             return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
 
         }

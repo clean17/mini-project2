@@ -110,16 +110,8 @@ public class CompController {
     public @ResponseBody ResponseEntity<?> login(@Valid CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
         CompLoginRespDto principal = compService.로그인(compLoginReqDto);
-
-        if (compLoginReqDto.getEmail() == null || compLoginReqDto.getEmail().isEmpty()) {
-            throw new CustomException("email을 작성해주세요");
-        }
-        if (compLoginReqDto.getPassword() == null || compLoginReqDto.getPassword().isEmpty()) {
-            throw new CustomException("password 작성해주세요");
-        }
         if (principal == null) {
             throw new CustomApiException("존재하지 않는 회원입니다.");
-            // return "redirect:/loginForm";
         } else {
             if (compLoginReqDto.getRememberEmail() == null) {
                 compLoginReqDto.setRememberEmail("");
@@ -132,10 +124,10 @@ public class CompController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            session.invalidate();
-            session.setAttribute("compSession", principal);
+            Comp comp = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
+                    compLoginReqDto.getPassword());
+            session.setAttribute("compSession", comp);
             return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
-
         }
     }
 

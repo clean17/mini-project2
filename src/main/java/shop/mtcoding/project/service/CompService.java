@@ -64,7 +64,7 @@ public class CompService {
         if (compPS == null)
             throw new CustomException("존재하지 않는 회원입니다.");
         try {
-            compRepository.updateByCompId(compUpdateReqDto, compId);
+            compRepository.updateByCompId(compUpdateReqDto);
         } catch (Exception e) {
             throw new CustomException("서버 에러가 발생 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
