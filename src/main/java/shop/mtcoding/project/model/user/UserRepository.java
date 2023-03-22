@@ -15,7 +15,9 @@ import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 public interface UserRepository {
     public List<User> findAll();
 
-    public UserLoginRespDto findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+    public User findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+
+    public UserLoginRespDto findByEmailAndPassword2(@Param("email") String email, @Param("password") String password);
 
     public User findByUseridAndPassword(@Param("userId") Integer userId, @Param("password") String password);
 

@@ -117,7 +117,9 @@ public class UserController {
                 httpServletResponse.addCookie(cookie);
             }
             session.setAttribute("compSession", null);
-            session.setAttribute("principal", principal);
+            User user = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
+                    userloginReqDto.getPassword());
+            session.setAttribute("principal", user);
             // return Script.href("/");
             return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
         }
@@ -160,32 +162,14 @@ public class UserController {
     }
 
     @PutMapping("/user/update")
-    public ResponseEntity<?> updateUser(@RequestBody UserUpdateReqDto userUpdateReqDto) {
-        User principal = (User) session.getAttribute("principal");
-        if (principal == null) {
-            throw new CustomApiException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
-        }
-        if (userUpdateReqDto.getPassword() == null || userUpdateReqDto.getPassword().isEmpty()) {
-            throw new CustomApiException("비밀번호를 입력하세요");
-        }
-
-        if (userUpdateReqDto.getName() == null || userUpdateReqDto.getName().isEmpty()) {
-            throw new CustomApiException("이름을 입력하세요");
-        }
-        if (userUpdateReqDto.getBirth() == null || userUpdateReqDto.getBirth().isEmpty()) {
-            throw new CustomApiException("생년월일을 입력하세요");
-        }
-        if (userUpdateReqDto.getTel() == null || userUpdateReqDto.getTel().isEmpty()) {
-            throw new CustomApiException("휴대전화를 입력하세요");
-        }
-        if (userUpdateReqDto.getAddress() == null || userUpdateReqDto.getAddress().isEmpty()) {
-            throw new CustomApiException("주소를 입력하세요");
-        }
+    public @ResponseBody ResponseEntity<?> updateUser(@LoginUser User user,
+            @RequestBody @Valid UserUpdateReqDto userUpdateReqDto, BindingResult bindingResult) {
         userUpdateReqDto.setPassword(Sha256.encode(userUpdateReqDto.getPassword()));
-        userService.개인정보수정(userUpdateReqDto, principal.getUserId());
-        principal = userRepository.findById(principal.getUserId());
+
+        UserUpdateReqDto userPS = userService.개인정보수정(userUpdateReqDto, user.getUserId());
+        User principal = userRepository.findById(userPS.getUserId());
         session.setAttribute("principal", principal);
-        return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", userPS), HttpStatus.OK);
 
     }
 
