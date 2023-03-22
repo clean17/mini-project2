@@ -63,4 +63,39 @@
     <delete id="deleteById">
 
     </delete>
+
+    <resultMap id="applyDto" type="shop.mtcoding.project.dto.apply.ApplyResp$ApplyOutDto">
+      <id property="applyId" column="apply_id"/>
+      <result property="state" column="state"/>
+      <result property="createdAt" column="created_at"/>
+
+      <association property="resumeDto" javaType="shop.mtcoding.project.dto.apply.ApplyResp$ApplyOutDto$ResumeDto">
+          <id property="resumeId" column="resume_id"/>
+          <result property="title" column="title"/>
+          <association property="userDto" javaType="shop.mtcoding.project.dto.apply.ApplyResp$ApplyOutDto$ResumeDto$UserDto">
+            <id property="userId" column="user_id"/>
+            <result property="name" column="name"/>
+          </association>
+      </association>
+      
+      <association property="jobsDto" javaType="shop.mtcoding.project.dto.apply.ApplyResp$ApplyOutDto$JobsDto">
+          <id property="jobsId" column="jobs_id"/>
+          <result property="title" column="title"/>
+          <result property="position" column="position"/>
+          <association property="compDto" javaType="shop.mtcoding.project.dto.apply.ApplyResp$ApplyOutDto$JobsDto$CompDto">
+            <id property="compId" column="comp_id"/>
+            <result property="compName" column="comp_name"/>
+          </association>
+      </association>
+  </resultMap> 
+
+    <select id="findByApplyDto" resultMap="applyDto">
+      SELECT * FROM APPLY_TB a join resume_tb r
+        on a.resume_id = r.resume_id join jobs_tb j
+        on a.jobs_id = j.jobs_id join user_tb u
+        on r.user_id = u.user_id join comp_tb c
+        on j.comp_id = c.comp_id
+        where a.apply_id = #{applyId}
+    </select>
+
 </mapper>

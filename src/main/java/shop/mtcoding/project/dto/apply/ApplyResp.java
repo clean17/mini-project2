@@ -1,9 +1,50 @@
 package shop.mtcoding.project.dto.apply;
 
+import java.sql.Timestamp;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 public class ApplyResp {
+
+    @Getter @Setter @ToString
+    public static class ApplyOutDto{
+        private Integer applyId;
+        private ResumeDto resumeDto;
+        private JobsDto jobsDto;
+        private Integer state;
+        private Timestamp createdAt;
+
+        @Getter @Setter
+        public static class ResumeDto {
+            private Integer resumeId;
+            private String title;
+            private UserDto userDto;
+
+            @Getter @Setter
+            public static class UserDto{
+                private Integer userId;
+                private String name;
+            }
+        }
+
+        @Getter @Setter
+        public static class JobsDto {
+            private Integer jobsId;
+            private String title;
+            private String position;
+            private CompDto compDto;
+
+            @Getter @Setter
+            public static class CompDto{
+                private Integer compId;
+                private String compName;
+            }
+
+        }
+    }
+    
     @Getter
     @Setter
     public static class ApplyUserStatusDetailRespDto{

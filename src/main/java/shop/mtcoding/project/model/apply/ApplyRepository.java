@@ -9,6 +9,7 @@ import shop.mtcoding.project.dto.apply.ApplyReq.ApplyReqDto;
 import shop.mtcoding.project.dto.apply.ApplyReq.ApplyUpdateReqDto;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusCompRespDto;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusUserRespDto;
+import shop.mtcoding.project.dto.apply.ApplyResp.ApplyOutDto;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApplyUserStatusDetailRespDto;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApplytoCompRespDto;
 
@@ -17,6 +18,8 @@ public interface ApplyRepository {
     public void findAll();
 
     public Apply findByApplyId(Integer applyId);
+
+    public ApplyOutDto findByApplyDto(Integer applyId);
 
     public List<Apply> findByUserIdToNotice(Integer userId);
 
