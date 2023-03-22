@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusUserRespDto;
 import shop.mtcoding.project.model.apply.Apply;
 import shop.mtcoding.project.model.apply.ApplyRepository;
@@ -22,15 +23,11 @@ import shop.mtcoding.project.model.notify.NotifyRepository;
 import shop.mtcoding.project.model.user.User;
 
 @Controller
+@RequiredArgsConstructor
 public class SseController {
-    @Autowired
-    private ApplyRepository applyRepository;
-
-    @Autowired
-    private NotifyRepository notifyRepository;
-
-    @Autowired
-    private HttpSession session;
+    private final ApplyRepository applyRepository;
+    private final NotifyRepository notifyRepository;
+    private final HttpSession session;
 
     @GetMapping(value = "/notify", produces = "text/event-stream")
     public ResponseEntity<SseEmitter> notify(HttpServletRequest request, HttpServletResponse response)
