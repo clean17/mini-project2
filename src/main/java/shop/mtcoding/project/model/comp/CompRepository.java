@@ -7,8 +7,13 @@ import org.apache.ibatis.annotations.Param;
 
 import shop.mtcoding.project.dto.comp.CompReq.CompJoinReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompApplyOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
+
+import shop.mtcoding.project.dto.comp.CompResp.CompProfileOutDto;
+
 import shop.mtcoding.project.dto.comp.CompResp.CompUpdateRespDto;
+
 import shop.mtcoding.project.dto.comp.CompResp.CompWriteJobsRespDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 
@@ -16,7 +21,13 @@ import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 public interface CompRepository {
         public List<Comp> findAll();
 
+        // public CompHomeOutDto findCompDescAndMatchResume(Integer compId);
         public Comp findByCompEmail(@Param("email") String email);
+
+
+        public CompApplyOutDto findApplyAndSuggestByCompId(Integer compId);
+
+        public CompProfileOutDto findCompPhoto(Integer compId);
 
         public CompLoginRespDto findByEmailAndPassword2(@Param("email") String email,
                         @Param("password") String password);

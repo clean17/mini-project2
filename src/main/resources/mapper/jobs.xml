@@ -93,10 +93,21 @@
       from jobs_tb
       where comp_id = #{compId}
     </select>
+    
+    <resultMap id="manageJobsDto" type="shop.mtcoding.project.dto.comp.CompResp$CompHomeOutDto$JobsManageJobsRespDto">
+            <id property="jobsId" column="jobs_id"/>
+            <result property="num" column="num"/>
+            <result property="title" column="title"/>
+            <result property="career" column="career"/>
+            <result property="position" column="position"/>
+            <result property="endDate" column="end_date"/>
+            <collection property="skillList" column="jobs_id" select="findByJobsSkill"/>
+    </resultMap>
 
-    <select id="findByIdtoManageJobs" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsManageJobsRespDto">
-      select row_number()over(order by jobs_id desc)num, jobs_id, title, position, career, end_date from jobs_tb where comp_id = #{compId}
-      order by 1 asc
+    <select id="findByIdtoManageJobs" resultMap="manageJobsDto">
+      select row_number()over(order by jobs_id desc)num,* from jobs_tb 
+        where comp_id = #{compId}
+        order by 1 asc
     </select>
   
     <!-- <select id="findBySearch" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchRespDto">
@@ -114,6 +125,8 @@
         position regexp #{keyword} or
         address regexp #{keyword} 
     </select> -->
+
+    
 
     <resultMap id="searchDto" type="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchOutDto">
         <id property="jobsId" column="jobs_id"/>
@@ -136,7 +149,7 @@
       <!-- // collection select쿼리의 조건으로 들어가는 값을 column 에 입력-->
 
     <select id="findByJobsSkill" resultType="java.lang.String">
-        select skill from required_skill_tb where jobs_id = #{jobsId}
+        select distinct skill from required_skill_tb where jobs_id = #{jobsId}
     </select>
 
     <select id="findBySearch" resultMap="searchDto" >
