@@ -1,5 +1,5 @@
 package shop.mtcoding.project.controller;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import shop.mtcoding.project.dto.apply.ApplyResp.ApplyStatusUserRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
 import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
+import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
@@ -260,6 +262,7 @@ public class UserController {
     //     CompApplyOutDto result = compRepository.findApplyAndSuggestByCompId(comp.getCompId());
     //     return new ResponseEntity<>(new ResponseDto<>(1, "기업의 지원 및 제안 페이지 데이터 조회 완료", result), HttpStatus.OK);
     // }
+
 
 
     // 수정

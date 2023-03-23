@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import shop.mtcoding.project.dto.scrap.CompScrapReq.CompInsertScrapReqDto;
 import shop.mtcoding.project.dto.scrap.CompScrapResp.CompScrapOutDto;
+import shop.mtcoding.project.dto.scrap.CompScrapResp.CompScrapPageOutDto;
 import shop.mtcoding.project.dto.scrap.CompScrapResp.CompScrapResumeRespDto;
 import shop.mtcoding.project.dto.scrap.UserScrapReq.UserInsertScrapReqDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapIdRespDto;
@@ -18,6 +19,7 @@ public interface ScrapRepository {
     public void findAll();
     public UserScrapOutDto findByJobsScrapId(Integer userScrapId);
     
+    public List<CompScrapPageOutDto> findScrapOutByCompId(Integer compId);
     public CompScrapOutDto findByResumeScrapId(Integer compScrapId);
     
     public UserScrap findByUserId(

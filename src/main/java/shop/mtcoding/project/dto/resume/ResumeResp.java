@@ -9,8 +9,73 @@ import lombok.ToString;
 
 public class ResumeResp {
 
-    @Getter @Setter
-    public static class ResumeMatchOutDto{
+    @Getter
+    @Setter
+    public static class ResumeMatchPageOutDto {
+        private Integer compId;
+        private List<String> skillList; // 기업 스킬
+        
+        private List<ResumeMatchDto> resumeDto;
+
+        @Getter
+        @Setter
+        public static class ResumeMatchDto {
+            private Integer resumeId;
+            private String title;
+            private String address;
+            private String education;
+            private String career;
+            private Integer state;
+            private List<String> skillList; // 이력서 스킬
+            private UserDto userDto;
+            private CompScrapDto compScrapDto;
+
+            @Getter
+            @Setter
+            public static class UserDto {
+                private Integer userId;
+                private String photo;
+                private String name;
+            }
+
+            @Getter
+            @Setter
+            public static class CompScrapDto {
+                private Integer compScrapId;
+            }
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class ResumePublicOutDto {
+        private Integer resumeId;
+        private String title;
+        private String career;
+        private Integer state;
+        private List<String> skillList;
+        private UserDto usetDto;
+        private CompScrapDto compScrapDto;
+
+        @Getter
+        @Setter
+        public static class UserDto {
+            private Integer userId;
+            private String photo;
+            private String name;
+            private String address;
+        }
+
+        @Getter
+        @Setter
+        public static class CompScrapDto {
+            private Integer compScrapId;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class ResumeMatchOutDto {
         private Integer resumeId;
         private String title;
         private String address;
@@ -21,15 +86,17 @@ public class ResumeResp {
         private UserDto userDto;
         private CompScrapDto compScrapDto;
 
-        @Getter @Setter
-        public static class UserDto{
+        @Getter
+        @Setter
+        public static class UserDto {
             private Integer userId;
             private String name;
             private String photo;
         }
 
-        @Getter @Setter
-        public static class CompScrapDto{
+        @Getter
+        @Setter
+        public static class CompScrapDto {
             private Integer compScrapId;
         }
     }
@@ -51,9 +118,13 @@ public class ResumeResp {
         private String career;
         private String link;
         private List<String> skillList;
+
         private UserDto user;
+
         private CompScrapDto compScrap;
+
         private ApplyDto apply;
+        
         private SuggestDto suggest;
 
         // 유저
@@ -89,19 +160,6 @@ public class ResumeResp {
             private Integer suggestId;
             private Integer suggestState;
         }
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    public static class ResumeManageOutDto {
-        private List<ResumeManageRespDto> resumeManageRespDtos;
-
-        @Builder
-        public ResumeManageOutDto(List<ResumeManageRespDto> resumeManageRespDtos) {
-            this.resumeManageRespDtos = resumeManageRespDtos;
-        }
-
     }
 
     @Getter
@@ -204,8 +262,6 @@ public class ResumeResp {
         private List<String> skillList;
         private Integer compScrapId;
     }
-
-
 
     @Getter
     @Setter

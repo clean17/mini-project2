@@ -33,6 +33,11 @@ import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompProfileOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompUpdateRespDto;
+
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumePublicOutDto;
+import shop.mtcoding.project.dto.scrap.CompScrapResp.CompScrapPageOutDto;
+
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
@@ -67,8 +72,7 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", compJoinOutDto), HttpStatus.OK);
     }
 
-
-    //완료
+    // 완료
     @GetMapping("/comp/profileUpdateForm")
     public ResponseEntity<?> profileUpdateForm(@LoginComp Comp comp) {
         CompProfileOutDto compPS = compRepository.findCompPhoto(comp.getCompId());
@@ -111,7 +115,8 @@ public class CompController {
                 httpServletResponse.addCookie(cookie);
             }
             session.invalidate();
-            Comp comp = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(), compLoginReqDto.getPassword());
+            Comp comp = compRepository.findByEmailAndPassword(compLoginReqDto.getEmail(),
+                    compLoginReqDto.getPassword());
             session.setAttribute("compSession", comp);
             return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
         }
@@ -123,7 +128,6 @@ public class CompController {
         return "comp/loginForm";
     }
 
-
     // 완료
     @GetMapping("/comp/comphome")
     public ResponseEntity<?> compMyhome(@LoginComp Comp comp) {
@@ -131,6 +135,7 @@ public class CompController {
         CompHomeOutDto compResult = compService.기업홈정보와매칭이력서(comp);
         return new ResponseEntity<>(new ResponseDto<>(1, "기업 홈 조회 성공", compResult), HttpStatus.OK);
     }
+
    
     // 완료
     @PostMapping("/comp/passwordCheck")
@@ -163,31 +168,19 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS), HttpStatus.OK);
     }
 
-    // 수정 -> 인우 수정 완료
-    // @GetMapping("/comp/profileUpdateForm")
-    // public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginComp Comp
-    // comp, CompUpdatePhotoReqDto compUpdatePhotoReqDto) {
-    // CompUpdatePhotoReqDto compPS =
-    // compRepository.findByCompId(compUpdatePhotoReqDto, comp.getCompId());
-    // return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS),
-    // HttpStatus.OK);
-    // }
-
     // 완료
     @PutMapping("/comp/profileUpdate")
     public @ResponseBody ResponseEntity<?> profileUpdate(@LoginComp Comp comp, MultipartFile photo) throws Exception {
-    CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
-    String result = compService.프로필사진수정(photo, comp.getCompId());
-    comp.setPhoto(result);
-    CompUpdatePhotoOutDto update = CompUpdatePhotoOutDto.builder()
-                                                        .compId(comp.getCompId())
-                                                        .photo(result)
-                                                        .build();
-    session.setAttribute("compSession", comp);
-    return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", update), HttpStatus.OK);
+        CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
+        String result = compService.프로필사진수정(photo, comp.getCompId());
+        comp.setPhoto(result);
+        CompUpdatePhotoOutDto update = CompUpdatePhotoOutDto.builder()
+                .compId(comp.getCompId())
+                .photo(result)
+                .build();
+        session.setAttribute("compSession", comp);
+        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", update), HttpStatus.OK);
     }
-
-
 
     // 완료
     @GetMapping("/comp/apply")
@@ -200,7 +193,7 @@ public class CompController {
     // 완료
     @GetMapping("/comp/jobs")
     public ResponseEntity<?> manageJobs(@LoginComp Comp comp) {
-        //  사진이 이상하면 세션을 업데이트 해야함
+        // 사진이 이상하면 세션을 업데이트 해야함
         List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(comp.getCompId());
         for (JobsManageJobsRespDto jDto : jDtos) {
             jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
@@ -208,108 +201,29 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "공고 관리 페이지 조회 성공", jDtos), HttpStatus.OK);
     }
 
-    // 공개이력서 열람
-    // @GetMapping("/comp/resume/read")
-    // public String readResume(Model model) {
-    // List<ResumeReadRespDto> rLists = resumeRepository.findAllResumebyState();
-    // for (ResumeReadRespDto rList : rLists) {
-    // // System.out.println("테스트 : " + rList.toString());
-    // List<String> insertList = new ArrayList<>();
-    // for (ResumeSkillRespDto skill :
-    // skillRepository.findByResumeSkill(rList.getResumeId())) {
-    // insertList.add(skill.getSkill());
-    // rList.setSkillList(insertList);
-    // }
-    // }
+    // 완료
+    @GetMapping("/comp/resume/read")
+    public ResponseEntity<?> readResume(@LoginComp Comp comp) {
+        List<ResumePublicOutDto> rLists = resumeRepository.findAllResumebyState(comp.getCompId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "공개 이력서 조회 성공", rLists), HttpStatus.OK);
+    }
 
-    // model.addAttribute("rDtos", rLists);
-    // return "comp/readResume";
-    // }
+    // 완료
+    @GetMapping("/comp/resume/scrap")
+    public ResponseEntity<?> scrapResume(@LoginComp Comp comp) {
+        // 마찬가지로 사진은 세션 업데이트해서 가져가면 됩니다.
+        List<CompScrapPageOutDto> sList = scrapRepository.findScrapOutByCompId(comp.getCompId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "기업의 이력서 스크랩페이지 조회 성공", sList), HttpStatus.OK);
+    }
 
-    // @GetMapping("/comp/resume/scrap")
-    // public String scrapResume(Model model) {
-    // Comp compSession = (Comp) session.getAttribute("compSession");
-    // List<CompScrapResumeRespDto> sList =
-    // scrapRepository.findAllScrapByCompId(compSession.getCompId());
-    // for (CompScrapResumeRespDto jDto : sList) {
-    // List<String> insertList = new ArrayList<>();
-    // for (ResumeSkillRespDto skill :
-    // skillRepository.findByResumeSkill(jDto.getResumeId())) {
-    // insertList.add(skill.getSkill());
-    // }
-    // jDto.setSkillList(insertList);
-    // }
-    // model.addAttribute("sDtos", sList);
-    // Comp compPS = compRepository.findByCompId(compSession.getCompId());
-    // model.addAttribute("comp", compPS);
-    // return "comp/scrap";
-    // }
-
-
-    // 잠시 주석해놓음 머리가 안돌아감.. 23.03.22
-    // @GetMapping("/comp/talent")
-    // public String talent(Model model) {
-    //     Comp compSession = (Comp) session.getAttribute("compSession");
-    //     Set<String> set = new HashSet<>();
-    //     List<JobsIdRespDto> jobsIdList = jobsRepository.findJobsIdByCompId(compSession.getCompId());
-    //     for (JobsIdRespDto jobsId : jobsIdList) {
-    //         List<RequiredSkillWriteReqDto> rSkillList = skillRepository.findByJobsSkill(jobsId.getJobsId());
-    //         for (RequiredSkillWriteReqDto skill : rSkillList) {
-    //             set.add(skill.getSkill());
-    //         }
-    //     }
-
-    //     RequiredSkillByCompRespDto rSkillList = new RequiredSkillByCompRespDto();
-    //     List<String> skillList = new ArrayList<>(set);
-    //     rSkillList.setSkillList(skillList);
-
-    //     model.addAttribute("sDto", rSkillList);
-
-    //     List<ResumeMatchRespDto> fiveMatchList = new ArrayList<>();
-    //     List<ResumeMatchRespDto> fourMatchList = new ArrayList<>();
-    //     List<ResumeMatchRespDto> threeMatchList = new ArrayList<>();
-    //     List<ResumeMatchRespDto> twoMatchList = new ArrayList<>();
-    //     List<ResumeMatchRespDto> oneMatchList = new ArrayList<>();
-
-    //     List<ResumeMatchRespDto> rDtos = resumeRepository.findMatchResumeByCompId(compSession.getCompId());
-    //     for (ResumeMatchRespDto rDto : rDtos) {
-    //         int count = 0;
-    //         List<String> insertList = new ArrayList<>();
-    //         for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
-    //             insertList.add(skill.getSkill());
-    //             if (set.contains(skill.getSkill())) {
-    //                 count++;
-    //             }
-    //         }
-    //         rDto.setSkillList(insertList);
-    //         if (count >= 5) {
-    //             fiveMatchList.add(rDto);
-    //         } else if (count >= 4) {
-    //             fourMatchList.add(rDto);
-    //         } else if (count >= 3) {
-    //             threeMatchList.add(rDto);
-    //         } else if (count >= 2) {
-    //             twoMatchList.add(rDto);
-    //         } else if (count >= 1) {
-    //             oneMatchList.add(rDto);
-    //         }
-    //         count = 0;
-    //     }
-
-    //     List<ResumeMatchRespDto> resultList = new ArrayList<>();
-    //     resultList.addAll(fiveMatchList);
-    //     resultList.addAll(fourMatchList);
-    //     resultList.addAll(threeMatchList);
-    //     resultList.addAll(twoMatchList);
-    //     resultList.addAll(oneMatchList);
-    //     model.addAttribute("rDtos", resultList);
-
-    //     return "comp/talent";
-
-    // }
+    // 완료
+    @GetMapping("/comp/talent")
+    public ResponseEntity<?> talent(@LoginComp Comp comp) {
+        ResumeMatchPageOutDto result = compService.추천인재(comp);
+        return new ResponseEntity<>(new ResponseDto<>(1, "추천 인재 조회 성공", result), HttpStatus.OK);
+    }
 
 }
-
 
 // ⬜ 기업회원가입 "/comp/join"
 // ⬜ 기업로그인 "/comp/login

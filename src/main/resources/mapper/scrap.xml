@@ -62,6 +62,38 @@
           where comp_scrap_id = #{compScrapId}
     </select>
 
+    <resultMap id="compScrapPageDto" type="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapPageOutDto">
+      <id property="compScrapId" column="comp_scrap_id"/>
+      <association property="compDto" javaType="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapPageOutDto$CompDto">
+        <id property="compId" column="comp_id"/>
+        <!-- <result property="name" column="name"/> -->
+      </association> 
+      <association property="resumeDto" javaType="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapPageOutDto$ResumeDto">
+        <id property="resumeId" column="resume_id"/>
+        <result property="title" column="title"/>
+        <result property="career" column="career"/>
+        <result property="education" column="education"/>
+        <association property="userDto" javaType="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapPageOutDto$ResumeDto$UserDto">
+          <id property="userId" column="user_id"/>
+          <result property="name" column="name"/>
+          <result property="birth" column="birth"/>
+          <result property="address" column="address"/>
+        </association>
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+      </association>
+    </resultMap>
+
+    <select id="findByResumeSkill" resultType="java.lang.String">
+      select distinct skill from resume_skill_tb 
+          where resume_id = #{resumeId}
+  </select>
+
+    <select id="findScrapOutByCompId" resultMap="compScrapPageDto">
+      select * from comp_scrap_tb s join resume_tb r
+        on s.resume_id = r.resume_id join user_tb u
+        on u.user_id = r.user_id
+        where s.comp_id = #{compId}
+    </select>
     <select id="findAllScrapByCompId" resultType="shop.mtcoding.project.dto.scrap.CompScrapResp$CompScrapResumeRespDto">
       select s.comp_scrap_id, s.resume_id, u.name, u.birth, r.title, r.career, r.education,  u.address  from comp_scrap_tb s join resume_tb r
         on s.resume_id = r.resume_id join user_tb u

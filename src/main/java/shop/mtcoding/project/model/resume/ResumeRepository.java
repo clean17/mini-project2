@@ -14,7 +14,8 @@ import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeIdRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeReadRespDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto.ResumeMatchDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumePublicOutDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSaveRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSearchRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeUpdateRespDto;
@@ -28,6 +29,7 @@ public interface ResumeRepository {
         public List<ResumeIdRespDto> findResumeIdByUserId(Integer userId);
 
         public List<ResumeMatchOutDto> findMatchResumeByCompId(Integer compId);
+        public List<ResumeMatchDto> findMatchResumeByCompId2(Integer compId);
 
         public ResumeUpdateRespDto findUpdateById(Integer resumeId);
 
@@ -37,10 +39,11 @@ public interface ResumeRepository {
 
         public List<ResumeManageRespDto> findAllByUserId(Integer userId);
 
-        public List<ResumeReadRespDto> findAllResumebyState();
+        public List<ResumePublicOutDto> findAllResumebyState(Integer compId);
 
         public ResumeDetailRespDto findDetailPublicResumebyById(
                         @Param("resumeId") Integer resumeId,
+                        @Param("applyId") Integer applyId,
                         @Param("compId") Integer compId);
 
         public List<ResumeSearchRespDto> findResumeByCheckBox(

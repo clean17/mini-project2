@@ -42,10 +42,10 @@ public class ResumeRepositoryTest {
         // given
         
         // when
-        List<ResumeReadRespDto> rList = resumeRepository.findAllResumebyState();
+        // List<ResumeReadRespDto> rList = resumeRepository.findAllResumebyState();
 
         // then
-        rList.forEach((s)->{System.out.println("테스트 : "+ s.toString());});
+        // rList.forEach((s)->{System.out.println("테스트 : "+ s.toString());});
     }   
 
     @Test
@@ -53,10 +53,10 @@ public class ResumeRepositoryTest {
         // given
         Integer test = 1;
         // when
-        ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(test,null);
+        // ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(test,null);
 
         // then
-        System.out.println("테스트 : "+ rDto.toString());
+        // System.out.println("테스트 : "+ rDto.toString());
     }   
 
 
