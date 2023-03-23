@@ -90,11 +90,11 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
-    // 수정
-    // @GetMapping("/comp/join")
-    // public String joinComp() {
-    // return "comp/joinForm";
-    // }
+    // 완료
+    @GetMapping("/comp/join")
+    public String joinComp() {
+        return "comp/joinForm";
+    }
 
     // 완료
     @PostMapping("/comp/login")
@@ -122,79 +122,85 @@ public class CompController {
         }
     }
 
-    // 수정
-    // @GetMapping("/comp/login")
-    // public String loginComp() {
-    // return "comp/loginForm";
+    // 완료
+    @GetMapping("/comp/login")
+    public String loginComp() {
+        return "comp/loginForm";
+    }
+
+    // 인우 수정 완료
+    // @GetMapping("/comp/comphome")
+    // public String compMyhome(Model model) {
+    // Comp compSession = (Comp) session.getAttribute("compSession");
+    // if (compSession == null) {
+    // return "redirect:/comp/login";
+    // }
+    // List<JobsManageJobsRespDto> jDtos =
+    // jobsRepository.findByIdtoManageJobs(compSession.getCompId());
+    // model.addAttribute("jDtos", jDtos);
+    // Comp compPS = compRepository.findByCompId(compSession.getCompId());
+    // model.addAttribute("comp", compPS);
+
+    // Set<String> set = new HashSet<>();
+    // List<JobsIdRespDto> jobsIdList =
+    // jobsRepository.findJobsIdByCompId(compSession.getCompId());
+    // for (JobsIdRespDto jobsId : jobsIdList) {
+    // List<RequiredSkillWriteReqDto> rSkillList =
+    // skillRepository.findByJobsSkill(jobsId.getJobsId());
+    // for (RequiredSkillWriteReqDto skill : rSkillList) {
+    // set.add(skill.getSkill());
+    // }
     // }
 
-    @GetMapping("/comp/comphome")
-    public String compMyhome(Model model) {
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        if (compSession == null) {
-            return "redirect:/comp/login";
-        }
-        List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(compSession.getCompId());
-        model.addAttribute("jDtos", jDtos);
-        Comp compPS = compRepository.findByCompId(compSession.getCompId());
-        model.addAttribute("comp", compPS);
+    // RequiredSkillByCompRespDto rSkillList = new RequiredSkillByCompRespDto();
+    // List<String> skillList = new ArrayList<>(set);
+    // rSkillList.setSkillList(skillList);
 
-        Set<String> set = new HashSet<>();
-        List<JobsIdRespDto> jobsIdList = jobsRepository.findJobsIdByCompId(compSession.getCompId());
-        for (JobsIdRespDto jobsId : jobsIdList) {
-            List<RequiredSkillWriteReqDto> rSkillList = skillRepository.findByJobsSkill(jobsId.getJobsId());
-            for (RequiredSkillWriteReqDto skill : rSkillList) {
-                set.add(skill.getSkill());
-            }
-        }
+    // model.addAttribute("sDto", rSkillList);
 
-        RequiredSkillByCompRespDto rSkillList = new RequiredSkillByCompRespDto();
-        List<String> skillList = new ArrayList<>(set);
-        rSkillList.setSkillList(skillList);
+    // List<ResumeMatchRespDto> fiveMatchList = new ArrayList<>();
+    // List<ResumeMatchRespDto> fourMatchList = new ArrayList<>();
+    // List<ResumeMatchRespDto> threeMatchList = new ArrayList<>();
+    // List<ResumeMatchRespDto> twoMatchList = new ArrayList<>();
+    // List<ResumeMatchRespDto> oneMatchList = new ArrayList<>();
 
-        model.addAttribute("sDto", rSkillList);
+    // List<ResumeMatchRespDto> rDtos =
+    // resumeRepository.findMatchResumeByCompId(compSession.getCompId());
+    // for (ResumeMatchRespDto rDto : rDtos) {
+    // int count = 0;
+    // List<String> insertList = new ArrayList<>();
+    // for (ResumeSkillRespDto skill :
+    // skillRepository.findByResumeSkill(rDto.getResumeId())) {
+    // insertList.add(skill.getSkill());
+    // if (set.contains(skill.getSkill())) {
+    // count++;
+    // }
+    // }
+    // rDto.setSkillList(insertList);
+    // if (count >= 5) {
+    // fiveMatchList.add(rDto);
+    // } else if (count >= 4) {
+    // fourMatchList.add(rDto);
+    // } else if (count >= 3) {
+    // threeMatchList.add(rDto);
+    // } else if (count >= 2) {
+    // twoMatchList.add(rDto);
+    // } else if (count >= 1) {
+    // oneMatchList.add(rDto);
+    // }
+    // count = 0;
+    // }
 
-        List<ResumeMatchRespDto> fiveMatchList = new ArrayList<>();
-        List<ResumeMatchRespDto> fourMatchList = new ArrayList<>();
-        List<ResumeMatchRespDto> threeMatchList = new ArrayList<>();
-        List<ResumeMatchRespDto> twoMatchList = new ArrayList<>();
-        List<ResumeMatchRespDto> oneMatchList = new ArrayList<>();
+    // List<ResumeMatchRespDto> resultList = new ArrayList<>();
+    // resultList.addAll(fiveMatchList);
+    // resultList.addAll(fourMatchList);
+    // resultList.addAll(threeMatchList);
+    // resultList.addAll(twoMatchList);
+    // resultList.addAll(oneMatchList);
+    // model.addAttribute("rDtos", resultList);
 
-        List<ResumeMatchRespDto> rDtos = resumeRepository.findMatchResumeByCompId(compSession.getCompId());
-        for (ResumeMatchRespDto rDto : rDtos) {
-            int count = 0;
-            List<String> insertList = new ArrayList<>();
-            for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
-                insertList.add(skill.getSkill());
-                if (set.contains(skill.getSkill())) {
-                    count++;
-                }
-            }
-            rDto.setSkillList(insertList);
-            if (count >= 5) {
-                fiveMatchList.add(rDto);
-            } else if (count >= 4) {
-                fourMatchList.add(rDto);
-            } else if (count >= 3) {
-                threeMatchList.add(rDto);
-            } else if (count >= 2) {
-                twoMatchList.add(rDto);
-            } else if (count >= 1) {
-                oneMatchList.add(rDto);
-            }
-            count = 0;
-        }
-
-        List<ResumeMatchRespDto> resultList = new ArrayList<>();
-        resultList.addAll(fiveMatchList);
-        resultList.addAll(fourMatchList);
-        resultList.addAll(threeMatchList);
-        resultList.addAll(twoMatchList);
-        resultList.addAll(oneMatchList);
-        model.addAttribute("rDtos", resultList);
-
-        return "comp/comphome";
-    }
+    // return "comp/comphome";
+    // }
 
     // 완료
     @PostMapping("/comp/passwordCheck")
@@ -220,7 +226,7 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", compPS), HttpStatus.OK);
     }
 
-    // 수정
+    // 수정 -> 인우 수정 완료
     // @GetMapping("/comp/profileUpdateForm")
     // public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginComp Comp
     // comp, CompUpdatePhotoReqDto compUpdatePhotoReqDto) {
