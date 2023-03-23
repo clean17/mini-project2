@@ -1,5 +1,8 @@
 package shop.mtcoding.project.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -8,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.common.ResponseDto;
+import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
+import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
@@ -38,6 +44,7 @@ import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.UserService;
 import shop.mtcoding.project.util.CheckValid;
+import shop.mtcoding.project.util.DateUtil;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
@@ -237,28 +244,28 @@ public class UserController {
     // return "user/myhome";
     // }
 
-    // @GetMapping("/user/scrap")
-    // public String scarp(Model model) {
-    // User principal = (User) session.getAttribute("principal");
-    // if (principal != null) {
-    // List<UserScrapRespDto> usDtos =
-    // scrapRepository.findAllScrapByUserId(principal.getUserId());
-    // for (UserScrapRespDto usDto : usDtos) {
-    // long dDay = DateUtil.dDay(usDto.getEndDate());
-    // usDto.setLeftTime(dDay);
-    // List<String> insertList = new ArrayList<>();
-    // for (RequiredSkillWriteReqDto skill :
-    // skillRepository.findByJobsSkill(usDto.getJobsId())) {
-    // insertList.add(skill.getSkill());
-    // }
-    // usDto.setSkillList(insertList);
-    // }
-    // model.addAttribute("usDtos", usDtos);
-    // }
-    // User userPS = userRepository.findById(principal.getUserId());
-    // model.addAttribute("user", userPS);
-    // return "user/scrap";
-    // }
+    @GetMapping("/user/scrap")
+    public String scarp(Model model) {
+    User principal = (User) session.getAttribute("principal");
+    if (principal != null) {
+    List<UserScrapRespDto> usDtos =
+    scrapRepository.findAllScrapByUserId(principal.getUserId());
+    for (UserScrapRespDto usDto : usDtos) {
+    long dDay = DateUtil.dDay(usDto.getEndDate());
+    usDto.setLeftTime(dDay);
+    List<String> insertList = new ArrayList<>();
+    for (RequiredSkillWriteReqDto skill :
+    skillRepository.findByJobsSkill(usDto.getJobsId())) {
+    insertList.add(skill.getSkill());
+    }
+    usDto.setSkillList(insertList);
+    }
+    model.addAttribute("usDtos", usDtos);
+    }
+    User userPS = userRepository.findById(principal.getUserId());
+    model.addAttribute("user", userPS);
+    return "user/scrap";
+    }
 
     // @GetMapping("/user/offer")
     // public String offer(Model model) {
