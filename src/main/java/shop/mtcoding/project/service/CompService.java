@@ -72,7 +72,7 @@ public class CompService {
     }
 
     @Transactional
-    public Comp 프로필사진수정(MultipartFile photo, Integer compId) {
+    public String 프로필사진수정(MultipartFile photo, Integer compId) {
 
         String uuidImageName = PathUtil.writeImageFile(photo);
 
@@ -83,6 +83,6 @@ public class CompService {
         } catch (Exception e) {
             throw new CustomException("사진 수정에 실패 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return compPS;
+        return uuidImageName;
     }
 }

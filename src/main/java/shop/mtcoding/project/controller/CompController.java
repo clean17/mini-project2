@@ -35,6 +35,7 @@ import shop.mtcoding.project.dto.comp.CompReq.CompPasswordReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdatePhotoReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompUpdateRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsIdRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsManageJobsRespDto;
@@ -54,6 +55,7 @@ import shop.mtcoding.project.model.scrap.ScrapRepository;
 import shop.mtcoding.project.model.skill.SkillRepository;
 import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.service.CompService;
+import shop.mtcoding.project.service.UserService;
 import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.DateUtil;
 import shop.mtcoding.project.util.MockSession;
@@ -245,15 +247,18 @@ public class CompController {
     // }
 
     // 수정
-    // @PutMapping("/comp/profileUpdate")
-    // public @ResponseBody ResponseEntity<?> profileUpdate(@LoginComp Comp comp,
-    // MultipartFile photo) throws Exception {
-    // CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
-    // Comp compPS = compService.프로필사진수정(photo, comp.getCompId());
-    // session.setAttribute("compSession", compPS);
-    // return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", compPS),
-    // HttpStatus.OK);
-    // }
+    @PutMapping("/comp/profileUpdate")
+    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginComp Comp comp, MultipartFile photo) throws Exception {
+    CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
+    String result = compService.프로필사진수정(photo, comp.getCompId());
+    comp.setPhoto(result);
+    CompUpdatePhotoOutDto update = CompUpdatePhotoOutDto.builder()
+                                                        .compId(comp.getCompId())
+                                                        .photo(result)
+                                                        .build();
+    session.setAttribute("compSession", comp);
+    return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", update), HttpStatus.OK);
+    }
 
     // @GetMapping("/comp/apply")
     // public String apply(Model model) {
