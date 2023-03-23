@@ -16,7 +16,6 @@
         <result property="career" column="career"/>
         <result property="link" column="link"/>
         <result property="state" column="state"/>
-        <result property="createdAt" column="created_at"/>
 
         
 		<association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeReq$ResumeWriteOutDto$UserDto">
@@ -28,7 +27,6 @@
         		  <result property="tel" column="tel"/>
         		  <result property="photo" column="photo"/>
         		  <result property="address" column="address"/>
-	  		  <result property="createdAt" column="created_at"/>
 
         	</association> 
 
@@ -57,7 +55,6 @@
         <result property="career" column="career"/>
         <result property="link" column="link"/>
         <result property="state" column="state"/>
-        <result property="createdAt" column="created_at"/>
 
         <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
     
@@ -79,7 +76,7 @@
     </select>
 
     <select id="findUpdateById" resultType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeUpdateRespDto">
-        select r.resume_id, r.user_id, r.title, r.content, r.education, r.career, r.link, r.state, r.created_at, u.photo, u.name, u.tel, u.email, u.address, u.birth from resume_tb r 
+        select r.resume_id, r.user_id, r.title, r.content, r.education, r.career, r.link, r.state, u.photo, u.name, u.tel, u.email, u.address, u.birth from resume_tb r 
             join user_tb u
             on r.user_id= u.user_id
             where r.resume_id = #{resumeId}
@@ -93,7 +90,6 @@
         <result property="career" column="career"/>
         <result property="link" column="link"/>
         <result property="state" column="state"/>
-        <result property="createdAt" column="created_at"/>
 
 		<association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSaveRespDto$UserDto">
 	        	  <id property="userId" column="user_id"/>
@@ -104,7 +100,6 @@
         		  <result property="tel" column="tel"/>
         		  <result property="photo" column="photo"/>
         		  <result property="address" column="address"/>
-	  		  <result property="createdAt" column="created_at"/>
 
         	</association> 
 
@@ -230,7 +225,7 @@
 
 
     <select id="findDetailPublicResumebyById" resultMap="ResumeDetailRespDto">
-         select distinct r.resume_id, u.user_id, u.photo, u.name, r.title, u.birth, r.education, r.career, u.address, r.content, r.link, a.apply_id, a.state, s.suggest_id, s.state, c.comp_scrap_id
+         select distinct *
         <if test="#{compId != null}">
             ,ifnull(( select comp_scrap_id from comp_scrap_tb s  join resume_tb r on s.resume_id = r.resume_id 
           where s.comp_id = #{compId} and r.resume_id = #{resumeId} ),null) comp_scrap_id 
@@ -260,8 +255,7 @@
             education = #{rDto.education},
             career =  #{rDto.career},
             link = #{rDto.link}, 
-            state = #{rDto.state}, 
-            created_at = #{rDto.createdAt}
+            state = #{rDto.state} 
             where resume_id = #{rDto.resumeId}
     </update>
 

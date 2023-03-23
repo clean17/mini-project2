@@ -27,7 +27,6 @@ public class ResumeReq {
         private String link;
         @NotNull(message = "공개여부를 선택해주세요/")
         private Integer state;
-        private Timestamp createdAt;
         @NotEmpty(message = "기술을 선택해주세요/")
         private List<String> skillList;
     }
@@ -44,7 +43,6 @@ public class ResumeReq {
         private String career;
         private String link;
         private Integer state;
-        private Timestamp createdAt;
         private List<String> skillList;
 
         @Getter
@@ -58,7 +56,6 @@ public class ResumeReq {
             private String tel;
             private String photo;
             private String Address;
-            private Timestamp createdAt;
         }
     }
 
@@ -78,7 +75,6 @@ public class ResumeReq {
         private String link;
         @NotNull(message = "공개여부를 선택해주세요/")
         private Integer state;
-        private Timestamp createdAt;
         @NotEmpty(message = "기술을 선택해주세요/")
         private List<String> skillList;
     }
@@ -95,7 +91,6 @@ public class ResumeReq {
         private String career;
         private String link;
         private Integer state;
-        private Timestamp createdAt;
         private List<String> skillList;
     }
 

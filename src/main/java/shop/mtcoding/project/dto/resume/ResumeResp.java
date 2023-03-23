@@ -1,15 +1,11 @@
 package shop.mtcoding.project.dto.resume;
 
-import java.sql.Timestamp;
 import java.util.List;
-
-import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 
 public class ResumeResp {
 
@@ -117,7 +113,6 @@ public class ResumeResp {
         private String link;
         private Integer state;
         private List<String> skillList;
-        private Timestamp createdAt;
 
         @Getter
         @Setter
@@ -130,7 +125,6 @@ public class ResumeResp {
             private String tel;
             private String photo;
             private String Address;
-            private Timestamp createdAt;
         }
     }
 
@@ -152,7 +146,6 @@ public class ResumeResp {
         private String link;
         private Integer state;
         private List<String> skillList;
-        private Timestamp createdAt;
     }
 
     @Getter
