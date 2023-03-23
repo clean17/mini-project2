@@ -132,7 +132,7 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "기업 홈 조회 성공", compResult), HttpStatus.OK);
     }
    
-
+    // 완료
     @PostMapping("/comp/passwordCheck")
     public @ResponseBody ResponseEntity<?> samePasswordCheck(@RequestBody CompPasswordReqDto compPasswordReqDto) {
         compPasswordReqDto.setPassword(Sha256.encode(compPasswordReqDto.getPassword()));

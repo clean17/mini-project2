@@ -62,11 +62,6 @@ public class UserResp {
         }
     }
 
-
-
-
-
-
     @Getter
     @Setter
     public static class UserUpdatePhotoOutDto {

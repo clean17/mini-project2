@@ -29,6 +29,7 @@ import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
+import shop.mtcoding.project.dto.user.UserResp.UserApplyOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
@@ -252,14 +253,23 @@ public class UserController {
             }
         return new ResponseEntity<>(new ResponseDto<>(1, "스크랩 보기", usDtos), HttpStatus.OK);
     }
+    // 완료
+    // @GetMapping("/comp/apply")
+    // public ResponseEntity<?> apply(@LoginComp Comp comp) {
+    //     // 여기도 마찬가지로 사진은 세션에서 가져가면 됩니다. 사진 업데이트하고 세션 업데이트 + 페이지 리로드 필요
+    //     CompApplyOutDto result = compRepository.findApplyAndSuggestByCompId(comp.getCompId());
+    //     return new ResponseEntity<>(new ResponseDto<>(1, "기업의 지원 및 제안 페이지 데이터 조회 완료", result), HttpStatus.OK);
+    // }
+
 
     // 수정
     @GetMapping("/user/offer")
     public @ResponseBody ResponseEntity<?> offer(@LoginUser User user) {
-        List<ApplyStatusUserRespDto> aDtos = applyRepository.findAllByUserIdtoApply(user.getUserId());
-        List<SuggestToUserRespDto> sDtos = suggestRepository.findAllGetOfferByUserId(user.getUserId());
+        //List<ApplyStatusUserRespDto> aDtos = applyRepository.findAllByUserIdtoApply(user.getUserId());
+        //List<SuggestToUserRespDto> sDtos = suggestRepository.findAllGetOfferByUserId(user.getUserId());
+        UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getUserId());
         // User userPS = userRepository.findById(user.getUserId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", result), HttpStatus.OK);
     }
 
     // 완료
