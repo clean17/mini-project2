@@ -1,9 +1,7 @@
 package shop.mtcoding.project.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -25,24 +23,20 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.exception.CustomApiException;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusCompRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompJoinReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompLoginReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompPasswordReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompApplyOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto.JobsManageJobsRespDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompProfileOutDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsIdRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeReadRespDto;
 import shop.mtcoding.project.dto.scrap.CompScrapResp.CompScrapResumeRespDto;
 import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
-import shop.mtcoding.project.dto.skill.RequiredSkillResp.RequiredSkillByCompRespDto;
 import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillRespDto;
-import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToCompRespDto;
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
@@ -139,6 +133,7 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "기업 홈 조회 성공", compResult), HttpStatus.OK);
     }
 
+    
     @PostMapping("/comp/passwordCheck")
     public @ResponseBody ResponseEntity<?> samePasswordCheck(@RequestBody CompPasswordReqDto compPasswordReqDto) {
         compPasswordReqDto.setPassword(Sha256.encode(compPasswordReqDto.getPassword()));
@@ -178,43 +173,29 @@ public class CompController {
     }
 
     @GetMapping("/comp/update")
-    public @ResponseBody ResponseEntity<?> updateForm(@LoginComp Comp comp) {
+    public ResponseEntity<?> updateForm(@LoginComp Comp comp) {
         Comp compPS = compRepository.findByCompId(comp.getCompId());
         return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS), HttpStatus.OK);
     }
 
+    // 완료
     @GetMapping("/comp/apply")
-    public String apply(Model model) {
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        List<ApllyStatusCompRespDto> aList = applyRepository.findAllByCompIdtoApply(compSession.getCompId());
-        model.addAttribute("aDtos", aList);
-        List<SuggestToCompRespDto> sList = suggestRepository.findAllByCompIdtoSuggest((compSession.getCompId()));
-        model.addAttribute("sDtos", sList);
-        Comp compPS = compRepository.findByCompId(compSession.getCompId());
-        model.addAttribute("comp", compPS);
-        return "comp/apply";
+    public ResponseEntity<?> apply(@LoginComp Comp comp) {
+        // 여기도 마찬가지로 사진은 세션에서 가져가면 됩니다. 사진 업데이트하고 세션 업데이트 + 페이지 리로드 필요
+        CompApplyOutDto result = compRepository.findApplyAndSuggestByCompId(comp.getCompId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "기업의 지원 및 제안 페이지 데이터 조회 완료", result), HttpStatus.OK);
     }
 
-    // 주석해제하고 설정해야함 잠시 주석걸어놓음 23.03.22
-    // @GetMapping("/comp/jobs")
-    // public String manageJobs(Model model) {
-    //     Comp compSession = (Comp) session.getAttribute("compSession");
-    //     List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(compSession.getCompId());
-    //     for (JobsManageJobsRespDto jDto : jDtos) {
-    //         long dDay = DateUtil.dDay(jDto.getEndDate());
-    //         jDto.setLeftTime(dDay);
-    //         List<String> insertList = new ArrayList<>();
-    //         for (RequiredSkillWriteReqDto skill : skillRepository.findByJobsSkill(jDto.getJobsId())) {
-    //             insertList.add(skill.getSkill());
-    //         }
-    //         jDto.setSkillList(insertList);
-    //     }
-    //     model.addAttribute("jDtos", jDtos);
-    //     Comp compPS = compRepository.findByCompId(compSession.getCompId());
-    //     model.addAttribute("comp", compPS);
-
-    //     return "comp/manageJobs";
-    // }
+    // 완료
+    @GetMapping("/comp/jobs")
+    public ResponseEntity<?> manageJobs(@LoginComp Comp comp) {
+        //  사진이 이상하면 세션을 업데이트 해야함
+        List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(comp.getCompId());
+        for (JobsManageJobsRespDto jDto : jDtos) {
+            jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
+        }
+        return new ResponseEntity<>(new ResponseDto<>(1, "공고 관리 페이지 조회 성공", jDtos), HttpStatus.OK);
+    }
 
     // 공개이력서 열람
     @GetMapping("/comp/resume/read")

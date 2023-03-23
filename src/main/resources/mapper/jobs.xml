@@ -126,6 +126,8 @@
         address regexp #{keyword} 
     </select> -->
 
+    
+
     <resultMap id="searchDto" type="shop.mtcoding.project.dto.jobs.JobsResp$JobsSearchOutDto">
         <id property="jobsId" column="jobs_id"/>
         <result property="title" column="title"/>

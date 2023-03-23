@@ -85,6 +85,7 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
+
     // 완료
     @GetMapping("/user/join")
     public String joinForm() {

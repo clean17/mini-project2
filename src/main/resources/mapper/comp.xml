@@ -27,6 +27,85 @@
       SELECT * FROM comp_tb where comp_id = #{compId}
     </select>
 
+
+    <!-- 기업apply/suggest -->
+    <resultMap id="applyAndSuggestDto" type="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto">
+        <id property="compId" column="comp_id"/>
+        <collection property="applyDto" resultMap="applyDtoResultMap"/>
+        <collection property="suggestDto" resultMap="suggestDtoResultMap"/> 
+    </resultMap>
+    <resultMap id="applyDtoResultMap" type="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$ApplyDto">
+          <id property="applyId" column="apply_id"/>
+          <result property="state" column="state"/>
+
+          <association property="resumeDto" javaType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$ApplyDto$ResumeDto">
+            <id property="resumeId" column="resume_id"/>
+            <result property="title" column="title"/>
+
+              <association property="userDto" javaType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$ApplyDto$ResumeDto$UserDto">
+                <id property="userId" column="user_id"/>
+                <result property="name" column="name"/>
+              </association>
+
+          </association>
+
+          <association property="jobsDto" javaType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$ApplyDto$JobsDto">
+            <id property="jobsId" column="jobs_id"/>
+            <result property="title" column="title"/>
+            <result property="career" column="career"/>
+            <result property="education" column="education"/>
+            <result property="position" column="position"/>
+          </association> 
+    </resultMap>
+
+    <resultMap id="suggestDtoResultMap" type="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$SuggestDto">
+          <id property="suggestId" column="suggest_id"/>
+            <result property="state" column="state"/>
+
+            <association property="jobsDto" javaType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$SuggestDto$JobsDto">
+              <id property="jobsId" column="jobs_id"/>
+              <result property="title" column="title"/>
+              <result property="position" column="position"/>
+            </association>
+
+            <association property="resumeDto" javaType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$SuggestDto$ResumeDto">
+              <id property="resumeId" column="resume_id"/>
+              <result property="title" column="title"/>
+  
+                <association property="userDto" javaType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$SuggestDto$ResumeDto$UserDto">
+                  <id property="userId" column="user_id"/>
+                  <result property="name" column="name"/>
+                </association>
+  
+            </association>
+    </resultMap>
+
+    <select id="findApplyAndSuggestByCompId" resultMap="applyAndSuggestDto">
+      select * from apply_tb a join jobs_tb j 
+      on a.jobs_id = j.jobs_id join resume_tb r
+      on a.resume_id = r.resume_id join user_tb u
+      on u.user_id = r.user_id join suggest_tb s
+      on s.jobs_id = j.jobs_id
+      where j.comp_id = #{compId}
+    </select>
+    <!-- <select id="findAllByCompIdtoApply" resultType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$ApplyDto">
+      select * from apply_tb a join jobs_tb j 
+        on a.jobs_id = j.jobs_id join resume_tb r
+        on a.resume_id = r.resume_id join user_tb u
+        on u.user_id = r.user_id join suggest_tb s
+        on s.jobs_id = j.jobs_id
+        where j.comp_id = #{compId}
+    </select>
+    <select id="findAllByCompIdtoSuggest" resultType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$SuggestDto">
+      select * from suggest_tb s join jobs_tb j
+        on s.jobs_id = j.jobs_id
+        join resume_tb r 
+        on r.resume_id = s.resume_id
+        join user_tb u
+        on u.user_id = r.user_id
+        where j.comp_id = #{compId}
+    </select> -->
+
     <select id="findCompPhoto" resultType="shop.mtcoding.project.dto.comp.CompResp$CompProfileOutDto">
       select comp_id, photo from comp_tb where comp_id = #{compId};
     </select>
