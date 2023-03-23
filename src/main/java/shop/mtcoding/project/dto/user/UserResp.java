@@ -3,10 +3,25 @@ package shop.mtcoding.project.dto.user;
 import java.sql.Timestamp;
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 public class UserResp {
+
+    @Getter
+    @Setter
+    public static class UserUpdatePhotoOutDto {
+        private Integer userId;
+        private String photo;
+
+        @Builder
+        public UserUpdatePhotoOutDto(Integer userId, String photo) {
+            this.userId = userId;
+            this.photo = photo;
+        }
+
+    }
 
     @Getter
     @Setter

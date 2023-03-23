@@ -1,7 +1,10 @@
 package shop.mtcoding.project.dto.comp;
 
+
 import java.sql.Timestamp;
 import java.util.List;
+
+import lombok.Builder;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -121,6 +124,29 @@ public class CompResp {
     public static class CompProfileOutDto {
         private Integer compId;
         private String photo;
+    }
+
+    @Getter
+    @Setter
+    public static class CompUpdatePhotoOutDto {
+        private Integer compId;
+        private String photo;
+
+        @Builder
+        public CompUpdatePhotoOutDto(Integer compId, String photo) {
+            this.compId = compId;
+            this.photo = photo;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class CompUpdateRespDto {
+        private Integer compId;
+        private String password;
+        private String compName;
+        private String representativeName;
+        private String businessNumber;
     }
 
     @Getter

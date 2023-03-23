@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto.ResumeMatchOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeCheckboxReqDto;
+import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateInDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
@@ -52,4 +53,6 @@ public interface ResumeRepository {
                         @Param("rDto") ResumeUpdateReqDto rDto);
 
         public int deleteById(Integer resumeId);
+
+        public ResumeUpdateInDto findUpdateDataByResumeId(Integer resumeId);
 }
