@@ -185,14 +185,20 @@ public class ResumeResp {
     @ToString
     public static class ResumeSearchRespDto {
         private Integer resumeId;
-        private Integer userId;
-        private String photo;
-        private String name;
         private String title;
-        private String address;
         private String career;
         private Integer state;
         private List<String> skillList;
+        private UserDto user;
+
+        @Getter
+        @Setter
+        public static class UserDto {
+            private Integer userId;
+            private String name;
+            private String photo;
+            private String address;
+        }
     }
 
 }

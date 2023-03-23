@@ -92,6 +92,7 @@ public class ResumeController {
         return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", rDto), HttpStatus.CREATED);
     }
 
+    //완료
     @PutMapping("/user/resume/update")
     public ResponseEntity<?> saveTempResume(@LoginUser User user,
             @Valid ResumeUpdateReqDto resumeUpdateReqDto) {
@@ -108,7 +109,7 @@ public class ResumeController {
         UserDataRespDto userPS = userRepository.findByUserId(user.getUserId());
         return ResponseEntity.ok().body(userPS);
     }
-
+    //완료
     @GetMapping("/user/resume/{id}/update")
     public ResponseEntity<?> updateResumeForm(@LoginUser User user, @PathVariable Integer id) {
         if (user == null) {
@@ -136,19 +137,13 @@ public class ResumeController {
     }
 
     @GetMapping("/comp/resume/search")
-    public ResponseEntity<?> searchCheckbox(ResumeCheckboxReqDto rDto, Model model) {
+    public ResponseEntity<?> searchCheckbox(ResumeCheckboxReqDto rDto) {
         if (rDto.getCareer() == null || rDto.getCareer().isEmpty()) {
             rDto.setCareer("");
         }
         List<ResumeSearchRespDto> rDtos = resumeRepository.findResumeByCheckBox(rDto);
-        for (ResumeSearchRespDto rDto1 : rDtos) {
-            List<String> insertList = new ArrayList<>();
-            for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto1.getResumeId())) {
-                insertList.add(skill.getSkill());
-            }
-            rDto1.setSkillList(insertList);
-        }
-        return new ResponseEntity<>(new ResponseDto<>(1, "검색 성공", null), HttpStatus.OK);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "검색 성공", rDtos), HttpStatus.OK);
     }
 
     @GetMapping("/comp/resume/apply/{id}")

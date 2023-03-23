@@ -147,7 +147,25 @@
             where r.state = 1
     </select>
 
-    <select id="findResumeByCheckBox" resultType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSearchRespDto">
+        <resultMap id="ResumeSearchRespDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSearchRespDto">
+
+                 <id property="resumeId" column="resume_id"/>
+                <result property="title" column="title"/>
+                <result property="career" column="career"/>
+                <result property="state" column="state"/>
+        
+		<association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSearchRespDto$UserDto">
+	        	  <id property="userId" column="user_id"/>
+        		  <result property="name" column="name"/>
+                <result property="photo" column="photo"/>
+                <result property="address" column="address"/>
+        </association> 
+
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    
+    </resultMap>
+
+    <select id="findResumeByCheckBox" resultMap="ResumeSearchRespDto">
         select r.resume_id, ROW_NUMBER()OVER(partition by u.user_id order by u.user_id ) num , 
             u.user_id, u.photo, u.name, u.birth, r.education, u.address,r.title, r.career, r.state
             from resume_tb r
@@ -172,7 +190,6 @@
           and
         </if>
         r.career regexp #{resumeDto.career} 
-        )
         group by r.resume_id
     </select>
 
