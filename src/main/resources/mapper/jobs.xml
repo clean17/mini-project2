@@ -11,11 +11,21 @@
       select * from jobs_tb where jobs_id = #{jobsId}
     </select>
 
-    <select id="findJobsIdByCompId" resultType="shop.mtcoding.project.dto.jobs.JobsResp$JobsIdRespDto">
-      select jobs_id from jobs_tb where comp_id = #{compId}
+    <resultMap id="compSkillDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumeMatchPageOutDto">
+      <id property="compId" column="comp_id"/>
+      <collection property="skillList" column="comp_id" select="findByJobsSkill2"/>
+    </resultMap>
+    <select id="findByJobsSkill2" resultType="java.lang.String">
+      select distinct skill from required_skill_tb where jobs_id in
+      (select jobs_id from jobs_tb 
+      where comp_id = #{compId})
     </select>
 
+    <select id="findJobsIdByCompId" resultMap="compSkillDto">
+      select * from comp_tb where comp_id = #{compId}
+    </select>
 
+ 
 
 
     <!-- <select id="findAlltoMain" resultType="shop.mtcoding.project.dto.jobs.JobsResp$findAlltoMain">

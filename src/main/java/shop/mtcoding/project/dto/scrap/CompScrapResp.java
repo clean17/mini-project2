@@ -9,6 +9,37 @@ import lombok.Setter;
 public class CompScrapResp {
 
     @Getter @Setter
+    public static class CompScrapPageOutDto{
+        private Integer compScrapId;
+        private CompDto compDto;
+        private ResumeDto resumeDto;
+
+        @Getter @Setter
+        public static class CompDto{
+            private Integer compId;
+        }
+
+        @Getter @Setter
+        public static class ResumeDto {
+            private Integer resumeId;
+            private String title;
+            private String career;
+            private String education;
+            private List<String> skillList;
+            private UserDto userDto;
+
+            @Getter @Setter
+            public static class UserDto {
+                private Integer userId;
+                private String name;
+                private String birth;
+                private String address;
+            }
+        }
+    }
+    
+
+    @Getter @Setter
     public static class CompScrapOutDto{
         private Integer compScrapId;
         private CompDto compDto;
