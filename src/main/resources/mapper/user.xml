@@ -4,6 +4,69 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="shop.mtcoding.project.model.user.UserRepository">
+
+<!-- 구직자apply/suggest -->
+    <resultMap id="applyAndSuggestDto" type="shop.mtcoding.project.dto.user.UserResp$UserApplyOutDto">
+        <id property="userId" column="user_id"/>
+        <collection property="applyDto" resultMap="applyDtoResultMap"/>
+        <collection property="suggestDto" resultMap="suggestDtoResultMap"/> 
+    </resultMap>
+
+    <resultMap id="applyDtoResultMap" type="shop.mtcoding.project.dto.user.UserResp$UserApplyOutDto$ApplyStatusUserRespDto">
+        <id property="applyId" column="apply_id"/>
+        <result property="state" column="state"/>
+
+        <association property="jobs" javaType="shop.mtcoding.project.dto.user.UserResp$UserApplyOutDto$ApplyStatusUserRespDto$JobsDto">
+            <id property="jobsId" column="jobs_id"/>
+            <result property="jobsTitle" column="title"/>
+            <result property="position" column="position"/>
+        </association>
+
+
+        <association property="resume" javaType="shop.mtcoding.project.dto.user.UserResp$UserApplyOutDto$ApplyStatusUserRespDto$ResumeDto">
+            <id property="resumeId" column="resume_id"/>
+            <result property="resumeTitle" column="title"/>
+        </association>
+    </resultMap>
+
+
+    <resultMap id="suggestDtoResultMap" type="shop.mtcoding.project.dto.user.UserResp$UserApplyOutDto$SuggestToCompRespDto">
+        <id property="suggestId" column="suggest_id"/>
+        <id property="resumeId" column="resume_id"/>
+        <result property="state" column="state"/>
+
+        <association property="jobs" javaType="shop.mtcoding.project.dto.user.UserResp$UserApplyOutDto$SuggestToCompRespDto$JobsDto">
+            <id property="jobsId" column="jobs_id"/>
+            <result property="title" column="title"/>
+            <result property="position" column="position"/>
+        </association>
+
+        <association property="comp" javaType="shop.mtcoding.project.dto.user.UserResp$UserApplyOutDto$SuggestToCompRespDto$CompDto">
+            <id property="CompId" column="Comp_id"/>
+            <result property="name" column="comp_name"/>
+        </association>
+  
+    </resultMap>
+
+
+  <select id="findApplyAndSuggestByUserId" resultMap="applyAndSuggestDto">
+        select * from apply_tb a
+            join jobs_tb j 
+            on a.jobs_id = j.jobs_id
+            join resume_tb r
+            on a.resume_id = r.resume_id
+            join comp_tb c
+            on c.comp_id = r.user_id
+            join suggest_tb s
+            on s.jobs_id = j.jobs_id
+        where r.user_id = #{userId}
+ </select>
+
+
+
+
+
+
     <select id="findAll" resultType="shop.mtcoding.project.model.user.User">
         select * from user_tb
     </select>

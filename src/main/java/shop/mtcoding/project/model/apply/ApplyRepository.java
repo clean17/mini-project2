@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import shop.mtcoding.project.dto.apply.ApplyReq.ApplyReqDto;
 import shop.mtcoding.project.dto.apply.ApplyReq.ApplyUpdateReqDto;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusCompRespDto;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusUserRespDto;
+import shop.mtcoding.project.dto.apply.ApplyResp.ApplyStatusUserRespDto;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApplyOutDto;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApplyUserStatusDetailRespDto;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApplytoCompRespDto;
@@ -30,7 +30,7 @@ public interface ApplyRepository {
 
     public List<ApllyStatusCompRespDto> findAllByCompIdtoApply(Integer compId);
 
-    public List<ApllyStatusUserRespDto> findAllByUserIdtoApply(Integer userId);
+    public List<ApplyStatusUserRespDto> findAllByUserIdtoApply(Integer userId);
 
     public ApplytoCompRespDto findByCompIdAndApplyId(
         @Param("compId") Integer compId,

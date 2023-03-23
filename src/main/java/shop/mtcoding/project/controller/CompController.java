@@ -33,9 +33,11 @@ import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompProfileOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompUpdateRespDto;
+
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumePublicOutDto;
 import shop.mtcoding.project.dto.scrap.CompScrapResp.CompScrapPageOutDto;
+
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
@@ -134,6 +136,8 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "기업 홈 조회 성공", compResult), HttpStatus.OK);
     }
 
+   
+    // 완료
     @PostMapping("/comp/passwordCheck")
     public @ResponseBody ResponseEntity<?> samePasswordCheck(@RequestBody CompPasswordReqDto compPasswordReqDto) {
         compPasswordReqDto.setPassword(Sha256.encode(compPasswordReqDto.getPassword()));

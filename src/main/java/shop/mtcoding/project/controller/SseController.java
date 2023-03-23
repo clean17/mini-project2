@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import lombok.RequiredArgsConstructor;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusUserRespDto;
+import shop.mtcoding.project.dto.apply.ApplyResp.ApplyStatusUserRespDto;
 import shop.mtcoding.project.model.apply.Apply;
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.notify.NotifyRepository;

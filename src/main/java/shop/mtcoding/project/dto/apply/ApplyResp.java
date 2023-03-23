@@ -68,14 +68,14 @@ public class ApplyResp {
 
     @Getter
     @Setter
-    public static class ApllyStatusUserRespDto{
-        private Integer applyId;
-        private Integer resumeId;
-        private Integer jobsId;
-        private Integer state;
-        private String jobsTitle;
-        private String resumeTitle;
-        private String position;
+    public static class ApplyStatusUserRespDto{
+        private Integer applyId; // apply_tb(1)
+        private Integer resumeId; // apply_tb(1)
+        private Integer jobsId; // apply_tb(1)
+        private Integer state; // apply_tb(1)
+        private String jobsTitle; // jobs_tb(2) -> title
+        private String position; // jobs_tb(2)
+        private String resumeTitle; // resume_tb -> title
         // private List<String> skillList;
     }
 

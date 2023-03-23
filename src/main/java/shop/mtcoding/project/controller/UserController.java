@@ -1,5 +1,4 @@
 package shop.mtcoding.project.controller;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +22,16 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
+import shop.mtcoding.project.dto.apply.ApplyResp.ApplyStatusUserRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
+import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
 import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
+import shop.mtcoding.project.dto.user.UserResp.UserApplyOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
@@ -79,7 +81,6 @@ public class UserController {
         // CheckValid.inNullApi(userPS, "동일한 email이 존재합니다.");
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
-
 
     // 완료
     @GetMapping("/user/join")
@@ -243,43 +244,36 @@ public class UserController {
 
     // return "user/myhome";
     // }
-
+    
+    // 완료
     @GetMapping("/user/scrap")
-    public String scarp(Model model) {
-    User principal = (User) session.getAttribute("principal");
-    if (principal != null) {
-    List<UserScrapRespDto> usDtos =
-    scrapRepository.findAllScrapByUserId(principal.getUserId());
-    for (UserScrapRespDto usDto : usDtos) {
-    long dDay = DateUtil.dDay(usDto.getEndDate());
-    usDto.setLeftTime(dDay);
-    List<String> insertList = new ArrayList<>();
-    for (RequiredSkillWriteReqDto skill :
-    skillRepository.findByJobsSkill(usDto.getJobsId())) {
-    insertList.add(skill.getSkill());
+    public @ResponseBody ResponseEntity<?> scarp(@LoginUser User user) {
+        List<UserScrapRespDto> usDtos = scrapRepository.findAllScrapByUserId(user.getUserId());
+            for (UserScrapRespDto usDto : usDtos) {
+                long dDay = DateUtil.dDay(usDto.getJobs().getEndDate());
+                usDto.setLeftTime(dDay);
+            }
+        return new ResponseEntity<>(new ResponseDto<>(1, "스크랩 보기", usDtos), HttpStatus.OK);
     }
-    usDto.setSkillList(insertList);
-    }
-    model.addAttribute("usDtos", usDtos);
-    }
-    User userPS = userRepository.findById(principal.getUserId());
-    model.addAttribute("user", userPS);
-    return "user/scrap";
-    }
-
-    // @GetMapping("/user/offer")
-    // public String offer(Model model) {
-    // User principal = (User) session.getAttribute("principal");
-    // List<ApllyStatusUserRespDto> aDtos =
-    // applyRepository.findAllByUserIdtoApply(principal.getUserId());
-    // model.addAttribute("aDtos", aDtos);
-    // List<SuggestToUserRespDto> sDtos =
-    // suggestRepository.findAllGetOfferByUserId(principal.getUserId());
-    // model.addAttribute("sDtos", sDtos);
-    // User userPS = userRepository.findById(principal.getUserId());
-    // model.addAttribute("user", userPS);
-    // return "user/offer";
+    // 완료
+    // @GetMapping("/comp/apply")
+    // public ResponseEntity<?> apply(@LoginComp Comp comp) {
+    //     // 여기도 마찬가지로 사진은 세션에서 가져가면 됩니다. 사진 업데이트하고 세션 업데이트 + 페이지 리로드 필요
+    //     CompApplyOutDto result = compRepository.findApplyAndSuggestByCompId(comp.getCompId());
+    //     return new ResponseEntity<>(new ResponseDto<>(1, "기업의 지원 및 제안 페이지 데이터 조회 완료", result), HttpStatus.OK);
     // }
+
+
+
+    // 수정
+    @GetMapping("/user/offer")
+    public @ResponseBody ResponseEntity<?> offer(@LoginUser User user) {
+        //List<ApplyStatusUserRespDto> aDtos = applyRepository.findAllByUserIdtoApply(user.getUserId());
+        //List<SuggestToUserRespDto> sDtos = suggestRepository.findAllGetOfferByUserId(user.getUserId());
+        UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getUserId());
+        // User userPS = userRepository.findById(user.getUserId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", result), HttpStatus.OK);
+    }
 
     // 완료
     @GetMapping("/logout")
@@ -291,8 +285,8 @@ public class UserController {
     // 완료
     @GetMapping("/user/profileUpdateForm")
     public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User user) {
-    UserUpdatePhotoOutDto userPS = userRepository.findByUserPhoto(user.getUserId());
-    return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
+        UserUpdatePhotoOutDto userPS = userRepository.findByUserPhoto(user.getUserId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
     // 완료
