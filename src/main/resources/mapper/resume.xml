@@ -312,6 +312,52 @@
 
     </resultMap>
 
+    <resultMap id="applyAndSuggetDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ApplyAndSuggestOutDto">
+        <!-- <id property="compId" column="comp_id"/> -->
+        <id property="applyId" column="apply_id"/>
+        <association property="applyOutDto" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ApplyAndSuggestOutDto$ApplyOutDto">
+            <id property="applyId" column="apply_id"/>
+            <result property="applyState" column="state"/>
+            <association property="resumeDto" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ApplyAndSuggestOutDto$ApplyOutDto$ResumeDto">
+                <id property="resumeId" column="resume_id"/>
+                <result property="title" column="title"/>
+                <result property="education" column="education"/>
+                <result property="career" column="career"/>
+                <result property="address" column="address"/>
+                <result property="content" column="content"/>
+                <result property="link" column="link"/>
+                <association property="userDto" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ApplyAndSuggestOutDto$ApplyOutDto$ResumeDto$UserDto">
+                    <id property="userId" column="user_id"/>
+                    <result property="photo" column="photo"/>
+                    <result property="name" column="name"/>
+                    <result property="birth" column="birth"/>
+                </association>
+                <association property="compScrapDto" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ApplyAndSuggestOutDto$ApplyOutDto$ResumeDto$CompScrapDto">
+                    <id property="compScrapId" column="comp_scrap_id"/>
+                </association>
+                <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+            </association>
+        </association>
+
+    </resultMap>
+    <select id="findApplyResumeByApplyIdAndCompId" resultMap="applyAndSuggetDto">
+        select * from apply_tb a join resume_tb r
+            on a.resume_id = r.resume_id 
+            join jobs_tb j on a.jobs_id = j.jobs_id           
+            join user_tb u
+            on u.user_id = r.user_id
+            left outer join comp_scrap_tb s 
+            on s.resume_id = r.resume_id
+            where apply_id = #{applyId}
+    </select>
+
+    <select id="findSuggestState" resultType="shop.mtcoding.project.dto.resume.ResumeResp$ApplyAndSuggestOutDto$SuggestOutDto">
+        select * from suggest_tb s join jobs_tb j
+        on s.jobs_id = j.jobs_id join comp_tb c
+        on c.comp_id = j.comp_id join apply_tb a
+        on a.resume_id = j.jobs_id
+        where apply_id = #{applyId} and c.comp_id = #{compId}
+    </select>
 
     <select id="findDetailPublicResumebyById" resultMap="ResumeDetailRespDto">
          select *
@@ -329,7 +375,7 @@
           join suggest_tb s
           on r.resume_id = s.resume_id
           where r.state = 1
-          and a.apply_id = #{applyId}
+          and r.resume_id = #{resumeId}
       </select>
 
     <insert id="insert" useGeneratedKeys="true"  keyProperty="rDto.resumeId">

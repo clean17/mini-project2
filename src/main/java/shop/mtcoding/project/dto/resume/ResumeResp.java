@@ -107,6 +107,59 @@ public class ResumeResp {
         private Integer resumeId;
     }
 
+
+    @Getter @Setter
+    public static class ApplyAndSuggestOutDto {
+        // private Integer compId;
+        private Integer applyId;
+        private ApplyOutDto applyOutDto;
+        private SuggestOutDto suggestOutDto;
+
+        @Getter
+        @Setter
+        public static class SuggestOutDto {
+            private Integer suggestId;
+            private Integer state;
+        }
+
+        @Getter
+        @Setter
+        public static class ApplyOutDto {
+            private Integer applyId;
+            private Integer applyState;
+            private ResumeDto resumeDto;
+
+
+            @Getter
+            @Setter
+            public static class ResumeDto {
+                private Integer resumeId;
+                private String title;
+                private String education;
+                private String career;
+                private String address;
+                private String content;
+                private String link;
+                private List<String> skillList;
+                private UserDto userDto;
+                private CompScrapDto compScrapDto;
+                @Getter
+                @Setter
+                public static class UserDto {
+                    private Integer userId;
+                    private String photo;
+                    private String name;
+                    private String birth;
+                }
+                @Getter
+                @Setter
+                public static class CompScrapDto {
+                    private Integer compScrapId;
+                }
+            }
+        }
+    }
+
     @Getter
     @Setter
     @ToString
