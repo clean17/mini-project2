@@ -246,7 +246,7 @@ public class CompController {
     // HttpStatus.OK);
     // }
 
-    // 수정
+    // 완료
     @PutMapping("/comp/profileUpdate")
     public @ResponseBody ResponseEntity<?> profileUpdate(@LoginComp Comp comp, MultipartFile photo) throws Exception {
     CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
