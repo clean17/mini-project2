@@ -73,20 +73,43 @@
       select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = #{jobsId}
     </select>
 
-    <select id="findAllScrapByUserId" resultType="shop.mtcoding.project.dto.scrap.UserScrapResp$UserScrapRespDto">
-      select us.user_scrap_id,
-              j.jobs_id,
-              j.position,
-              j.career,
-              j.title,
-              c.comp_name,
-              j.end_date
-              from user_scrap_tb us
-              join jobs_tb j ON us.jobs_id = j.jobs_id
-              join comp_tb c 
-              on c.comp_id = j.comp_id
-              where us.user_id = #{userId}
+    <resultMap id="UserScrapRespDto" type="shop.mtcoding.project.dto.scrap.UserScrapResp$UserScrapRespDto">
+                <id property="userScrapId" column="user_scrap_id"/>
+                <id property="jobsId" column="jobs_id"/>
+              
+	        <association property="Comp" javaType="shop.mtcoding.project.dto.scrap.UserScrapResp$UserScrapRespDto$CompDto">
+	            <result property="compName" column="comp_name"/>
+          </association>
+
+	        <association property="Jobs" javaType="shop.mtcoding.project.dto.scrap.UserScrapResp$UserScrapRespDto$JobsDto">
+              <result property="title" column="title"/>
+              <result property="position" column="position"/>
+              <result property="career" column="career"/>
+              <result property="endDate" column="end_date"/>
+          </association>
+    
+        <collection property="skillList" column="jobs_id" select="findByJobsSkill"/>
+
+    </resultMap>
+
+    <select id="findByJobsSkill" resultType="java.lang.String">
+      select distinct skill from required_skill_tb where jobs_id = #{jobsId}
     </select>
+
+   <select id="findAllScrapByUserId" resultMap="UserScrapRespDto">
+      select us.user_scrap_id,
+                j.jobs_id,
+                j.position,
+                j.career,
+                j.title,
+                c.comp_name,
+                j.end_date
+                from user_scrap_tb us
+                join jobs_tb j ON us.jobs_id = j.jobs_id
+                join comp_tb c 
+                on c.comp_id = j.comp_id
+                where us.user_id = #{userId}
+  </select>
 
     <select id="findByUserId" resultType="shop.mtcoding.project.model.scrap.UserScrap">
       select * from user_scrap_tb where user_scrap_id = #{userScrapId}

@@ -1,5 +1,7 @@
 package shop.mtcoding.project.controller;
 
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.common.ResponseDto;
+import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
@@ -38,6 +41,7 @@ import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.UserService;
 import shop.mtcoding.project.util.CheckValid;
+import shop.mtcoding.project.util.DateUtil;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
@@ -72,7 +76,6 @@ public class UserController {
         // CheckValid.inNullApi(userPS, "동일한 email이 존재합니다.");
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
-
 
     // 완료
     @GetMapping("/user/join")
@@ -236,29 +239,17 @@ public class UserController {
 
     // return "user/myhome";
     // }
-
-    // @GetMapping("/user/scrap")
-    // public String scarp(Model model) {
-    // User principal = (User) session.getAttribute("principal");
-    // if (principal != null) {
-    // List<UserScrapRespDto> usDtos =
-    // scrapRepository.findAllScrapByUserId(principal.getUserId());
-    // for (UserScrapRespDto usDto : usDtos) {
-    // long dDay = DateUtil.dDay(usDto.getEndDate());
-    // usDto.setLeftTime(dDay);
-    // List<String> insertList = new ArrayList<>();
-    // for (RequiredSkillWriteReqDto skill :
-    // skillRepository.findByJobsSkill(usDto.getJobsId())) {
-    // insertList.add(skill.getSkill());
-    // }
-    // usDto.setSkillList(insertList);
-    // }
-    // model.addAttribute("usDtos", usDtos);
-    // }
-    // User userPS = userRepository.findById(principal.getUserId());
-    // model.addAttribute("user", userPS);
-    // return "user/scrap";
-    // }
+    
+    // 수정
+    @GetMapping("/user/scrap")
+    public @ResponseBody ResponseEntity<?> scarp(@LoginUser User user) {
+        List<UserScrapRespDto> usDtos = scrapRepository.findAllScrapByUserId(user.getUserId());
+            for (UserScrapRespDto usDto : usDtos) {
+                long dDay = DateUtil.dDay(usDto.getJobs().getEndDate());
+                usDto.setLeftTime(dDay);
+            }
+        return new ResponseEntity<>(new ResponseDto<>(1, "스크랩 보기", usDtos), HttpStatus.OK);
+    }
 
     // @GetMapping("/user/offer")
     // public String offer(Model model) {
@@ -284,8 +275,8 @@ public class UserController {
     // 완료
     @GetMapping("/user/profileUpdateForm")
     public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User user) {
-    UserUpdatePhotoOutDto userPS = userRepository.findByUserPhoto(user.getUserId());
-    return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
+        UserUpdatePhotoOutDto userPS = userRepository.findByUserPhoto(user.getUserId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
     // 완료
