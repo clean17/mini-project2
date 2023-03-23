@@ -94,19 +94,20 @@ public class UserService {
     }
 
     @Transactional
-    public User 프로필사진수정(MultipartFile photo, Integer pricipalId) {
+    public String 프로필사진수정(MultipartFile photo, Integer pricipalId) {
 
         String uuidImageName = PathUtil.writeImageFile(photo);
 
         User userPS = userRepository.findById(pricipalId);
         userPS.setPhoto(uuidImageName);
         try {
-            // userRepository.updatePhotoById(uuidImageName, pricipalId);
-            userRepository.updatePhotoById("/images/033fad18-eeb0-4d44-a99c-dfa00955ec24_logo192.png", pricipalId);
+            userRepository.updatePhotoById(uuidImageName, pricipalId);
+            // userRepository.updatePhotoById("/images/033fad18-eeb0-4d44-a99c-dfa00955ec24_logo192.png",
+            // pricipalId);
         } catch (Exception e) {
             throw new CustomException("사진 수정에 실패 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return userPS;
+        return uuidImageName;
     }
 
     @Transactional
