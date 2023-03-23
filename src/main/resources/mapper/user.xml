@@ -12,6 +12,10 @@
         select * from user_tb where user_id = #{userId}
     </select>
 
+    <select id="findById1" resultType="shop.mtcoding.project.dto.user.UserResp$UserUpdateRespDto">
+          select * from user_tb where user_id = #{userId}
+    </select>
+
     <resultMap id="UserDataRespDto" type="shop.mtcoding.project.dto.user.UserResp$UserDataRespDto">
         <id property="userId" column="user_id"/>
         <result property="email" column="email"/>
@@ -71,5 +75,7 @@
     <delete id="deleteById">
         delete from user_tb where id = #{uDto.userId}
     </delete>
+
+    
 </mapper>
    

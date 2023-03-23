@@ -86,17 +86,17 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
     }
 
-    // 수정
-    // @GetMapping("/user/join")
-    // public String joinForm() {
-    // return "user/joinForm";
-    // }
+    // 완료
+    @GetMapping("/user/join")
+    public String joinForm() {
+        return "user/joinForm";
+    }
 
-    // 수정
-    // @GetMapping("/user/login")
-    // public String loginForm() {
-    // return "user/loginForm";
-    // }
+    // 완료
+    @GetMapping("/user/login")
+    public String loginForm() {
+        return "user/loginForm";
+    }
 
     // 완료
     @PostMapping("/user/login")
@@ -176,14 +176,12 @@ public class UserController {
 
     }
 
-    // 수정
-    // @GetMapping("/user/update")
-    // public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user,
-    // UserUpdateReqDto userUpdateReqDto) {
-    // UserUpdateRespDto userPS = userRepository.findById(user.getUserId());
-    // return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS),
-    // HttpStatus.OK);
-    // }
+    // 완료
+    @GetMapping("/user/update")
+    public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user, UserUpdateReqDto userUpdateReqDto) {
+        UserUpdateRespDto userPS = userRepository.findById1(user.getUserId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
+    }
 
     @GetMapping("/user/myhome")
     public String myhome(Model model) {
@@ -275,12 +273,12 @@ public class UserController {
         return "user/offer";
     }
 
-    // 수정
-    // @GetMapping("/logout")
-    // public String logout() {
-    // session.invalidate();
-    // return "redirect:/";
-    // }
+    // 완료
+    @GetMapping("/logout")
+    public String logout() {
+        session.invalidate();
+        return "redirect:/";
+    }
 
     // 완료
     @GetMapping("/user/profileUpdateForm")
