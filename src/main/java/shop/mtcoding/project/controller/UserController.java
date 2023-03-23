@@ -35,6 +35,7 @@ import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
+import shop.mtcoding.project.dto.user.UserReq.UserUpdatePhotoReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
@@ -293,6 +294,15 @@ public class UserController {
         return "redirect:/";
     }
 
+    // 완료
+    // @GetMapping("/user/update")
+    // public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user,
+    // UserUpdateReqDto userUpdateReqDto) {
+    // UserUpdateRespDto userPS = userRepository.findById1(user.getUserId());
+    // return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS),
+    // HttpStatus.OK);
+    // }
+
     // 수정
     // @GetMapping("/user/profileUpdateForm")
     // public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User
@@ -302,16 +312,30 @@ public class UserController {
     // HttpStatus.OK);
     // }
 
-    // 수정
-    // @PutMapping("/user/profileUpdate")
-    // public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser User user,
-    // MultipartFile photo) throws Exception {
-    // CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
-    // User userPS = userService.프로필사진수정(photo, user.getUserId());
-    // session.setAttribute("principal", userPS);
-    // return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", userPS),
+    // 완료
+    // @PutMapping("/user/update")
+    // public @ResponseBody ResponseEntity<?> updateUser(@LoginUser User user,
+    // @RequestBody @Valid UserUpdateReqDto userUpdateReqDto, BindingResult
+    // bindingResult) {
+    // userUpdateReqDto.setPassword(Sha256.encode(userUpdateReqDto.getPassword()));
+
+    // UserUpdateReqDto userPS = userService.개인정보수정(userUpdateReqDto,
+    // user.getUserId());
+    // User principal = userRepository.findById(userPS.getUserId());
+    // session.setAttribute("principal", principal);
+    // return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", userPS),
     // HttpStatus.OK);
     // }
+    // 수정
+    @PutMapping("/user/profileUpdate")
+    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo,
+            UserUpdatePhotoReqDto userUpdatePhotoReqDto) throws Exception {
+        CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
+        UserUpdatePhotoReqDto userPS = userService.프로필사진수정(userUpdatePhotoReqDto, photo, user.getUserId());
+        session.setAttribute("principal", userPS);
+        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", userPS),
+                HttpStatus.OK);
+    }
 }
 
 // ⬜ 회원가입 "/user/join"
