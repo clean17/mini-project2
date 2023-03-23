@@ -1,8 +1,5 @@
 package shop.mtcoding.project.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -11,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,21 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusUserRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
-import shop.mtcoding.project.dto.interest.InterestResp.InterestChangeRespDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
-import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
-import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
-import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillRespDto;
-import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
-import shop.mtcoding.project.dto.user.UserReq.UserUpdatePhotoReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
+import shop.mtcoding.project.dto.user.UserResp.UserUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.interest.InterestRepository;
@@ -50,8 +38,6 @@ import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.UserService;
 import shop.mtcoding.project.util.CheckValid;
-import shop.mtcoding.project.util.DateUtil;
-import shop.mtcoding.project.util.Script;
 import shop.mtcoding.project.util.Sha256;
 
 @Controller
@@ -328,12 +314,16 @@ public class UserController {
     // }
     // 수정
     @PutMapping("/user/profileUpdate")
-    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo,
-            UserUpdatePhotoReqDto userUpdatePhotoReqDto) throws Exception {
+    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo) throws Exception {
         CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
-        UserUpdatePhotoReqDto userPS = userService.프로필사진수정(userUpdatePhotoReqDto, photo, user.getUserId());
-        session.setAttribute("principal", userPS);
-        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", userPS),
+        String result = userService.프로필사진수정(photo, user.getUserId());
+        user.setPhoto(result);
+        UserUpdatePhotoOutDto update = UserUpdatePhotoOutDto.builder()
+                .userId(user.getUserId())
+                .photo(result)
+                .build();
+        session.setAttribute("principal", user);
+        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", update),
                 HttpStatus.OK);
     }
 }

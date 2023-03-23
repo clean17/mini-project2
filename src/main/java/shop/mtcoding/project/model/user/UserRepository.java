@@ -34,8 +34,7 @@ public interface UserRepository {
 
     public int updateById(@Param("uDto") UserUpdateReqDto uDto);
 
-    public int updatePhotoById(@Param("photo") String photo,
-            @Param("userId") Integer userId);
+    public int updatePhotoById(@Param("photo") String photo, @Param("userId") Integer userId);
 
     public int deleteById(@Param("uDto") UserDeleteRespDto uDto);
 

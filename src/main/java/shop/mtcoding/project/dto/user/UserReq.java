@@ -63,13 +63,6 @@ public class UserReq {
 
     @Getter
     @Setter
-    public static class UserUpdatePhotoReqDto {
-        private Integer userId;
-        private String photo;
-    }
-
-    @Getter
-    @Setter
     public static class UserPasswordReqDto {
         private Integer userId;
         private String password;

@@ -10,7 +10,6 @@ import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
-import shop.mtcoding.project.dto.user.UserReq.UserUpdatePhotoReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.model.user.User;
@@ -85,7 +84,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserUpdatePhotoReqDto 프로필사진수정(UserUpdatePhotoReqDto userUpdatePhotoReqDto, MultipartFile photo,
+    public String 프로필사진수정(MultipartFile photo,
             Integer pricipalId) {
 
         String uuidImageName = PathUtil.writeImageFile(photo);
@@ -93,11 +92,12 @@ public class UserService {
         User userPS = userRepository.findById(pricipalId);
         userPS.setPhoto(uuidImageName);
         try {
-            // userRepository.updatePhotoById(uuidImageName, pricipalId);
-            userRepository.updatePhotoById("/images/033fad18-eeb0-4d44-a99c-dfa00955ec24_logo192.png", pricipalId);
+            userRepository.updatePhotoById(uuidImageName, pricipalId);
+            // userRepository.updatePhotoById("/images/033fad18-eeb0-4d44-a99c-dfa00955ec24_logo192.png",
+            // pricipalId);
         } catch (Exception e) {
             throw new CustomException("사진 수정에 실패 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return userUpdatePhotoReqDto;
+        return uuidImageName;
     }
 }
