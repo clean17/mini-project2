@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import shop.mtcoding.project.dto.comp.CompReq.CompJoinReqDto;
 import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompUpdateRespDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompWriteJobsRespDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 
@@ -25,6 +26,8 @@ public interface CompRepository {
         public CompWriteJobsRespDto findByIdToJobs(Integer CompId);
 
         public Comp findByCompId(@Param("compId") Integer compId);
+
+        public CompUpdateRespDto findByCompId1(@Param("compId") Integer compId);
 
         public int insert(@Param("uDto") CompJoinReqDto uDto);
 

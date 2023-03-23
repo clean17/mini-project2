@@ -7,6 +7,16 @@ public class CompResp {
 
     @Getter
     @Setter
+    public static class CompUpdateRespDto {
+        private Integer compId;
+        private String password;
+        private String compName;
+        private String representativeName;
+        private String businessNumber;
+    }
+
+    @Getter
+    @Setter
     public static class CompLoginRespDto {
         private Integer compId;
         private String email;
