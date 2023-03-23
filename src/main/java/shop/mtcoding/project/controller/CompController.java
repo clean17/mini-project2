@@ -227,7 +227,7 @@ public class CompController {
         return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", compPS), HttpStatus.OK);
     }
 
-    // 수정
+    // 완료
     @GetMapping("/comp/update")
     public @ResponseBody ResponseEntity<?> updateForm(@LoginComp Comp comp, CompUpdateRespDto compUpdateRespDto) {
         CompUpdateRespDto compPS = compRepository.findByCompId1(comp.getCompId());
