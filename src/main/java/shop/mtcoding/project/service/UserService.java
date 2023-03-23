@@ -84,8 +84,7 @@ public class UserService {
     }
 
     @Transactional
-    public String 프로필사진수정(MultipartFile photo,
-            Integer pricipalId) {
+    public String 프로필사진수정(MultipartFile photo, Integer pricipalId) {
 
         String uuidImageName = PathUtil.writeImageFile(photo);
 

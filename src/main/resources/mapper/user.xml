@@ -16,6 +16,10 @@
           select * from user_tb where user_id = #{userId}
     </select>
 
+    <select id="findByUserPhoto" resultType="shop.mtcoding.project.dto.user.UserResp$UserUpdatePhotoOutDto">
+        select * from user_tb where user_id = #{userId}
+    </select>
+
     <resultMap id="UserDataRespDto" type="shop.mtcoding.project.dto.user.UserResp$UserDataRespDto">
         <id property="userId" column="user_id"/>
         <result property="email" column="email"/>

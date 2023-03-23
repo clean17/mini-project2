@@ -11,6 +11,7 @@ import shop.mtcoding.project.dto.user.UserResp.UserDataRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserDeleteRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
+import shop.mtcoding.project.dto.user.UserResp.UserUpdatePhotoOutDto;
 
 @Mapper
 public interface UserRepository {
@@ -25,6 +26,8 @@ public interface UserRepository {
     public User findByUserEmail(@Param("email") String email);
 
     public User findById(@Param("userId") Integer userId);
+
+    public UserUpdatePhotoOutDto findByUserPhoto(@Param("userId") Integer userId);
 
     public UserUpdateRespDto findById1(@Param("userId") Integer userId);
 

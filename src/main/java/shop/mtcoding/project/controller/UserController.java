@@ -290,29 +290,13 @@ public class UserController {
     // }
 
     // 수정
-    // @GetMapping("/user/profileUpdateForm")
-    // public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User
-    // user) {
-    // User userPS = userRepository.findById(user.getUserId());
-    // return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS),
-    // HttpStatus.OK);
-    // }
+    @GetMapping("/user/profileUpdateForm")
+    public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User user) {
+    UserUpdatePhotoOutDto userPS = userRepository.findByUserPhoto(user.getUserId());
+    return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
+    }
 
     // 완료
-    // @PutMapping("/user/update")
-    // public @ResponseBody ResponseEntity<?> updateUser(@LoginUser User user,
-    // @RequestBody @Valid UserUpdateReqDto userUpdateReqDto, BindingResult
-    // bindingResult) {
-    // userUpdateReqDto.setPassword(Sha256.encode(userUpdateReqDto.getPassword()));
-
-    // UserUpdateReqDto userPS = userService.개인정보수정(userUpdateReqDto,
-    // user.getUserId());
-    // User principal = userRepository.findById(userPS.getUserId());
-    // session.setAttribute("principal", principal);
-    // return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", userPS),
-    // HttpStatus.OK);
-    // }
-    // 수정
     @PutMapping("/user/profileUpdate")
     public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo) throws Exception {
         CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
