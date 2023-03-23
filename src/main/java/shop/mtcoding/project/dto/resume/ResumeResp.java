@@ -26,9 +26,13 @@ public class ResumeResp {
         private String career;
         private String link;
         private List<String> skillList;
+
         private UserDto user;
+
         private CompScrapDto compScrap;
+
         private ApplyDto apply;
+        
         private SuggestDto suggest;
 
         // 유저
@@ -64,19 +68,6 @@ public class ResumeResp {
             private Integer suggestId;
             private Integer suggestState;
         }
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    public static class ResumeManageOutDto {
-        private List<ResumeManageRespDto> resumeManageRespDtos;
-
-        @Builder
-        public ResumeManageOutDto(List<ResumeManageRespDto> resumeManageRespDtos) {
-            this.resumeManageRespDtos = resumeManageRespDtos;
-        }
-
     }
 
     @Getter

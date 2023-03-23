@@ -1,6 +1,5 @@
 package shop.mtcoding.project.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -9,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomException;
+import shop.mtcoding.project.dto.apply.ApplyResp.ApplytoCompRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeCheckboxReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateInDto;
@@ -29,11 +28,9 @@ import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageOutDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSaveRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSearchRespDto;
-import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserDataRespDto;
 import shop.mtcoding.project.model.apply.Apply;
 import shop.mtcoding.project.model.apply.ApplyRepository;
@@ -70,16 +67,14 @@ public class ResumeController {
 
         List<ResumeManageRespDto> rLists = resumeRepository.findAllByUserId(user.getUserId());
 
-        ResumeManageOutDto rDto = ResumeManageOutDto.builder().resumeManageRespDtos(rLists).build();
-        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 목록 보기 성공", rDto), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 목록 보기 성공", rLists), HttpStatus.OK);
     }
 
     // 완료
     @GetMapping("/user/request/resume") // 공고에 지원할 이력서 불러오기
     public ResponseEntity<?> requestResume(@LoginUser User user) {
         List<ResumeManageRespDto> rDtos = resumeRepository.findAllByUserId(user.getUserId());
-        ResumeManageOutDto rLists = ResumeManageOutDto.builder().resumeManageRespDtos(rDtos).build();
-        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 불러오기 성공", rLists), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 불러오기 성공", rDtos), HttpStatus.OK);
     }
 
     // 완료
@@ -132,7 +127,7 @@ public class ResumeController {
 
         if (comp != null)
             num = comp.getCompId();
-        rDto = resumeRepository.findDetailPublicResumebyById(id, num);
+        rDto = resumeRepository.findDetailPublicResumebyById(id, num, num);
         return new ResponseEntity<>(new ResponseDto<>(1, "이력서 상세보기 완료", rDto), HttpStatus.OK);
     }
 
@@ -147,7 +142,7 @@ public class ResumeController {
     }
 
     @GetMapping("/comp/resume/apply/{id}")
-    public String applyResumeDetail(@PathVariable Integer id, Model model) {
+    public ResponseEntity<?> applyResumeDetail(@LoginComp Comp comp, @PathVariable Integer id) {
         if (id == null) {
             throw new CustomException("지원한 아이디가 필요합니다.");
         }
@@ -155,34 +150,26 @@ public class ResumeController {
         if (applyPS == null) {
             throw new CustomException("지원 결과 데이터가 없습니다.");
         }
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(applyPS.getResumeId(),
-                compSession.getCompId());
-        List<String> insertList = new ArrayList<>();
+        ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(applyPS.getApplyId(), applyPS.getResumeId(),
+        comp.getCompId());
 
-        for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rDto.getResumeId())) {
-            insertList.add(skill.getSkill());
-            rDto.setSkillList(insertList);
-        }
-
-        // if (compSession != null) {
+        // if (comp != null) {
         // try {
         // rDto.setSuggestState(suggestRepository
-        // .findByCompIdAndResumeId(compSession.getCompId(),
+        // .findByCompIdAndResumeId(comp.getCompId(),
         // applyPS.getResumeId()).getState());
         // } catch (Exception e) {
 
         // }
         // try {
         // ApplytoCompRespDto aDto =
-        // applyRepository.findByCompIdAndApplyId(compSession.getCompId(), id);
+        // applyRepository.findByCompIdAndApplyId(comp.getCompId(), id);
         // rDto.setApplyState(aDto.getState());
         // rDto.setApplyId(aDto.getApplyId());
         // } catch (Exception e) {
         // }
         // }
-        model.addAttribute("rDto", rDto);
-        return "/resume/resumeDetail";
+        return new ResponseEntity<>(new ResponseDto<>(1, "", rDto), HttpStatus.OK);
     }
 
 }
