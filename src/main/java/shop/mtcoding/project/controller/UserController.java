@@ -21,8 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
+import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusUserRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
+import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
@@ -240,7 +242,7 @@ public class UserController {
     // return "user/myhome";
     // }
     
-    // 수정
+    // 완료
     @GetMapping("/user/scrap")
     public @ResponseBody ResponseEntity<?> scarp(@LoginUser User user) {
         List<UserScrapRespDto> usDtos = scrapRepository.findAllScrapByUserId(user.getUserId());
@@ -251,19 +253,18 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "스크랩 보기", usDtos), HttpStatus.OK);
     }
 
-    // @GetMapping("/user/offer")
-    // public String offer(Model model) {
-    // User principal = (User) session.getAttribute("principal");
-    // List<ApllyStatusUserRespDto> aDtos =
-    // applyRepository.findAllByUserIdtoApply(principal.getUserId());
-    // model.addAttribute("aDtos", aDtos);
-    // List<SuggestToUserRespDto> sDtos =
-    // suggestRepository.findAllGetOfferByUserId(principal.getUserId());
-    // model.addAttribute("sDtos", sDtos);
-    // User userPS = userRepository.findById(principal.getUserId());
-    // model.addAttribute("user", userPS);
-    // return "user/offer";
-    // }
+    // 수정
+    @GetMapping("/user/offer")
+    public @ResponseBody ResponseEntity<?> offer(@LoginUser User user) {
+        User principal = (User) session.getAttribute("principal");
+        List<ApllyStatusUserRespDto> aDtos = applyRepository.findAllByUserIdtoApply(principal.getUserId());
+        //model.addAttribute("aDtos", aDtos);
+        List<SuggestToUserRespDto> sDtos = suggestRepository.findAllGetOfferByUserId(principal.getUserId());
+        //model.addAttribute("sDtos", sDtos);
+        User userPS = userRepository.findById(principal.getUserId());
+        //model.addAttribute("user", userPS);
+        return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", usDtos), HttpStatus.OK);
+    }
 
     // 완료
     @GetMapping("/logout")
