@@ -11,6 +11,8 @@ import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateInDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ApplyAndSuggestOutDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ApplyAndSuggestOutDto.SuggestOutDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeIdRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
@@ -29,6 +31,7 @@ public interface ResumeRepository {
         public List<ResumeIdRespDto> findResumeIdByUserId(Integer userId);
 
         public List<ResumeMatchOutDto> findMatchResumeByCompId(Integer compId);
+
         public List<ResumeMatchDto> findMatchResumeByCompId2(Integer compId);
 
         public ResumeUpdateRespDto findUpdateById(Integer resumeId);
@@ -42,18 +45,25 @@ public interface ResumeRepository {
         public List<ResumePublicOutDto> findAllResumebyState(Integer compId);
 
         public ResumeDetailRespDto findDetailPublicResumebyById(
-                        @Param("resumeId") Integer resumeId,
-                        @Param("applyId") Integer applyId,
-                        @Param("compId") Integer compId);
+                @Param("resumeId") Integer resumeId,
+                @Param("compId") Integer compId);
+        
+        public SuggestOutDto findSuggestState(
+                @Param("applyId") Integer applyId,
+                @Param("compId") Integer compId);
+        
+        public ApplyAndSuggestOutDto findApplyResumeByApplyIdAndCompId(
+                @Param("applyId") Integer applyId,
+                @Param("compId") Integer compId);
 
         public List<ResumeSearchRespDto> findResumeByCheckBox(
-                        @Param("resumeDto") ResumeCheckboxReqDto resumeDto);
+                @Param("resumeDto") ResumeCheckboxReqDto resumeDto);
 
         public int insert(
-                        @Param("rDto") ResumeWriteReqDto rDto);
+                @Param("rDto") ResumeWriteReqDto rDto);
 
         public int updateById(
-                        @Param("rDto") ResumeUpdateReqDto rDto);
+                @Param("rDto") ResumeUpdateReqDto rDto);
 
         public int deleteById(Integer resumeId);
 

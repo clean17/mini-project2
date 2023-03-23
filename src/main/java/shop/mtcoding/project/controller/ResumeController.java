@@ -19,14 +19,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.annotation.LoginUser;
+import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApplytoCompRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeCheckboxReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateInDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeUpdateReqDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteOutDto;
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ApplyAndSuggestOutDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ApplyAndSuggestOutDto.SuggestOutDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSaveRespDto;
@@ -127,49 +129,30 @@ public class ResumeController {
 
         if (comp != null)
             num = comp.getCompId();
-        rDto = resumeRepository.findDetailPublicResumebyById(id, num, num);
+        rDto = resumeRepository.findDetailPublicResumebyById(id, num);
         return new ResponseEntity<>(new ResponseDto<>(1, "이력서 상세보기 완료", rDto), HttpStatus.OK);
     }
 
     @GetMapping("/comp/resume/search")
     public ResponseEntity<?> searchCheckbox(ResumeCheckboxReqDto rDto) {
-        if (rDto.getCareer() == null || rDto.getCareer().isEmpty()) {
-            rDto.setCareer("");
-        }
+        if (rDto.getCareer() == null || rDto.getCareer().isEmpty()) rDto.setCareer("");
         List<ResumeSearchRespDto> rDtos = resumeRepository.findResumeByCheckBox(rDto);
-
         return new ResponseEntity<>(new ResponseDto<>(1, "검색 성공", rDtos), HttpStatus.OK);
     }
 
     @GetMapping("/comp/resume/apply/{id}")
     public ResponseEntity<?> applyResumeDetail(@LoginComp Comp comp, @PathVariable Integer id) {
         if (id == null) {
-            throw new CustomException("지원한 아이디가 필요합니다.");
+            throw new CustomApiException("지원한 아이디가 필요합니다.");
         }
         Apply applyPS = applyRepository.findByApplyId(id);
         if (applyPS == null) {
-            throw new CustomException("지원 결과 데이터가 없습니다.");
+            throw new CustomApiException("지원 결과 데이터가 없습니다.");
         }
-        ResumeDetailRespDto rDto = resumeRepository.findDetailPublicResumebyById(applyPS.getApplyId(), applyPS.getResumeId(),
-        comp.getCompId());
-
-        // if (comp != null) {
-        // try {
-        // rDto.setSuggestState(suggestRepository
-        // .findByCompIdAndResumeId(comp.getCompId(),
-        // applyPS.getResumeId()).getState());
-        // } catch (Exception e) {
-
-        // }
-        // try {
-        // ApplytoCompRespDto aDto =
-        // applyRepository.findByCompIdAndApplyId(comp.getCompId(), id);
-        // rDto.setApplyState(aDto.getState());
-        // rDto.setApplyId(aDto.getApplyId());
-        // } catch (Exception e) {
-        // }
-        // }
-        return new ResponseEntity<>(new ResponseDto<>(1, "", rDto), HttpStatus.OK);
+        ApplyAndSuggestOutDto rDto = resumeRepository.findApplyResumeByApplyIdAndCompId(applyPS.getApplyId(), comp.getCompId());  
+        SuggestOutDto sDto = resumeRepository.findSuggestState(applyPS.getApplyId(), comp.getCompId());
+        rDto.setSuggestOutDto(sDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안이력서 조회 성공", rDto), HttpStatus.OK);
     }
 
 }
