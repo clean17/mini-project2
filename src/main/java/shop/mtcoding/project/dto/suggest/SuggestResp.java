@@ -52,6 +52,7 @@ public class SuggestResp {
     @Setter
     public static class SuggestToCompRespDto {
         private Integer suggestId;
+        private Integer compId;
         private Integer jobsId;
         private Integer resumeId;
         private String title;

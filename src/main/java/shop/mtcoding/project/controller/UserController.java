@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApllyStatusUserRespDto;
+import shop.mtcoding.project.dto.apply.ApplyResp.ApplyStatusUserRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
 import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
@@ -256,14 +256,10 @@ public class UserController {
     // 수정
     @GetMapping("/user/offer")
     public @ResponseBody ResponseEntity<?> offer(@LoginUser User user) {
-        User principal = (User) session.getAttribute("principal");
-        List<ApllyStatusUserRespDto> aDtos = applyRepository.findAllByUserIdtoApply(principal.getUserId());
-        //model.addAttribute("aDtos", aDtos);
-        List<SuggestToUserRespDto> sDtos = suggestRepository.findAllGetOfferByUserId(principal.getUserId());
-        //model.addAttribute("sDtos", sDtos);
-        User userPS = userRepository.findById(principal.getUserId());
-        //model.addAttribute("user", userPS);
-        return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", usDtos), HttpStatus.OK);
+        List<ApplyStatusUserRespDto> aDtos = applyRepository.findAllByUserIdtoApply(user.getUserId());
+        List<SuggestToUserRespDto> sDtos = suggestRepository.findAllGetOfferByUserId(user.getUserId());
+        // User userPS = userRepository.findById(user.getUserId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", null), HttpStatus.OK);
     }
 
     // 완료

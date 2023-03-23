@@ -43,7 +43,7 @@
         where j.comp_id = #{compId}
     </select>
 
-    <select id="findAllByUserIdtoApply" resultType="shop.mtcoding.project.dto.apply.ApplyResp$ApllyStatusUserRespDto">
+    <select id="findAllByUserIdtoApply" resultType="shop.mtcoding.project.dto.apply.ApplyResp$ApplyStatusUserRespDto">
       select a.apply_id, a.resume_id, a.jobs_id, a.state, j.title jobs_title, r.title resume_title,  j.position from apply_tb a join jobs_tb j
         on a.jobs_id = j.jobs_id join resume_tb r
         on a.resume_id = r.resume_id
