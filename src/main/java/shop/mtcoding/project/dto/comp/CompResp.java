@@ -1,9 +1,23 @@
 package shop.mtcoding.project.dto.comp;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 public class CompResp {
+
+    @Getter
+    @Setter
+    public static class CompUpdatePhotoReqDto {
+        private Integer compId;
+        private String photo;
+
+        @Builder
+        public CompUpdatePhotoReqDto(Integer compId, String photo) {
+            this.compId = compId;
+            this.photo = photo;
+        }
+    }
 
     @Getter
     @Setter

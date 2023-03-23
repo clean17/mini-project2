@@ -281,15 +281,6 @@ public class UserController {
     }
 
     // 완료
-    // @GetMapping("/user/update")
-    // public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user,
-    // UserUpdateReqDto userUpdateReqDto) {
-    // UserUpdateRespDto userPS = userRepository.findById1(user.getUserId());
-    // return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS),
-    // HttpStatus.OK);
-    // }
-
-    // 수정
     @GetMapping("/user/profileUpdateForm")
     public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User user) {
     UserUpdatePhotoOutDto userPS = userRepository.findByUserPhoto(user.getUserId());
