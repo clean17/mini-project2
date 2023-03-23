@@ -20,6 +20,9 @@ import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto.JobsManageJobsRespDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto.ResumeMatchOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto.ResumeMatchDto;
+import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillRespDto;
 import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
 import shop.mtcoding.project.model.jobs.JobsRepository;
@@ -144,6 +147,49 @@ public class CompService {
         resultList.addAll(twoMatchList);
         resultList.addAll(oneMatchList);
         result.setRDto(resultList);
+        return result;
+    }
+
+    public ResumeMatchPageOutDto 추천인재(Comp comp) {
+        ResumeMatchPageOutDto result = new ResumeMatchPageOutDto();
+        result = jobsRepository.findJobsIdByCompId(comp.getCompId());
+        
+        Set<String> set = new HashSet<>(result.getSkillList());
+        List<ResumeMatchDto> fiveMatchList = new ArrayList<>();
+        List<ResumeMatchDto> fourMatchList = new ArrayList<>();
+        List<ResumeMatchDto> threeMatchList = new ArrayList<>();
+        List<ResumeMatchDto> twoMatchList = new ArrayList<>();
+        List<ResumeMatchDto> oneMatchList = new ArrayList<>();
+
+        List<ResumeMatchDto> rDtos = resumeRepository.findMatchResumeByCompId2(comp.getCompId());
+        for (ResumeMatchDto rDto : rDtos) {
+            int count = 0;
+            for (String skill : rDto.getSkillList()) {
+                if (set.contains(skill)) {
+                    count++;
+                }
+            }
+            if (count >= 5) {
+                fiveMatchList.add(rDto);
+            } else if (count >= 4) {
+                fourMatchList.add(rDto);
+            } else if (count >= 3) {
+                threeMatchList.add(rDto);
+            } else if (count >= 2) {
+                twoMatchList.add(rDto);
+            } else if (count >= 1) {
+                oneMatchList.add(rDto);
+            }
+            count = 0;
+        }
+
+        List<ResumeMatchDto> resultList = new ArrayList<>();
+        resultList.addAll(fiveMatchList);
+        resultList.addAll(fourMatchList);
+        resultList.addAll(threeMatchList);
+        resultList.addAll(twoMatchList);
+        resultList.addAll(oneMatchList);
+        result.setResumeDto(resultList);
         return result;
     }
 }

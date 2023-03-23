@@ -82,30 +82,29 @@
             where r.resume_id = #{resumeId}
     </select>
 
-<resultMap id="ResumeSaveRespDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSaveRespDto">
-        <id property="resumeId" column="resume_id"/>
-        <result property="title" column="title"/>
-        <result property="content" column="content"/>
-        <result property="education" column="education"/>
-        <result property="career" column="career"/>
-        <result property="link" column="link"/>
-        <result property="state" column="state"/>
+    <resultMap id="ResumeSaveRespDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSaveRespDto">
+            <id property="resumeId" column="resume_id"/>
+            <result property="title" column="title"/>
+            <result property="content" column="content"/>
+            <result property="education" column="education"/>
+            <result property="career" column="career"/>
+            <result property="link" column="link"/>
+            <result property="state" column="state"/>
 
-		<association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSaveRespDto$UserDto">
-	        	  <id property="userId" column="user_id"/>
-        		  <result property="email" column="email"/>
-	  		      <result property="password" column="password"/>
-        		  <result property="name" column="name"/>
-        		  <result property="birth" column="birth"/>
-        		  <result property="tel" column="tel"/>
-        		  <result property="photo" column="photo"/>
-        		  <result property="address" column="address"/>
+            <association property="user" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeSaveRespDto$UserDto">
+                    <id property="userId" column="user_id"/>
+                    <result property="email" column="email"/>
+                    <result property="password" column="password"/>
+                    <result property="name" column="name"/>
+                    <result property="birth" column="birth"/>
+                    <result property="tel" column="tel"/>
+                    <result property="photo" column="photo"/>
+                    <result property="address" column="address"/>
 
-        	</association> 
+                </association> 
 
-        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
-    
-</resultMap>
+            <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    </resultMap>
 
     <select id="findById" resultMap="ResumeSaveRespDto">
         select * from resume_tb r 
@@ -138,12 +137,38 @@
         where u.user_id = #{userId}
     </select>
 
-    <select id="findAllResumebyState" resultType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeReadRespDto">
+    <!-- <select id="findAllResumebyState" resultType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeReadRespDto">
         select  r.resume_id, row_number()over(partition by u.user_id order by u.user_id ) num , 
             u.user_id, u.photo, u.name, u.birth, r.education, u.address,r.title, r.career, r.state
             from resume_tb r
             join user_tb u
             on r.user_id = u.user_id
+            where r.state = 1
+    </select> -->
+    <resultMap id="readPublicResumeDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumePublicOutDto">
+        <id property="resumeId" column="resume_id"/>
+        <result property="title" column="title"/>
+        <result property="career" column="career"/>
+        <result property="state" column="state"/>
+        <association property="usetDto" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumePublicOutDto$UserDto">
+            <id property="userId" column="user_id"/>
+            <result property="photo" column="photo"/>
+            <result property="name" column="name"/>
+            <result property="address" column="address"/>
+        </association>
+        <association property="compScrapDto" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumePublicOutDto$CompScrapDto">
+            <id property="compScrapId" column="comp_scrap_id"/>
+        </association>
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    </resultMap>
+
+    <select id="findAllResumebyState" resultMap="readPublicResumeDto">
+        select  row_number()over(partition by u.user_id order by u.user_id ) num , *
+            from resume_tb r
+            join user_tb u
+            on r.user_id = u.user_id
+            left outer join comp_scrap_tb s
+            on s.resume_id = r.resume_id
             where r.state = 1
     </select>
 
@@ -192,6 +217,7 @@
         r.career regexp #{resumeDto.career} 
         group by r.resume_id
     </select>
+
     <resultMap id="matchResumeDto" type="shop.mtcoding.project.dto.comp.CompResp$CompHomeOutDto$ResumeMatchOutDto">
             <id property="resumeId" column="resume_id"/>
             <result property="address" column="address"/>
@@ -219,6 +245,38 @@
             )
             and r.state = 1
     </select>
+
+    <resultMap id="matchResumeDto2" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumeMatchPageOutDto$ResumeMatchDto">
+        <id property="resumeId" column="resume_id"/>
+        <result property="address" column="address"/>
+        <result property="title" column="title"/>
+        <result property="education" column="education"/>
+        <result property="career" column="career"/>
+        <result property="state" column="state"/>
+        <association property="userDto" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeMatchPageOutDto$ResumeMatchDto$UserDto">
+            <id property="userId" column="user_id"/>
+            <result property="name" column="name"/>
+            <result property="photo" column="photo"/>
+        </association>
+        <association property="compScrapDto" javaType="shop.mtcoding.project.dto.resume.ResumeResp$ResumeMatchPageOutDto$ResumeMatchDto$CompScrapDto">
+            <id property="compScrapId" column="comp_scrap_id"/>
+        </association>
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    </resultMap>
+
+<select id="findMatchResumeByCompId2" resultMap="matchResumeDto2">
+    select * from resume_tb r join user_tb u
+        on r.user_id = u.user_id  left outer join comp_scrap_tb s
+        on s.resume_id = r.resume_id
+        where r.resume_id in
+        ( select distinct resume_id from resume_skill_tb
+        where skill in
+        ( select distinct skill from required_skill_tb r join jobs_tb j
+        on r.jobs_id = j.jobs_id
+        where j.comp_id = #{compId} ) 
+        )
+        and r.state = 1
+</select>
 
     <resultMap id="ResumeDetailRespDto" type="shop.mtcoding.project.dto.resume.ResumeResp$ResumeDetailRespDto">
                  <id property="resumeId" column="resume_id"/>

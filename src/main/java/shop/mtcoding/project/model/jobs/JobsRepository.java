@@ -11,13 +11,13 @@ import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsWriteReqDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsCheckOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsDetailOutDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsIdRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMatchRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSuggestRespDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto;
 
 @Mapper
 public interface JobsRepository {
@@ -29,7 +29,7 @@ public interface JobsRepository {
 
     public List<JobsSuggestRespDto> findAllToSuggestReq(Integer compId);
 
-    public List<JobsIdRespDto> findJobsIdByCompId(Integer CompId);
+    public ResumeMatchPageOutDto findJobsIdByCompId(Integer CompId);
 
     public int insert(
         @Param("jDto") JobsWriteReqDto jDto

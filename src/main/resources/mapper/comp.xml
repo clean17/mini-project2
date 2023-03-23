@@ -27,7 +27,6 @@
       SELECT * FROM comp_tb where comp_id = #{compId}
     </select>
 
-
     <!-- 기업apply/suggest -->
     <resultMap id="applyAndSuggestDto" type="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto">
         <id property="compId" column="comp_id"/>
