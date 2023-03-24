@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.annotation.LoginUser;
+import shop.mtcoding.project.config.auth.LComp;
+import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.common.ResponseDto;
@@ -36,7 +38,6 @@ import shop.mtcoding.project.dto.resume.ResumeResp.ResumeSearchRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserDataRespDto;
 import shop.mtcoding.project.model.apply.Apply;
 import shop.mtcoding.project.model.apply.ApplyRepository;
-import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.resume.ResumeRepository;
 import shop.mtcoding.project.model.skill.SkillRepository;
 import shop.mtcoding.project.model.suggest.SuggestRepository;
@@ -91,10 +92,10 @@ public class ResumeController {
 
     //완료
     @PutMapping("/user/resume/update")
-    public ResponseEntity<?> saveTempResume(@LoginUser User user,
+    public ResponseEntity<?> saveTempResume(@LoginUser LUser user,
             @Valid ResumeUpdateReqDto resumeUpdateReqDto) {
 
-        ResumeUpdateInDto rDto = resumeService.이력서수정(resumeUpdateReqDto, user.getUserId());
+        ResumeUpdateInDto rDto = resumeService.이력서수정(resumeUpdateReqDto, user.getId());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "수정 완료!", rDto), HttpStatus.CREATED);
     }
@@ -102,13 +103,13 @@ public class ResumeController {
     // 완료
     @GetMapping("/user/resume/write")
     @ResponseBody
-    public ResponseEntity<?> writeResumeForm(@LoginUser User user) {
-        UserDataRespDto userPS = userRepository.findByUserId(user.getUserId());
+    public ResponseEntity<?> writeResumeForm(@LoginUser LUser user) {
+        UserDataRespDto userPS = userRepository.findByUserId(user.getId());
         return ResponseEntity.ok().body(userPS);
     }
     //완료
     @GetMapping("/user/resume/{id}/update")
-    public ResponseEntity<?> updateResumeForm(@LoginUser User user, @PathVariable Integer id) {
+    public ResponseEntity<?> updateResumeForm(@LoginUser LUser user, @PathVariable Integer id) {
         if (user == null) {
             throw new CustomException("인증이 되지 않았습니다", HttpStatus.UNAUTHORIZED);
         }
@@ -120,7 +121,7 @@ public class ResumeController {
 
     // 완료
     @GetMapping("/resume/{id}")
-    public ResponseEntity<?> resumeDetail(@PathVariable Integer id, @LoginComp Comp comp) {
+    public ResponseEntity<?> resumeDetail(@PathVariable Integer id, @LoginComp LComp comp) {
         if (ObjectUtils.isEmpty(resumeRepository.findByResumeId(id))) {
             throw new CustomException("존재하지 않는 이력서 입니다.");
         }
@@ -128,7 +129,7 @@ public class ResumeController {
         Integer num = null;
 
         if (comp != null)
-            num = comp.getCompId();
+            num = comp.getId();
         rDto = resumeRepository.findDetailPublicResumebyById(id, num);
         return new ResponseEntity<>(new ResponseDto<>(1, "이력서 상세보기 완료", rDto), HttpStatus.OK);
     }
@@ -141,7 +142,7 @@ public class ResumeController {
     }
 
     @GetMapping("/comp/resume/apply/{id}")
-    public ResponseEntity<?> applyResumeDetail(@LoginComp Comp comp, @PathVariable Integer id) {
+    public ResponseEntity<?> applyResumeDetail(@LoginComp LComp comp, @PathVariable Integer id) {
         if (id == null) {
             throw new CustomApiException("지원한 아이디가 필요합니다.");
         }
@@ -149,8 +150,8 @@ public class ResumeController {
         if (applyPS == null) {
             throw new CustomApiException("지원 결과 데이터가 없습니다.");
         }
-        ApplyAndSuggestOutDto rDto = resumeRepository.findApplyResumeByApplyIdAndCompId(applyPS.getApplyId(), comp.getCompId());  
-        SuggestOutDto sDto = resumeRepository.findSuggestState(applyPS.getApplyId(), comp.getCompId());
+        ApplyAndSuggestOutDto rDto = resumeRepository.findApplyResumeByApplyIdAndCompId(applyPS.getApplyId(), comp.getId());  
+        SuggestOutDto sDto = resumeRepository.findSuggestState(applyPS.getApplyId(), comp.getId());
         rDto.setSuggestOutDto(sDto);
         return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안이력서 조회 성공", rDto), HttpStatus.OK);
     }

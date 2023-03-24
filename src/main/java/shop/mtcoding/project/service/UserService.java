@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
@@ -108,7 +109,7 @@ public class UserService {
         return uuidImageName;
     }
 
-    @Transactional
+
     public UserHomeOutDto 마이홈조회(User user) {
         UserHomeOutDto result = userRepository.findByUserHome(user.getUserId());
         result.setJDto(userRepository.findRecommendByUserHome(user.getUserId()));
@@ -117,6 +118,7 @@ public class UserService {
 
     @Transactional
     public List<JobsMainOutDto> 메인화면공고(User user) {
+
         // if (user.getUserId() != null) {
             // List<JobsMainRecommendRespDto> rDtos = jobsRepository.findAlltoMainRecommend(user.getUserId());
             // for (JobsMainRecommendRespDto jDto : rDtos) {
@@ -136,7 +138,7 @@ public class UserService {
             // return jDtos;
         // } else {
             Integer num = null;
-            if( user != null ) num = user.getUserId();    
+            if( user != null ) num = user.getId();    
             List<JobsMainOutDto> jDtos = jobsRepository.findAlltoMain(num);
             for (JobsMainOutDto jDto1 : jDtos) {
                 jDto1.setLeftTime(DateUtil.dDay(jDto1.getEndDate()));

@@ -13,7 +13,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
-import shop.mtcoding.project.model.user.User;
+import shop.mtcoding.project.config.auth.LUser;
 
 @RequiredArgsConstructor
 @Configuration
@@ -24,7 +24,7 @@ public class MyLoginArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         boolean check1 = parameter.getParameterAnnotation(LoginUser.class) != null;
-        boolean check2 = User.class.equals(parameter.getParameterType());
+        boolean check2 = LUser.class.equals(parameter.getParameterType());
         return check1 && check2;
     }
 
