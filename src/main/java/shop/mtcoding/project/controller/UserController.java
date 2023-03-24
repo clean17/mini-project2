@@ -25,12 +25,20 @@ import shop.mtcoding.project.config.auth.JwtProvider;
 import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.common.ResponseDto;
+import shop.mtcoding.project.dto.interest.InterestResp.InterestChangeRespDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
+
+import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
+import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillRespDto;
+
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserApplyOutDto;
+import shop.mtcoding.project.dto.user.UserResp.UserHomeOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
@@ -184,72 +192,15 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
-    // @GetMapping("/user/myhome")
-    // public String myhome(Model model) {
-    // User principal = (User) session.getAttribute("principal");
-    // if (principal == null) {
-    // return "redirect:/user/login";
-    // }
-    // List<ResumeManageRespDto> rLists =
-    // resumeRepository.findAllByUserId(principal.getUserId());
-    // for (ResumeManageRespDto rList : rLists) {
-    // List<String> insertList = new ArrayList<>();
-    // for (ResumeSkillRespDto skill :
-    // skillRepository.findByResumeSkill(rList.getResumeId())) {
-    // insertList.add(skill.getSkill());
-    // rList.setSkillList(insertList);
-    // }
-    // }
-    // List<InterestChangeRespDto> iDtos =
-    // interestRepository.findById(principal.getUserId());
-    // model.addAttribute("iDtos", iDtos);
-    // model.addAttribute("rDtos", rLists);
-    // User userPS = userRepository.findById(principal.getUserId());
-    // model.addAttribute("user", userPS);
 
-    // List<JobsMainRecommendRespDto> rDtos =
-    // jobsRepository.findAlltoMainRecommend(principal.getUserId());
-    // for (JobsMainRecommendRespDto jDto : rDtos) {
-    // try {
-    // jDto.setUserScrapId(scrapRepository
-    // .findScrapIdByUserIdAndJobsId(principal.getUserId(),
-    // jDto.getJobsId()).getUserScrapId());
-    // } catch (Exception e) {
-    // }
-    // long dDay = DateUtil.dDay(jDto.getEndDate());
-    // jDto.setLeftTime(dDay);
-    // List<String> insertList = new ArrayList<>();
-    // for (RequiredSkillWriteReqDto skill :
-    // skillRepository.findByJobsSkill(jDto.getJobsId())) {
-    // insertList.add(skill.getSkill());
-    // }
-
-    // jDto.setSkillList(insertList);
-    // }
-    // List<JobsMainRecommendRespDto> rDtos2 =
-    // jobsRepository.findAlltoMainRecommendRandom(principal.getUserId());
-    // for (JobsMainRecommendRespDto jDto : rDtos2) {
-    // try {
-    // jDto.setUserScrapId(scrapRepository
-    // .findScrapIdByUserIdAndJobsId(principal.getUserId(),
-    // jDto.getJobsId()).getUserScrapId());
-    // } catch (Exception e) {
-    // }
-    // long dDay = DateUtil.dDay(jDto.getEndDate());
-    // jDto.setLeftTime(dDay);
-    // List<String> insertList = new ArrayList<>();
-    // for (RequiredSkillWriteReqDto skill :
-    // skillRepository.findByJobsSkill(jDto.getJobsId())) {
-    // insertList.add(skill.getSkill());
-    // }
-    // jDto.setSkillList(insertList);
-    // rDtos.add(jDto);
-    // }
-    // model.addAttribute("jDtos", rDtos);
-
-    // return "user/myhome";
-    // }
-
+    // 완료
+    @GetMapping("/user/myhome")
+    public @ResponseBody ResponseEntity<?> myhome(@LoginUser User user) {
+        UserHomeOutDto userResult = userService.마이홈조회(user);
+        return new ResponseEntity<>(new ResponseDto<>(1, "마이홈 보기 성공", userResult), HttpStatus.OK);
+    }
+    
+ 
     // 완료
     @GetMapping("/user/scrap")
     public @ResponseBody ResponseEntity<?> scarp(@LoginUser LUser user) {
@@ -260,25 +211,12 @@ public class UserController {
         }
         return new ResponseEntity<>(new ResponseDto<>(1, "스크랩 보기", usDtos), HttpStatus.OK);
     }
-    // 완료
-    // @GetMapping("/comp/apply")
-    // public ResponseEntity<?> apply(@LoginComp Comp comp) {
-    // // 여기도 마찬가지로 사진은 세션에서 가져가면 됩니다. 사진 업데이트하고 세션 업데이트 + 페이지 리로드 필요
-    // CompApplyOutDto result =
-    // compRepository.findApplyAndSuggestByCompId(comp.getCompId());
-    // return new ResponseEntity<>(new ResponseDto<>(1, "기업의 지원 및 제안 페이지 데이터 조회 완료",
-    // result), HttpStatus.OK);
-    // }
 
-    // 수정
+    // 완료
     @GetMapping("/user/offer")
-    public @ResponseBody ResponseEntity<?> offer(@LoginUser LUser user) {
-        // List<ApplyStatusUserRespDto> aDtos =
-        // applyRepository.findAllByUserIdtoApply(user.getUserId());
-        // List<SuggestToUserRespDto> sDtos =
-        // suggestRepository.findAllGetOfferByUserId(user.getUserId());
-        UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getId());
-        // User userPS = userRepository.findById(user.getUserId());
+    public @ResponseBody ResponseEntity<?> offer(@LoginUser User user) {
+        UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getUserId());
+
         return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", result), HttpStatus.OK);
     }
 

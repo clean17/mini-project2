@@ -15,6 +15,7 @@ import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
+import shop.mtcoding.project.dto.user.UserResp.UserHomeOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.model.jobs.JobsRepository;
 import shop.mtcoding.project.model.skill.SkillRepository;
@@ -108,8 +109,16 @@ public class UserService {
         return uuidImageName;
     }
 
+
+    public UserHomeOutDto 마이홈조회(User user) {
+        UserHomeOutDto result = userRepository.findByUserHome(user.getUserId());
+        result.setJDto(userRepository.findRecommendByUserHome(user.getUserId()));
+        return result;
+    }
+
     @Transactional
-    public List<JobsMainOutDto> 메인화면공고(LUser user) {
+    public List<JobsMainOutDto> 메인화면공고(User user) {
+
         // if (user.getUserId() != null) {
             // List<JobsMainRecommendRespDto> rDtos = jobsRepository.findAlltoMainRecommend(user.getUserId());
             // for (JobsMainRecommendRespDto jDto : rDtos) {

@@ -7,9 +7,77 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import shop.mtcoding.project.dto.apply.ApplyResp.ApplyStatusUserRespDto;
+import shop.mtcoding.project.dto.interest.InterestResp.InterestChangeRespDto;
+import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
+import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToCompRespDto;
 
 public class UserResp {
+
+    
+    @Getter
+    @Setter
+    public static class UserHomeOutDto {
+        private Integer userId;
+        private List<ResumeManageRespDto> rDto;        
+        private List<JobsMainRecommendRespDto> jDto;
+        private InterestChangeRespDto iDto;
+
+        @Getter
+        @Setter
+        public static class InterestChangeRespDto {
+            private List<String> interestCt;
+        }
+
+        @Getter
+        @Setter
+        public static class ResumeManageRespDto {
+            private Integer resumeId;
+            private UserDto user;
+            private String title;
+            private String education;
+            private String career;
+            private String address;
+            private List<String> skillList;
+
+            @Getter
+            @Setter
+            public static class UserDto {
+                private Integer userId;
+                private String name;
+            }
+        }
+
+        @Getter
+        @Setter
+        public static class JobsMainRecommendRespDto {
+            private Integer jobsId; // jobs_tb
+            private String title; // jobs_tb
+            private String career; // jobs_tb
+            private String education; // jobs_tb
+            private String position; // jobs_tb
+            private String address; // jobs_tb
+            private Timestamp endDate; // jobs_tb
+            private List<String> skillList;
+            private CompDto comp;
+            private UserScrapDto userScrap;
+
+            @Getter
+            @Setter
+            public static class CompDto {
+                private Integer compId;
+                private String compName; // comp_tb
+                private String photo; // comp_tb
+            }
+
+            @Getter
+            @Setter
+            public static class UserScrapDto {
+                private Integer userScrapId; // user_scrap_tb
+            }
+        }
+    }
+
 
     @Getter
     @Setter

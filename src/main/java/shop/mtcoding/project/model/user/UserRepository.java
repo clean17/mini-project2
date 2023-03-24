@@ -10,7 +10,12 @@ import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserApplyOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserDataRespDto;
+
+import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
+import shop.mtcoding.project.dto.user.UserResp.UserHomeOutDto.JobsMainRecommendRespDto;
+
 import shop.mtcoding.project.dto.user.UserResp.UserDeleteRespDto;
+import shop.mtcoding.project.dto.user.UserResp.UserHomeOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
@@ -19,7 +24,12 @@ import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
 public interface UserRepository {
     public List<User> findAll();
 
-    public Optional<User> findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+
+    public UserHomeOutDto findByUserHome(Integer userId);
+
+    public List<JobsMainRecommendRespDto> findRecommendByUserHome(Integer userId);
+
+
 
     public UserLoginRespDto findByEmailAndPassword2(@Param("email") String email, @Param("password") String password);
 
