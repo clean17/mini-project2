@@ -14,13 +14,20 @@ import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToCompRespDto;
 
 public class UserResp {
 
+    
     @Getter
     @Setter
     public static class UserHomeOutDto {
-        private List<ResumeManageRespDto> rDto;
-        private List<InterestChangeRespDto> iDto;
+        private Integer userId;
+        private List<ResumeManageRespDto> rDto;        
         private List<JobsMainRecommendRespDto> jDto;
-        private List<JobsMainRecommendRespDto> jDto2;
+        private InterestChangeRespDto iDto;
+
+        @Getter
+        @Setter
+        public static class InterestChangeRespDto {
+            private List<String> interestCt;
+        }
 
         @Getter
         @Setter
@@ -40,52 +47,36 @@ public class UserResp {
                 private String name;
             }
         }
-        
-        @Getter
-        @Setter
-        public static class InterestChangeRespDto{
-            private String interestCt;
-        }
 
         @Getter
         @Setter
         public static class JobsMainRecommendRespDto {
-            private Integer jobsId;
-            private String compName; // comp_tb
-            private String photo;
+            private Integer jobsId; // jobs_tb
             private String title; // jobs_tb
             private String career; // jobs_tb
             private String education; // jobs_tb
             private String position; // jobs_tb
-            private List<String> skillList;
             private String address; // jobs_tb
-            private Integer userScrapId; // user_scrap_tb
-            private Long leftTime;
             private Timestamp endDate; // jobs_tb
+            private List<String> skillList;
+            private CompDto comp;
+            private UserScrapDto userScrap;
+
+            @Getter
+            @Setter
+            public static class CompDto {
+                private Integer compId;
+                private String compName; // comp_tb
+                private String photo; // comp_tb
+            }
+
+            @Getter
+            @Setter
+            public static class UserScrapDto {
+                private Integer userScrapId; // user_scrap_tb
+            }
         }
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Getter

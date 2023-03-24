@@ -3,7 +3,6 @@ package shop.mtcoding.project.service;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,12 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
-import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
+import shop.mtcoding.project.dto.user.UserResp.UserHomeOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.model.jobs.JobsRepository;
 import shop.mtcoding.project.model.skill.SkillRepository;
@@ -108,6 +106,13 @@ public class UserService {
             throw new CustomException("사진 수정에 실패 했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return uuidImageName;
+    }
+
+    @Transactional
+    public UserHomeOutDto 마이홈조회(User user) {
+        UserHomeOutDto result = userRepository.findByUserHome(user.getUserId());
+        result.setJDto(userRepository.findRecommendByUserHome(user.getUserId()));
+        return result;
     }
 
     @Transactional

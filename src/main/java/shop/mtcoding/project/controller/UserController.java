@@ -33,6 +33,7 @@ import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserApplyOutDto;
+import shop.mtcoding.project.dto.user.UserResp.UserHomeOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
@@ -180,63 +181,11 @@ public class UserController {
         return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
-    // 수정 -> 이력목록 / 관심 카테고리 / 보유 기술 / 추천공고
+    // 완료
     @GetMapping("/user/myhome")
     public @ResponseBody ResponseEntity<?> myhome(@LoginUser User user) {
-
-        // 이력서 목록
-        List<ResumeManageRespDto> rLists = resumeRepository.findAllByUserId(user.getUserId());
-        for (ResumeManageRespDto rList : rLists) {
-            List<String> insertList = new ArrayList<>();
-            for (ResumeSkillRespDto skill : skillRepository.findByResumeSkill(rList.getResumeId())) {
-                insertList.add(skill.getSkill());
-                rList.setSkillList(insertList);
-            }
-        }
-
-        // 관심 카테고리
-        List<InterestChangeRespDto> iDtos = interestRepository.findById(user.getUserId());
-        User userPS = userRepository.findById(user.getUserId());
-
-        // 추천 공고(관심 카테고리 있으면 매칭해서 채용 추천)
-        List<JobsMainRecommendRespDto> rDtos = jobsRepository.findAlltoMainRecommend(user.getUserId());
-        for (JobsMainRecommendRespDto jDto : rDtos) {
-            try {
-                jDto.setUserScrapId(scrapRepository
-                        .findScrapIdByUserIdAndJobsId(user.getUserId(),
-                                jDto.getJobsId())
-                        .getUserScrapId());
-            } catch (Exception e) {
-            }
-            long dDay = DateUtil.dDay(jDto.getEndDate());
-            jDto.setLeftTime(dDay);
-            List<String> insertList = new ArrayList<>();
-            for (RequiredSkillWriteReqDto skill : skillRepository.findByJobsSkill(jDto.getJobsId())) {
-                insertList.add(skill.getSkill());
-            }
-            jDto.setSkillList(insertList);
-        }
-
-        // 추천 공고(관심 카테고리 없으면 랜덤으로 채용 추천)
-        List<JobsMainRecommendRespDto> rDtos2 = jobsRepository.findAlltoMainRecommendRandom(user.getUserId());
-        for (JobsMainRecommendRespDto jDto : rDtos2) {
-            try {
-                jDto.setUserScrapId(scrapRepository 
-                        .findScrapIdByUserIdAndJobsId(user.getUserId(),
-                                jDto.getJobsId())
-                        .getUserScrapId());
-            } catch (Exception e) {
-            }
-            long dDay = DateUtil.dDay(jDto.getEndDate());
-            jDto.setLeftTime(dDay);
-            List<String> insertList = new ArrayList<>();
-            for (RequiredSkillWriteReqDto skill : skillRepository.findByJobsSkill(jDto.getJobsId())) {
-                insertList.add(skill.getSkill());
-            }
-            jDto.setSkillList(insertList);
-            rDtos.add(jDto);
-        }
-        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
+        UserHomeOutDto userResult = userService.마이홈조회(user);
+        return new ResponseEntity<>(new ResponseDto<>(1, "마이홈 보기 성공", userResult), HttpStatus.OK);
     }
     
     // 완료
