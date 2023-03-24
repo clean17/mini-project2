@@ -16,6 +16,7 @@ public class ResumeReq {
     @ToString
     public static class ResumeWriteReqDto {
         private Integer resumeId; // 리턴용
+        @NotNull(message = "유저 아이디가 필요합니다./")
         private Integer userId;
         @NotNull(message = "제목을 입력해주세요/")
         private String title;
@@ -63,7 +64,9 @@ public class ResumeReq {
     @Setter
     @ToString
     public static class ResumeUpdateReqDto {
+        @NotNull(message = "이력서 아이디가 필요합니다./")
         private Integer resumeId;
+        @NotNull(message = "유저 아이디가 필요합니다./")
         private Integer userId;
         @NotNull(message = "제목을 입력해주세요/")
         private String title;

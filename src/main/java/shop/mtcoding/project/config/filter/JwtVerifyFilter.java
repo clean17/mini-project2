@@ -32,7 +32,6 @@ public class JwtVerifyFilter implements Filter {
             int id = decodedJWT.getClaim("id").asInt();
             String email = decodedJWT.getClaim("email").asString();
             String role = decodedJWT.getClaim("role").asString();
-            System.out.println("테스트 : "+ id + "   "+ email +"     " + role);
             // 내부에서 권한처리 세션
             if (role.equals("user")){
                 HttpSession session =  req.getSession();

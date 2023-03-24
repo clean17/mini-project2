@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
@@ -58,42 +59,40 @@ public class ResumeController {
     private final HttpSession session;
 
     // 완료
-    @DeleteMapping("/resume/{id}/delete")
-    public ResponseEntity<?> deleteResume(@LoginUser User user, @PathVariable int id) {
-        resumeService.이력서삭제(id, user.getUserId());
+    @DeleteMapping("/user/resume/{id}/delete")
+    public ResponseEntity<?> deleteResume(@LoginUser LUser user, @PathVariable int id) {
+        resumeService.이력서삭제(id, user.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "삭제성공", null), HttpStatus.OK);
     }
 
     // 완료
     @GetMapping("/user/resume") // 이력서관리
-    public ResponseEntity<?> manageResume(@LoginUser User user) {
+    public ResponseEntity<?> manageResume(@LoginUser LUser user) {
 
-        List<ResumeManageRespDto> rLists = resumeRepository.findAllByUserId(user.getUserId());
+        List<ResumeManageRespDto> rLists = resumeRepository.findAllByUserId(user.getId());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "이력서 목록 보기 성공", rLists), HttpStatus.OK);
     }
 
     // 완료
     @GetMapping("/user/request/resume") // 공고에 지원할 이력서 불러오기
-    public ResponseEntity<?> requestResume(@LoginUser User user) {
-        List<ResumeManageRespDto> rDtos = resumeRepository.findAllByUserId(user.getUserId());
+    public ResponseEntity<?> requestResume(@LoginUser LUser user) {
+        List<ResumeManageRespDto> rDtos = resumeRepository.findAllByUserId(user.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "이력서 불러오기 성공", rDtos), HttpStatus.OK);
     }
 
     // 완료
     @PostMapping("/user/resume/write")
-    public @ResponseBody ResponseEntity<?> writeResume(@LoginUser User user,
-            @Valid ResumeWriteReqDto resumeWriteReqDto) {
+    public ResponseEntity<?> writeResume(@LoginUser LUser user, @RequestBody @Valid ResumeWriteReqDto resumeWriteReqDto) {
 
-        ResumeWriteOutDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getUserId());
+        ResumeWriteOutDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getId());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료!", rDto), HttpStatus.CREATED);
     }
 
     //완료
     @PutMapping("/user/resume/update")
-    public ResponseEntity<?> saveTempResume(@LoginUser LUser user,
-            @Valid ResumeUpdateReqDto resumeUpdateReqDto) {
+    public ResponseEntity<?> saveTempResume(@LoginUser LUser user, @RequestBody @Valid ResumeUpdateReqDto resumeUpdateReqDto) {
 
         ResumeUpdateInDto rDto = resumeService.이력서수정(resumeUpdateReqDto, user.getId());
 

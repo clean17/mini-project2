@@ -29,7 +29,7 @@ public interface UserRepository {
 
     public List<JobsMainRecommendRespDto> findRecommendByUserHome(Integer userId);
 
-
+    public Optional<User> findByEmailAndPassword(@Param("email") String email, @Param("password") String password); 
 
     public UserLoginRespDto findByEmailAndPassword2(@Param("email") String email, @Param("password") String password);
 

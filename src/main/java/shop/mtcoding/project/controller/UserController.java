@@ -25,14 +25,7 @@ import shop.mtcoding.project.config.auth.JwtProvider;
 import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.common.ResponseDto;
-import shop.mtcoding.project.dto.interest.InterestResp.InterestChangeRespDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
-
-import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
-import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillRespDto;
-
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
@@ -195,7 +188,7 @@ public class UserController {
 
     // 완료
     @GetMapping("/user/myhome")
-    public @ResponseBody ResponseEntity<?> myhome(@LoginUser User user) {
+    public @ResponseBody ResponseEntity<?> myhome(@LoginUser LUser user) {
         UserHomeOutDto userResult = userService.마이홈조회(user);
         return new ResponseEntity<>(new ResponseDto<>(1, "마이홈 보기 성공", userResult), HttpStatus.OK);
     }
@@ -214,8 +207,8 @@ public class UserController {
 
     // 완료
     @GetMapping("/user/offer")
-    public @ResponseBody ResponseEntity<?> offer(@LoginUser User user) {
-        UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getUserId());
+    public @ResponseBody ResponseEntity<?> offer(@LoginUser LUser user) {
+        UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getId());
 
         return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", result), HttpStatus.OK);
     }

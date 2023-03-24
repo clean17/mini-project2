@@ -186,12 +186,12 @@ public class CompController {
         CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
         String result = compService.프로필사진수정(photo, comp.getId());
         // comp.setPhoto(result); // 사진 DTo 확인 필요..
-        CompUpdatePhotoOutDto update = CompUpdatePhotoOutDto.builder()
-                .compId(comp.getId())
-                .photo(result)
-                .build();
-        session.setAttribute("compSession", comp);
-        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", update), HttpStatus.OK);
+        // CompUpdatePhotoOutDto update = CompUpdatePhotoOutDto.builder()
+        //         .compId(comp.getId())
+        //         .photo(result)
+        //         .build();
+        // session.setAttribute("compSession", comp);
+        return new ResponseEntity<>(new ResponseDto<>(1, "프로필 수정 성공", null), HttpStatus.OK);
     }
 
     // 완료

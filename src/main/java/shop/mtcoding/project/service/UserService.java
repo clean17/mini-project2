@@ -110,14 +110,14 @@ public class UserService {
     }
 
 
-    public UserHomeOutDto 마이홈조회(User user) {
-        UserHomeOutDto result = userRepository.findByUserHome(user.getUserId());
-        result.setJDto(userRepository.findRecommendByUserHome(user.getUserId()));
+    public UserHomeOutDto 마이홈조회(LUser user) {
+        UserHomeOutDto result = userRepository.findByUserHome(user.getId());
+        result.setJDto(userRepository.findRecommendByUserHome(user.getId()));
         return result;
     }
 
     @Transactional
-    public List<JobsMainOutDto> 메인화면공고(User user) {
+    public List<JobsMainOutDto> 메인화면공고(LUser user) {
 
         // if (user.getUserId() != null) {
             // List<JobsMainRecommendRespDto> rDtos = jobsRepository.findAlltoMainRecommend(user.getUserId());
