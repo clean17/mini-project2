@@ -80,7 +80,7 @@
       
       <association property="jobsDto" javaType="shop.mtcoding.project.dto.apply.ApplyResp$ApplyOutDto$JobsDto">
           <id property="jobsId" column="jobs_id"/>
-          <result property="title" column="title"/>
+          <result property="title" column="jtitle"/>
           <result property="position" column="position"/>
           <association property="compDto" javaType="shop.mtcoding.project.dto.apply.ApplyResp$ApplyOutDto$JobsDto$CompDto">
             <id property="compId" column="comp_id"/>
@@ -90,12 +90,21 @@
   </resultMap> 
 
     <select id="findByApplyDto" resultMap="applyDto">
-      SELECT * FROM APPLY_TB a join resume_tb r
+      SELECT *, ( select title from jobs_tb j join apply_tb a on j.jobs_id = a.jobs_id where a.apply_id = #{applyId} ) jtitle
+       FROM APPLY_TB a join resume_tb r
         on a.resume_id = r.resume_id join jobs_tb j
         on a.jobs_id = j.jobs_id join user_tb u
         on r.user_id = u.user_id join comp_tb c
         on j.comp_id = c.comp_id
         where a.apply_id = #{applyId}
     </select>
+    <!-- <select id="findByApplyDto2" resultMap="applyDto">
+      SELECT * FROM APPLY_TB a join resume_tb r
+        on a.resume_id = r.resume_id join jobs_tb j
+        on a.jobs_id = j.jobs_id join user_tb u
+        on r.user_id = u.user_id join comp_tb c
+        on j.comp_id = c.comp_id
+        where a.apply_id = #{applyId}
+    </select> -->
 
 </mapper>

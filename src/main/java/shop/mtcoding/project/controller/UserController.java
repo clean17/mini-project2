@@ -65,7 +65,7 @@ public class UserController {
 
     // 완료
     @PostMapping("/userjoin")
-    public @ResponseBody ResponseEntity<?> join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
+    public @ResponseBody ResponseEntity<?> join(@RequestBody @Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
         UserJoinReqDto userJoinOutDto = userService.회원가입(userJoinReqDto);
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", userJoinOutDto), HttpStatus.OK);
     }

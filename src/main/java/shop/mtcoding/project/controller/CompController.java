@@ -82,7 +82,7 @@ public class CompController {
 
     // 완료
     @GetMapping("/comp/emailCheck")
-    public ResponseEntity<?> sameEmailCheck(String email) {
+    public ResponseEntity<?> sameEmailCheck(@RequestBody String email) {
         Comp compPS = compRepository.findByCompEmail(email);
         if (compPS != null) {
             throw new CustomApiException("동일한 email이 존재합니다.");
@@ -144,7 +144,7 @@ public class CompController {
     // 완료
     @GetMapping("/comp/comphome")
     public ResponseEntity<?> compMyhome(@LoginComp LComp comp) {
-        // 이미지는 세션에서 추출하면됨, 세션에 들어있음 사진 수정후 기업홈을 리로드하는데 이때 세션을 업데이트해야함
+        // 사진 DTo 추가 바람
         CompHomeOutDto compResult = compService.기업홈정보와매칭이력서(comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "기업 홈 조회 성공", compResult), HttpStatus.OK);
     }
@@ -185,7 +185,7 @@ public class CompController {
     public @ResponseBody ResponseEntity<?> profileUpdate(@LoginComp LComp comp, MultipartFile photo) throws Exception {
         CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
         String result = compService.프로필사진수정(photo, comp.getId());
-        // comp.setPhoto(result); // 사진 DTo 확인 필요..
+        // comp.setPhoto(result); // 사진 DTo 추가 바람
         // CompUpdatePhotoOutDto update = CompUpdatePhotoOutDto.builder()
         //         .compId(comp.getId())
         //         .photo(result)
@@ -197,7 +197,7 @@ public class CompController {
     // 완료
     @GetMapping("/comp/apply")
     public ResponseEntity<?> apply(@LoginComp LComp comp) {
-        // 여기도 마찬가지로 사진은 세션에서 가져가면 됩니다. 사진 업데이트하고 세션 업데이트 + 페이지 리로드 필요
+        // 사진 DTo 추가 바람
         CompApplyOutDto result = compRepository.findApplyAndSuggestByCompId(comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "기업의 지원 및 제안 페이지 데이터 조회 완료", result), HttpStatus.OK);
     }
@@ -205,7 +205,7 @@ public class CompController {
     // 완료
     @GetMapping("/comp/jobs")
     public ResponseEntity<?> manageJobs(@LoginComp LComp comp) {
-        // 사진이 이상하면 세션을 업데이트 해야함
+        // 사진 DTo 추가 바람
         List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(comp.getId());
         for (JobsManageJobsRespDto jDto : jDtos) {
             jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
@@ -223,7 +223,7 @@ public class CompController {
     // 완료
     @GetMapping("/comp/resume/scrap")
     public ResponseEntity<?> scrapResume(@LoginComp LComp comp) {
-        // 마찬가지로 사진은 세션 업데이트해서 가져가면 됩니다.
+        // 사진 DTo 추가 바람
         List<CompScrapPageOutDto> sList = scrapRepository.findScrapOutByCompId(comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "기업의 이력서 스크랩페이지 조회 성공", sList), HttpStatus.OK);
     }

@@ -11,6 +11,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 public class JobsReq {
+
+    @Getter
+    @Setter
+    public static class SearchText{
+        private String keyword;
+    }
     
     @Getter
     @Setter

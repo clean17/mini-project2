@@ -28,6 +28,7 @@ import shop.mtcoding.project.dto.comp.CompResp.CompWriteJobsRespDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsCheckBoxReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsWriteReqDto;
+import shop.mtcoding.project.dto.jobs.JobsReq.SearchText;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsCheckOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsDetailOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
@@ -35,12 +36,10 @@ import shop.mtcoding.project.dto.jobs.JobsResp.JobsMatchRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchkeyOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSuggestRespDto;
-import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
 import shop.mtcoding.project.model.jobs.JobsRepository;
 import shop.mtcoding.project.model.resume.ResumeRepository;
 import shop.mtcoding.project.model.skill.SkillRepository;
-import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.service.JobsService;
 import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.DateUtil;
@@ -67,14 +66,16 @@ public class JobsController {
 
     @GetMapping("/jobs/search")
     @ResponseBody
-    public ResponseEntity<?> searchJobs(@LoginUser LUser user,@RequestBody String keyword){
-        if(ObjectUtils.isEmpty(keyword)){
+    public ResponseEntity<?> searchJobs(@LoginUser LUser user, @RequestBody SearchText sDto){
+        String keyword ;
+        if(ObjectUtils.isEmpty(sDto.getKeyword())){
             keyword = "검색어를 입력해 주세요 !!!";
             throw new CustomException("검색어가 없습니다.");
         }
+        keyword = sDto.getKeyword();
         Integer num = null;
         if( user != null ) num = user.getId();
-
+        // keyword="개발";
         List<JobsSearchOutDto> jDtos = jobsRepository.findBySearch(keyword, num);
         for (JobsSearchOutDto jDto : jDtos) {
             jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
@@ -85,6 +86,7 @@ public class JobsController {
                                             .build();
         return new ResponseEntity<>(new ResponseDto<>(1, "검색 완료", jDto), HttpStatus.OK);
     }
+
 
     @GetMapping("/jobs/info/search")
     public ResponseEntity<?> searchCheckbox(@LoginUser LUser user, JobsCheckBoxReqDto jobsDto) {
@@ -170,7 +172,7 @@ public class JobsController {
         return new ResponseEntity<>(new ResponseDto<>(1, "수정 완료", jobdId), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("Z")
+    @DeleteMapping("/jobs/{id}/delete")
     public ResponseEntity<?> deleteJobs(@PathVariable Integer id, @LoginComp LComp comp){
         if( ObjectUtils.isEmpty(jobsRepository.findById(id))){
             throw new CustomException("조회한 공고가 존재하지 않습니다.");
