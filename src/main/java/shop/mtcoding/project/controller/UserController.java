@@ -1,16 +1,17 @@
 package shop.mtcoding.project.controller;
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
+import shop.mtcoding.project.config.auth.JwtProvider;
 import shop.mtcoding.project.config.exception.CustomApiException;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApplyStatusUserRespDto;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
-import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToUserRespDto;
-import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserPasswordReqDto;
@@ -114,11 +113,18 @@ public class UserController {
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
             }
-            User user = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
+            Optional<User> userOP = userRepository.findByEmailAndPassword(userloginReqDto.getEmail(),
                     userloginReqDto.getPassword());
-            session.setAttribute("principal", user);
-            return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
-
+            String jwt ;
+            if (userOP.isPresent()) { // 값이 존재하면
+                jwt = JwtProvider.create(userOP.get());
+                return ResponseEntity.ok().header(JwtProvider.HEADER, jwt).body(new ResponseDto<>(1, "로그인 성공", principal)); // 계정 있으면 토큰 리턴
+            } else {
+                throw new CustomApiException("이메일 또는 비밀번호가 틀렸습니다.");
+                // return ResponseEntity.badRequest().build();
+            }
+            // session.setAttribute("principal", user);
+            // return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
         }
     }
 
@@ -244,32 +250,34 @@ public class UserController {
 
     // return "user/myhome";
     // }
-    
+
     // 완료
     @GetMapping("/user/scrap")
     public @ResponseBody ResponseEntity<?> scarp(@LoginUser User user) {
         List<UserScrapRespDto> usDtos = scrapRepository.findAllScrapByUserId(user.getUserId());
-            for (UserScrapRespDto usDto : usDtos) {
-                long dDay = DateUtil.dDay(usDto.getJobs().getEndDate());
-                usDto.setLeftTime(dDay);
-            }
+        for (UserScrapRespDto usDto : usDtos) {
+            long dDay = DateUtil.dDay(usDto.getJobs().getEndDate());
+            usDto.setLeftTime(dDay);
+        }
         return new ResponseEntity<>(new ResponseDto<>(1, "스크랩 보기", usDtos), HttpStatus.OK);
     }
     // 완료
     // @GetMapping("/comp/apply")
     // public ResponseEntity<?> apply(@LoginComp Comp comp) {
-    //     // 여기도 마찬가지로 사진은 세션에서 가져가면 됩니다. 사진 업데이트하고 세션 업데이트 + 페이지 리로드 필요
-    //     CompApplyOutDto result = compRepository.findApplyAndSuggestByCompId(comp.getCompId());
-    //     return new ResponseEntity<>(new ResponseDto<>(1, "기업의 지원 및 제안 페이지 데이터 조회 완료", result), HttpStatus.OK);
+    // // 여기도 마찬가지로 사진은 세션에서 가져가면 됩니다. 사진 업데이트하고 세션 업데이트 + 페이지 리로드 필요
+    // CompApplyOutDto result =
+    // compRepository.findApplyAndSuggestByCompId(comp.getCompId());
+    // return new ResponseEntity<>(new ResponseDto<>(1, "기업의 지원 및 제안 페이지 데이터 조회 완료",
+    // result), HttpStatus.OK);
     // }
-
-
 
     // 수정
     @GetMapping("/user/offer")
     public @ResponseBody ResponseEntity<?> offer(@LoginUser User user) {
-        //List<ApplyStatusUserRespDto> aDtos = applyRepository.findAllByUserIdtoApply(user.getUserId());
-        //List<SuggestToUserRespDto> sDtos = suggestRepository.findAllGetOfferByUserId(user.getUserId());
+        // List<ApplyStatusUserRespDto> aDtos =
+        // applyRepository.findAllByUserIdtoApply(user.getUserId());
+        // List<SuggestToUserRespDto> sDtos =
+        // suggestRepository.findAllGetOfferByUserId(user.getUserId());
         UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getUserId());
         // User userPS = userRepository.findById(user.getUserId());
         return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", result), HttpStatus.OK);
