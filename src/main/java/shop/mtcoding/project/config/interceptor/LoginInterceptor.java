@@ -8,8 +8,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import shop.mtcoding.project.model.comp.Comp;
-import shop.mtcoding.project.model.user.User;
+import shop.mtcoding.project.config.auth.LComp;
+import shop.mtcoding.project.config.auth.LUser;
 
 @Configuration
 public class LoginInterceptor implements HandlerInterceptor {
@@ -18,18 +18,18 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/user")) { // "/blocked"로 시작하는 요청을 차단
-            User principal = (User) request.getSession().getAttribute("principal");
+        if (requestURI.startsWith("/user/*")) { // "/blocked"로 시작하는 요청을 차단
+            LUser principal = (LUser) request.getSession().getAttribute("principal");
             if (principal == null) {
                 // System.out.println("테스트 : 세션이 없어 !!!");
-                response.sendRedirect("/user/login");
+                response.sendRedirect("/userlogin");
                 return false;
             }
         }
-        if (requestURI.startsWith("/comp")) { // "/blocked"로 시작하는 요청을 차단
-            Comp compSession = (Comp) request.getSession().getAttribute("compSession");
+        if (requestURI.startsWith("/comp/*")) { // "/blocked"로 시작하는 요청을 차단
+            LComp compSession = (LComp) request.getSession().getAttribute("compSession");
             if (compSession == null) {
-                response.sendRedirect("/comp/login");
+                response.sendRedirect("/complogin");
                 return false;
             }
         }

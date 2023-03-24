@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
+import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
-import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.service.UserService;
 
 @Controller
@@ -41,7 +41,7 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<?> main(@LoginUser User user) {
+    public ResponseEntity<?> main(@LoginUser LUser user) {
         List<JobsMainOutDto> result = userService.메인화면공고(user);
         return new ResponseEntity<>(new ResponseDto<>(1, "메인 공고 조회 성공", result), HttpStatus.OK);
     }

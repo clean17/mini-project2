@@ -16,7 +16,8 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import shop.mtcoding.project.config.auth.JwtProvider;
-import shop.mtcoding.project.config.auth.LoginUser;
+import shop.mtcoding.project.config.auth.LComp;
+import shop.mtcoding.project.config.auth.LUser;
 
 
 public class JwtVerifyFilter implements Filter {
@@ -29,12 +30,21 @@ public class JwtVerifyFilter implements Filter {
         try {
             DecodedJWT decodedJWT = JwtProvider.verify(jwt);
             int id = decodedJWT.getClaim("id").asInt();
+            String email = decodedJWT.getClaim("email").asString();
             String role = decodedJWT.getClaim("role").asString();
+            System.out.println("테스트 : "+ id + "   "+ email +"     " + role);
             // 내부에서 권한처리 세션
-            HttpSession session =  req.getSession();
-            LoginUser loginUser = LoginUser.builder().id(id).role(role).build();
-            session.setAttribute("loginUser", loginUser);
-            chain.doFilter(req, resp);
+            if (role.equals("user")){
+                HttpSession session =  req.getSession();
+                LUser loginUser = LUser.builder().id(id).email(email).role(role).build();
+                session.setAttribute("principal", loginUser);
+                chain.doFilter(req, resp);
+            }else{
+                HttpSession session =  req.getSession();
+                LComp loginComp = LComp.builder().id(id).email(email).role(role).build();
+                session.setAttribute("compSession", loginComp);
+                chain.doFilter(req, resp);
+            }
         }catch (SignatureVerificationException sve){
             resp.setStatus(401);
             resp.setContentType("text/plain; charset=utf-8");

@@ -1,9 +1,6 @@
 package shop.mtcoding.project.controller;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -11,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginComp;
 import shop.mtcoding.project.config.annotation.LoginUser;
+import shop.mtcoding.project.config.auth.LComp;
+import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompWriteJobsRespDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsCheckBoxReqDto;
-import shop.mtcoding.project.dto.jobs.JobsReq.JobsSearchReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsWriteReqDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsCheckOutDto;
@@ -38,10 +35,6 @@ import shop.mtcoding.project.dto.jobs.JobsResp.JobsMatchRespDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchkeyOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSuggestRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeIdRespDto;
-import shop.mtcoding.project.dto.skill.RequiredSkillReq.RequiredSkillWriteReqDto;
-import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillByUserRespDto;
-import shop.mtcoding.project.dto.skill.ResumeSkillResp.ResumeSkillRespDto;
 import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
 import shop.mtcoding.project.model.jobs.JobsRepository;
@@ -64,9 +57,8 @@ public class JobsController {
 
     @GetMapping("/comp/request/jobs")
     @ResponseBody
-    public ResponseEntity<?> requestJobs() {
-        Comp compSession = (Comp) session.getAttribute("compSession");
-        List<JobsSuggestRespDto> jDtos = jobsRepository.findAllToSuggestReq(compSession.getCompId());
+    public ResponseEntity<?> requestJobs(@LoginComp LComp comp) {
+        List<JobsSuggestRespDto> jDtos = jobsRepository.findAllToSuggestReq(comp.getId());
         for (JobsSuggestRespDto jDto : jDtos) {
             jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
         }
@@ -75,13 +67,13 @@ public class JobsController {
 
     @GetMapping("/jobs/search")
     @ResponseBody
-    public ResponseEntity<?> searchJobs(@LoginUser User user, String keyword){
+    public ResponseEntity<?> searchJobs(@LoginUser LUser user, String keyword){
         if(ObjectUtils.isEmpty(keyword)){
             keyword = "검색어를 입력해 주세요 !!!";
             throw new CustomException("검색어가 없습니다.");
         }
         Integer num = null;
-        if( user != null ) num = user.getUserId();
+        if( user != null ) num = user.getId();
 
         List<JobsSearchOutDto> jDtos = jobsRepository.findBySearch(keyword, num);
         for (JobsSearchOutDto jDto : jDtos) {
@@ -95,10 +87,10 @@ public class JobsController {
     }
 
     @GetMapping("/jobs/info/search")
-    public ResponseEntity<?> searchCheckbox(@LoginUser User user, JobsCheckBoxReqDto jobsDto) {
+    public ResponseEntity<?> searchCheckbox(@LoginUser LUser user, JobsCheckBoxReqDto jobsDto) {
         if (ObjectUtils.isEmpty(jobsDto.getCareer())) jobsDto.setCareer("");
         Integer num = null;
-        if( user != null ) num = user.getUserId();
+        if( user != null ) num = user.getId();
 
         List<JobsCheckOutDto> jDtos = jobsRepository.findByCheckBox(jobsDto, num);
         for (JobsCheckOutDto jDto : jDtos) {
@@ -108,9 +100,9 @@ public class JobsController {
     }
 
     @GetMapping("/jobs/info")
-    public ResponseEntity<?> info(@LoginUser User user) throws Exception {
+    public ResponseEntity<?> info(@LoginUser LUser user) throws Exception {
         Integer num = null;
-        if( user != null ) num = user.getUserId();
+        if( user != null ) num = user.getId();
 
         List<JobsMainOutDto> jDtos = jobsRepository.findAlltoMain(num);
         for (JobsMainOutDto jDto1 : jDtos) {
@@ -120,10 +112,10 @@ public class JobsController {
     }
 
     @GetMapping("/jobs/{id}")
-    public ResponseEntity<?> viewJobs(@LoginUser User user, @PathVariable Integer id) {
+    public ResponseEntity<?> viewJobs(@LoginUser LUser user, @PathVariable Integer id) {
         CheckValid.inNull(jobsRepository.findById(id), "조회한 공고가 존재하지 않습니다.");
         Integer num = null;
-        if( user != null ) num = user.getUserId();
+        if( user != null ) num = user.getId();
         JobsDetailOutDto jDto = jobsRepository.findByJobsDetail(id, num);
         jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
         jDto.setFormatEndDate(DateUtil.format(jDto.getEndDate()));
@@ -131,8 +123,8 @@ public class JobsController {
     }
 
     @GetMapping("/comp/jobs/write")
-    public ResponseEntity<?> writeJobs(@LoginComp Comp comp) {
-        CompWriteJobsRespDto cDto = compRepository.findByIdToJobs(comp.getCompId());
+    public ResponseEntity<?> writeJobs(@LoginComp LComp comp) {
+        CompWriteJobsRespDto cDto = compRepository.findByIdToJobs(comp.getId());
         CheckValid.inNullApi(cDto, "회사정보가 없습니다.");
         return new ResponseEntity<>(new ResponseDto<>(1, "공고 작성 양식 불러오기 성공", cDto), HttpStatus.OK);
     }
@@ -147,10 +139,10 @@ public class JobsController {
     }
 
     @PostMapping("/jobs/info/list")
-    public ResponseEntity<?> searchJobsSize(@LoginUser User user, @RequestBody JobsCheckBoxReqDto jDto) {
+    public ResponseEntity<?> searchJobsSize(@LoginUser LUser user, @RequestBody JobsCheckBoxReqDto jDto) {
         if (ObjectUtils.isEmpty(jDto.getCareer())) jDto.setCareer("");
         Integer num = null;
-        if( user != null ) num = user.getUserId();
+        if( user != null ) num = user.getId();
 
         List<JobsCheckOutDto> jDtos = jobsRepository.findByCheckBox(jDto, num);
         for (JobsCheckOutDto jDto1 : jDtos) {
@@ -160,30 +152,30 @@ public class JobsController {
     }
 
     @GetMapping("/user/jobs/interest")
-    public ResponseEntity<?> interest(@LoginUser User user) {
-        List<JobsMatchRespDto> jDtos = jobsService.공고매칭서비스(user.getUserId());
+    public ResponseEntity<?> interest(@LoginUser LUser user) {
+        List<JobsMatchRespDto> jDtos = jobsService.공고매칭서비스(user.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "매칭 공고 조회 성공", jDtos), HttpStatus.OK);
     }
     
 
     @PostMapping("/comp/jobs/write")
-    public ResponseEntity<?> writeJobs(@Valid @RequestBody JobsWriteReqDto jDto, @LoginComp Comp comp) {
-        JobsDetailOutDto jobsId = jobsService.공고작성(jDto, comp.getCompId());
+    public ResponseEntity<?> writeJobs(@Valid @RequestBody JobsWriteReqDto jDto, @LoginComp LComp comp) {
+        JobsDetailOutDto jobsId = jobsService.공고작성(jDto, comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료", jobsId), HttpStatus.CREATED);
     }
 
     @PutMapping("/comp/jobs/update")
-    public ResponseEntity<?> updateJobs(@Valid @RequestBody JobsUpdateReqDto jDto, @LoginComp Comp comp) {
-        JobsDetailOutDto jobdId = jobsService.공고수정(jDto, comp.getCompId());
+    public ResponseEntity<?> updateJobs(@Valid @RequestBody JobsUpdateReqDto jDto, @LoginComp LComp comp) {
+        JobsDetailOutDto jobdId = jobsService.공고수정(jDto, comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "수정 완료", jobdId), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/jobs/{id}/delete")
-    public ResponseEntity<?> deleteJobs(@PathVariable Integer id, @LoginComp Comp comp){
+    public ResponseEntity<?> deleteJobs(@PathVariable Integer id, @LoginComp LComp comp){
         if( ObjectUtils.isEmpty(jobsRepository.findById(id))){
             throw new CustomException("조회한 공고가 존재하지 않습니다.");
         }
-        jobsService.공고삭제(id, comp.getCompId());
+        jobsService.공고삭제(id, comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "공고 삭제 성공", null), HttpStatus.OK);
     }
 }

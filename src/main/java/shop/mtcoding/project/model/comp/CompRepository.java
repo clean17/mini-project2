@@ -1,6 +1,7 @@
 package shop.mtcoding.project.model.comp;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -32,7 +33,7 @@ public interface CompRepository {
         public CompLoginRespDto findByEmailAndPassword2(@Param("email") String email,
                         @Param("password") String password);
 
-        public Comp findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
+        public Optional<Comp> findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
         public CompWriteJobsRespDto findByIdToJobs(Integer CompId);
 

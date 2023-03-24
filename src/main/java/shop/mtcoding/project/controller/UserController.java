@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
 import shop.mtcoding.project.config.auth.JwtProvider;
+import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.common.ResponseDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
@@ -63,7 +63,7 @@ public class UserController {
     private final JobsRepository jobsRepository;
 
     // 완료
-    @PostMapping("/user/join")
+    @PostMapping("/userjoin")
     public @ResponseBody ResponseEntity<?> join(@Valid UserJoinReqDto userJoinReqDto, BindingResult bindingResult) {
         UserJoinReqDto userJoinOutDto = userService.회원가입(userJoinReqDto);
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", userJoinOutDto), HttpStatus.OK);
@@ -82,19 +82,19 @@ public class UserController {
     }
 
     // 완료
-    @GetMapping("/user/join")
+    @GetMapping("/userjoin")
     public String joinForm() {
         return "user/joinForm";
     }
 
     // 완료
-    @GetMapping("/user/login")
+    @GetMapping("/userlogin")
     public String loginForm() {
         return "user/loginForm";
     }
 
     // 완료
-    @PostMapping("/user/login")
+    @PostMapping("/userlogin")
     public @ResponseBody ResponseEntity<?> login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
         UserLoginRespDto principal = userService.로그인(userloginReqDto);
@@ -120,8 +120,7 @@ public class UserController {
                 jwt = JwtProvider.create(userOP.get());
                 return ResponseEntity.ok().header(JwtProvider.HEADER, jwt).body(new ResponseDto<>(1, "로그인 성공", principal)); // 계정 있으면 토큰 리턴
             } else {
-                throw new CustomApiException("이메일 또는 비밀번호가 틀렸습니다.");
-                // return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest().build();
             }
             // session.setAttribute("principal", user);
             // return new ResponseEntity<>(new ResponseDto<>(1, "로그인 성공", principal), HttpStatus.OK);
@@ -129,7 +128,7 @@ public class UserController {
     }
 
     // 완료
-    @PostMapping("/user/login2")
+    @PostMapping("/userlogin2")
     public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto,
             HttpServletResponse httpServletResponse) {
         UserLoginRespDto principal = userService.ajax로그인(userloginReqDto);
@@ -167,11 +166,11 @@ public class UserController {
 
     // 완료
     @PutMapping("/user/update")
-    public @ResponseBody ResponseEntity<?> updateUser(@LoginUser User user,
+    public @ResponseBody ResponseEntity<?> updateUser(@LoginUser LUser user,
             @RequestBody @Valid UserUpdateReqDto userUpdateReqDto, BindingResult bindingResult) {
         userUpdateReqDto.setPassword(Sha256.encode(userUpdateReqDto.getPassword()));
 
-        UserUpdateReqDto userPS = userService.개인정보수정(userUpdateReqDto, user.getUserId());
+        UserUpdateReqDto userPS = userService.개인정보수정(userUpdateReqDto, user.getId());
         User principal = userRepository.findById(userPS.getUserId());
         session.setAttribute("principal", principal);
         return new ResponseEntity<>(new ResponseDto<>(1, "수정완료", userPS), HttpStatus.OK);
@@ -180,8 +179,8 @@ public class UserController {
 
     // 완료
     @GetMapping("/user/update")
-    public @ResponseBody ResponseEntity<?> updateForm(@LoginUser User user, UserUpdateReqDto userUpdateReqDto) {
-        UserUpdateRespDto userPS = userRepository.findById1(user.getUserId());
+    public @ResponseBody ResponseEntity<?> updateForm(@LoginUser LUser user, UserUpdateReqDto userUpdateReqDto) {
+        UserUpdateRespDto userPS = userRepository.findById1(user.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
@@ -253,8 +252,8 @@ public class UserController {
 
     // 완료
     @GetMapping("/user/scrap")
-    public @ResponseBody ResponseEntity<?> scarp(@LoginUser User user) {
-        List<UserScrapRespDto> usDtos = scrapRepository.findAllScrapByUserId(user.getUserId());
+    public @ResponseBody ResponseEntity<?> scarp(@LoginUser LUser user) {
+        List<UserScrapRespDto> usDtos = scrapRepository.findAllScrapByUserId(user.getId());
         for (UserScrapRespDto usDto : usDtos) {
             long dDay = DateUtil.dDay(usDto.getJobs().getEndDate());
             usDto.setLeftTime(dDay);
@@ -273,12 +272,12 @@ public class UserController {
 
     // 수정
     @GetMapping("/user/offer")
-    public @ResponseBody ResponseEntity<?> offer(@LoginUser User user) {
+    public @ResponseBody ResponseEntity<?> offer(@LoginUser LUser user) {
         // List<ApplyStatusUserRespDto> aDtos =
         // applyRepository.findAllByUserIdtoApply(user.getUserId());
         // List<SuggestToUserRespDto> sDtos =
         // suggestRepository.findAllGetOfferByUserId(user.getUserId());
-        UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getUserId());
+        UserApplyOutDto result = userRepository.findApplyAndSuggestByUserId(user.getId());
         // User userPS = userRepository.findById(user.getUserId());
         return new ResponseEntity<>(new ResponseDto<>(1, "지원 및 제안 보기", result), HttpStatus.OK);
     }
@@ -292,19 +291,19 @@ public class UserController {
 
     // 완료
     @GetMapping("/user/profileUpdateForm")
-    public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser User user) {
-        UserUpdatePhotoOutDto userPS = userRepository.findByUserPhoto(user.getUserId());
+    public @ResponseBody ResponseEntity<?> profileUpdateForm(@LoginUser LUser user) {
+        UserUpdatePhotoOutDto userPS = userRepository.findByUserPhoto(user.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
     }
 
     // 완료
     @PutMapping("/user/profileUpdate")
-    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser User user, MultipartFile photo) throws Exception {
+    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser LUser user, MultipartFile photo) throws Exception {
         CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
-        String result = userService.프로필사진수정(photo, user.getUserId());
-        user.setPhoto(result);
+        String result = userService.프로필사진수정(photo, user.getId());
+        // user.setPhoto(result);  //  dto 에 사진 확인 필요
         UserUpdatePhotoOutDto update = UserUpdatePhotoOutDto.builder()
-                .userId(user.getUserId())
+                .userId(user.getId())
                 .photo(result)
                 .build();
         session.setAttribute("principal", user);

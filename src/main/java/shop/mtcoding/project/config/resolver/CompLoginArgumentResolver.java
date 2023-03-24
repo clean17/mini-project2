@@ -11,7 +11,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginComp;
-import shop.mtcoding.project.model.comp.Comp;
+import shop.mtcoding.project.config.auth.LComp;
 
 @RequiredArgsConstructor
 @Configuration
@@ -22,7 +22,7 @@ public class CompLoginArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         boolean check1 = parameter.getParameterAnnotation(LoginComp.class) != null;
-        boolean check2 = Comp.class.equals(parameter.getParameterType());
+        boolean check2 = LComp.class.equals(parameter.getParameterType());
         return check1 && check2;
     }
 

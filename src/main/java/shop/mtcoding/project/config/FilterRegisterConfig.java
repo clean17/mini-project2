@@ -15,7 +15,8 @@ public class FilterRegisterConfig {
     public FilterRegistrationBean<?> jwtVerifyFilterRegister(){
         FilterRegistrationBean<JwtVerifyFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new JwtVerifyFilter());
-        registration.addUrlPatterns("/usersdfkjsdlfkjs"); // user 일때만 토큰 검사
+        registration.addUrlPatterns("/user/*"); // user 일때만 토큰 검사
+        registration.addUrlPatterns("/comp/*"); // comp 일때만 토큰 검사
         registration.setOrder(1);
         return registration;
     }

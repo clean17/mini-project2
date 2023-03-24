@@ -100,10 +100,10 @@ public class CompService {
         return uuidImageName;
     }
 
-    public CompHomeOutDto 기업홈정보와매칭이력서(Comp comp) {
+    public CompHomeOutDto 기업홈정보와매칭이력서(Integer compId) {
         CompHomeOutDto result = new CompHomeOutDto();
         Set<String> set = new HashSet<>(); // 기업 스킬 셋에 넣어야함
-        List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(comp.getCompId());
+        List<JobsManageJobsRespDto> jDtos = jobsRepository.findByIdtoManageJobs(compId);
         for (JobsManageJobsRespDto jDto : jDtos) {
             jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
             set.addAll(jDto.getSkillList());
@@ -118,7 +118,7 @@ public class CompService {
         List<ResumeMatchOutDto> twoMatchList = new ArrayList<>();
         List<ResumeMatchOutDto> oneMatchList = new ArrayList<>();
 
-        List<ResumeMatchOutDto> rDtos = resumeRepository.findMatchResumeByCompId(comp.getCompId());
+        List<ResumeMatchOutDto> rDtos = resumeRepository.findMatchResumeByCompId(compId);
         for (ResumeMatchOutDto rDto : rDtos) {
             int count = 0;
             List<String> insertList = rDto.getSkillList();
@@ -150,9 +150,9 @@ public class CompService {
         return result;
     }
 
-    public ResumeMatchPageOutDto 추천인재(Comp comp) {
+    public ResumeMatchPageOutDto 추천인재(Integer compId) {
         ResumeMatchPageOutDto result = new ResumeMatchPageOutDto();
-        result = jobsRepository.findJobsIdByCompId(comp.getCompId());
+        result = jobsRepository.findJobsIdByCompId(compId);
         
         Set<String> set = new HashSet<>(result.getSkillList());
         List<ResumeMatchDto> fiveMatchList = new ArrayList<>();
@@ -161,7 +161,7 @@ public class CompService {
         List<ResumeMatchDto> twoMatchList = new ArrayList<>();
         List<ResumeMatchDto> oneMatchList = new ArrayList<>();
 
-        List<ResumeMatchDto> rDtos = resumeRepository.findMatchResumeByCompId2(comp.getCompId());
+        List<ResumeMatchDto> rDtos = resumeRepository.findMatchResumeByCompId2(compId);
         for (ResumeMatchDto rDto : rDtos) {
             int count = 0;
             for (String skill : rDto.getSkillList()) {
