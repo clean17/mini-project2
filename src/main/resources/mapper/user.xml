@@ -5,6 +5,76 @@
 
 <mapper namespace="shop.mtcoding.project.model.user.UserRepository">
 
+    <resultMap id="UserHomeOutDto" type="shop.mtcoding.project.dto.user.UserResp$UserHomeOutDto">
+        <id property="userId" column="user_id"/>
+        <association property="iDto" javaType="shop.mtcoding.project.dto.user.UserResp$UserHomeOutDto$InterestChangeRespDto">
+            <collection property="interestCt" column="user_id" select="insertDto"/>
+        </association>
+        <collection property="rDto" resultMap="ResumeManageRespDtoResultMap"/>
+    </resultMap>
+
+    <resultMap id="ResumeManageRespDtoResultMap" type="shop.mtcoding.project.dto.user.UserResp$UserHomeOutDto$ResumeManageRespDto">
+        <id property="resumeId" column="resume_id"/>
+        <result property="title" column="title"/>
+        <result property="education" column="education"/>
+        <result property="career" column="career"/>
+        <result property="address" column="address"/>
+     
+            <association property="user" javaType="shop.mtcoding.project.dto.user.UserResp$UserHomeOutDto$ResumeManageRespDto$UserDto">
+                <id property="userId" column="user_id"/>
+                <result property="name" column="name"/>
+
+            </association>
+        <collection property="skillList" column="resume_id" select="findByResumeSkill"/>
+    </resultMap>
+    <select id="findByResumeSkill" resultType="java.lang.String">
+        select skill from resume_skill_tb where resume_id = #{resumeId}
+    </select>
+    <select id="insertDto" resultType="java.lang.String">
+        select interest_ct from interest_tb where user_id =#{userId}
+    </select>
+    
+    <resultMap id="recommendByUserHome" type="shop.mtcoding.project.dto.user.UserResp$UserHomeOutDto$JobsMainRecommendRespDto">
+        <id property="jobsId" column="jobs_id"/>
+        <result property="title" column="title"/>
+        <result property="career" column="career"/>
+        <result property="education" column="education"/>
+        <result property="position" column="position"/>
+        <result property="address" column="address"/>
+        <result property="endDate" column="end_date"/>
+
+        <association property="comp" javaType="shop.mtcoding.project.dto.user.UserResp$UserHomeOutDto$JobsMainRecommendRespDto$CompDto">
+            <id property="compId" column="comp_id"/>
+            <result property="compName" column="comp_name"/>
+            <result property="photo" column="photo"/>
+        </association>
+        
+        <association property="userScrap" javaType="shop.mtcoding.project.dto.user.UserResp$UserHomeOutDto$JobsMainRecommendRespDto$UserScrapDto">
+            <id property="userScrapId" column="user_scrap_id"/>
+        </association> 
+        <collection property="skillList" column="jobs_id" select="findByJobsSkill"/>
+    </resultMap>
+
+    <select id="findByJobsSkill" resultType="java.lang.String">
+        select skill from required_skill_tb where jobs_id = #{jobsId}
+    </select>
+
+    <select id="findRecommendByUserHome" resultMap="recommendByUserHome">
+        select * ,
+        ifnull(( select user_scrap_id from user_scrap_tb where user_id = #{userId} and jobs_id = j.jobs_id ),null) user_scrap_id
+        from jobs_tb j join comp_tb c
+        on j.comp_id = c.comp_id 
+        where position in 
+        ( select interest_ct from interest_tb
+        where user_id = #{userId} )
+    </select>
+            
+    <select id="findByUserHome" resultMap="UserHomeOutDto">
+        select * from resume_tb r join user_tb u
+            on r.user_id = u.user_id
+            where r.user_id =#{userId}
+    </select>
+
 <!-- 구직자apply/suggest -->
     <resultMap id="applyAndSuggestDto" type="shop.mtcoding.project.dto.user.UserResp$UserApplyOutDto">
         <id property="userId" column="user_id"/>
