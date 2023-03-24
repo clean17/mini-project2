@@ -14,7 +14,7 @@ import shop.mtcoding.project.model.user.User;
 //private static final String SECRET = System.getenv("secret")
 public class JwtProvider {
     private static final String SUBJECT = "JWT_HMAC";
-    private static final int EXP = 1000 * 60 * 60; // 만료 1시간
+    private static final int EXP = 1000 * 60 * 60 * 24; // 만료 1시간
     public static final String TOKEN_PREFIX = "Bearer "; // 스페이스 1칸 필요
     public static final String HEADER = "Authorization";
 

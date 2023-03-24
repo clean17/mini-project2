@@ -67,7 +67,7 @@ public class JobsController {
 
     @GetMapping("/jobs/search")
     @ResponseBody
-    public ResponseEntity<?> searchJobs(@LoginUser LUser user, String keyword){
+    public ResponseEntity<?> searchJobs(@LoginUser LUser user,@RequestBody String keyword){
         if(ObjectUtils.isEmpty(keyword)){
             keyword = "검색어를 입력해 주세요 !!!";
             throw new CustomException("검색어가 없습니다.");
@@ -170,7 +170,7 @@ public class JobsController {
         return new ResponseEntity<>(new ResponseDto<>(1, "수정 완료", jobdId), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/jobs/{id}/delete")
+    @DeleteMapping("Z")
     public ResponseEntity<?> deleteJobs(@PathVariable Integer id, @LoginComp LComp comp){
         if( ObjectUtils.isEmpty(jobsRepository.findById(id))){
             throw new CustomException("조회한 공고가 존재하지 않습니다.");
