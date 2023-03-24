@@ -67,7 +67,7 @@ public class JobsController {
 
     @GetMapping("/jobs/search")
     @ResponseBody
-    public ResponseEntity<?> searchJobs(@LoginUser LUser user, String keyword){
+    public ResponseEntity<?> searchJobs(@LoginUser LUser user,@RequestBody String keyword){
         if(ObjectUtils.isEmpty(keyword)){
             keyword = "검색어를 입력해 주세요 !!!";
             throw new CustomException("검색어가 없습니다.");
