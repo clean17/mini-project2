@@ -76,10 +76,12 @@ public class ApplyControllerTest {
     public void applyResume_test() throws Exception {
         // given
         mockUserSession();
-        ApplyReqDto aDto = new ApplyReqDto();
-        aDto.setJobsId(1);
-        aDto.setResumeId(1);
-        aDto.setUserId(1);
+        ApplyReqDto aDto = ApplyReqDto.builder()
+                            .resumeId(1)
+                            .jobsId(1)
+                            .userId(1)
+                            .applyId(1)
+                            .build();
         String json = om.writeValueAsString(aDto);
     
         // when

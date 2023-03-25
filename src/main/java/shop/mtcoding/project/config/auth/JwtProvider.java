@@ -19,11 +19,6 @@ public class JwtProvider {
     public static final String HEADER = "Authorization";
 
     public static String create(Object obj) {
-        // given
-        // HttpServletRequest req = ((ServletRequestAttributes)
-        // RequestContextHolder.getRequestAttributes()).getRequest();
-        // HttpSession session = req.getSession();
-        // User user = (User) session.getAttribute("principal");
         if (obj instanceof User) {
             User user = (User) obj;
             String jwt = JWT.create().withSubject(SUBJECT)

@@ -2,7 +2,6 @@ package shop.mtcoding.project.model.user;
 
 import java.sql.Timestamp;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +10,8 @@ import lombok.ToString;
 
 @ToString
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 public class User {
     private Integer userId;
     private String email;
