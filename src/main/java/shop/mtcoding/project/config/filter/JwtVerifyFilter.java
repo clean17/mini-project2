@@ -37,11 +37,13 @@ public class JwtVerifyFilter implements Filter {
                 HttpSession session =  req.getSession();
                 LUser loginUser = LUser.builder().id(id).email(email).role(role).build();
                 session.setAttribute("principal", loginUser);
+                session.setMaxInactiveInterval(1);
                 chain.doFilter(req, resp);
             }else{
                 HttpSession session =  req.getSession();
                 LComp loginComp = LComp.builder().id(id).email(email).role(role).build();
                 session.setAttribute("compSession", loginComp);
+                session.setMaxInactiveInterval(1);
                 chain.doFilter(req, resp);
             }
         }catch (SignatureVerificationException sve){

@@ -6,7 +6,8 @@ server:
       charset: utf-8
       force: true
     session:
-      timeout: 3600
+      timeout: 1
+      tracking-modes: cookie
 
 spring:
   datasource:
