@@ -82,15 +82,14 @@ public class CompController {
     }
 
     // 완료
-    @PostMapping("/comp/emailCheck")
-    public ResponseEntity<?> sameEmailCheck(@RequestBody Map<String, String> emailcheck) {
-        String email = emailcheck.get("email");
-        System.out.println("테스트 : " + email);
+    @GetMapping("/comp/emailCheck")
+    public ResponseEntity<?> sameEmailCheck(String email) {
+        CheckValid.inNullApi(email, "이메일을 입력해주세요.");
         Comp compPS = compRepository.findByCompEmail(email);
         if (compPS != null) {
             throw new CustomApiException("동일한 email이 존재합니다.");
         }
-        return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", email), HttpStatus.OK);
     }
 
     // 완료
@@ -147,7 +146,6 @@ public class CompController {
     // 완료
     @GetMapping("/comp/comphome")
     public ResponseEntity<?> compMyhome(@LoginComp LComp comp) {
-        // 사진 DTo 추가 바람
         CompHomeOutDto compResult = compService.기업홈정보와매칭이력서(comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "기업 홈 조회 성공", compResult), HttpStatus.OK);
     }

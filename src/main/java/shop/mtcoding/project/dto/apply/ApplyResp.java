@@ -8,51 +8,57 @@ import lombok.ToString;
 
 public class ApplyResp {
 
-    @Getter @Setter @ToString
-    public static class ApplyOutDto{
+    @Getter
+    @Setter
+    public static class ApplyOutDto {
         private Integer applyId;
         private ResumeDto resumeDto;
         private JobsDto jobsDto;
         private Integer state;
         private Timestamp createdAt;
 
-        @Getter @Setter
+        @Getter
+        @Setter
         public static class ResumeDto {
             private Integer resumeId;
             private String title;
             private UserDto userDto;
 
-            @Getter @Setter
-            public static class UserDto{
+            @Getter
+            @Setter
+            public static class UserDto {
                 private Integer userId;
                 private String name;
             }
         }
 
-        @Getter @Setter
+        @Getter
+        @Setter
         public static class JobsDto {
             private Integer jobsId;
             private String title;
             private String position;
             private CompDto compDto;
 
-            @Getter @Setter
-            public static class CompDto{
+            @Getter
+            @Setter
+            public static class CompDto {
                 private Integer compId;
                 private String compName;
             }
 
         }
     }
-    
+
     @Getter
     @Setter
-    public static class ApplyUserStatusDetailRespDto{
+    public static class ApplyUserStatusDetailRespDto {
         private Integer state;
     }
+
     @Getter
     @Setter
-    public static class ApllyStatusCompRespDto{
+    public static class ApllyStatusCompRespDto {
         private Integer applyId;
         private Integer resumeId;
         private Integer jobsId;
@@ -63,25 +69,23 @@ public class ApplyResp {
         private String name;
         private String birth;
         private Integer state;
-        // private List<String> skillList;
     }
 
     @Getter
     @Setter
-    public static class ApplyStatusUserRespDto{
-        private Integer applyId; // apply_tb(1)
-        private Integer resumeId; // apply_tb(1)
-        private Integer jobsId; // apply_tb(1)
-        private Integer state; // apply_tb(1)
-        private String jobsTitle; // jobs_tb(2) -> title
-        private String position; // jobs_tb(2)
-        private String resumeTitle; // resume_tb -> title
-        // private List<String> skillList;
+    public static class ApplyStatusUserRespDto {
+        private Integer applyId; 
+        private Integer resumeId; 
+        private Integer jobsId;
+        private Integer state;
+        private String jobsTitle; 
+        private String position; 
+        private String resumeTitle;
     }
 
     @Getter
     @Setter
-    public static class ApplytoCompRespDto{
+    public static class ApplytoCompRespDto {
         private Integer applyId;
         private Integer state;
     }

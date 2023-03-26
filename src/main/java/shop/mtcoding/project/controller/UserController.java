@@ -72,14 +72,14 @@ public class UserController {
 
     // 완료
     @GetMapping("/user/emailCheck")
-    public @ResponseBody ResponseEntity<?> sameEmailCheck(String email) {
+    public ResponseEntity<?> sameEmailCheck(String email) {
         CheckValid.inNullApi(email, "이메일을 입력해주세요.");
         User userPS = userRepository.findByUserEmail(email);
         if (userPS != null) {
             throw new CustomApiException("동일한 email이 존재합니다.");
         }
         // CheckValid.inNullApi(userPS, "동일한 email이 존재합니다.");
-        return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", null), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", email), HttpStatus.OK);
     }
 
     // 완료

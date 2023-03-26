@@ -66,13 +66,15 @@ public class JobsController {
 
     @GetMapping("/jobs/search")
     @ResponseBody
-    public ResponseEntity<?> searchJobs(@LoginUser LUser user, @RequestBody SearchText sDto){
-        String keyword ;
-        if(ObjectUtils.isEmpty(sDto.getKeyword())){
+    // public ResponseEntity<?> searchJobs(@LoginUser LUser user, @RequestBody SearchText sDto){
+    public ResponseEntity<?> searchJobs(@LoginUser LUser user, String keyword){  // 쿼리스트링으로 검색
+        // String keyword ;
+        // if(ObjectUtils.isEmpty(sDto.getKeyword())){
+        if(ObjectUtils.isEmpty(keyword)){
             keyword = "검색어를 입력해 주세요 !!!";
             throw new CustomException("검색어가 없습니다.");
         }
-        keyword = sDto.getKeyword();
+        // keyword = sDto.getKeyword();
         Integer num = null;
         if( user != null ) num = user.getId();
         // keyword="개발";
