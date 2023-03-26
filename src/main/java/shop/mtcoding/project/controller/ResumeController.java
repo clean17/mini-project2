@@ -104,7 +104,7 @@ public class ResumeController {
     @ResponseBody
     public ResponseEntity<?> writeResumeForm(@LoginUser LUser user) {
         UserDataRespDto userPS = userRepository.findByUserId(user.getId());
-        return ResponseEntity.ok().body(userPS);
+        return new ResponseEntity<>(new ResponseDto<>(1, "이력서 작성 페이지 조회 성공", userPS), HttpStatus.OK);
     }
     //완료
     @GetMapping("/user/resume/{id}/update")

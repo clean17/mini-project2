@@ -87,6 +87,7 @@ public class CompResp {
 
         @Getter
         @Setter
+        @NoArgsConstructor
         public static class JobsManageJobsRespDto {
             private Integer jobsId;
             private Integer num;
@@ -96,10 +97,23 @@ public class CompResp {
             private Timestamp endDate;
             private List<String> skillList;
             private Long leftTime;
+
+            @Builder
+            public JobsManageJobsRespDto(Integer jobsId, Integer num, String title, String position, String career,
+                    Timestamp endDate, List<String> skillList, Long leftTime) {
+                this.jobsId = jobsId;
+                this.num = num;
+                this.title = title;
+                this.position = position;
+                this.career = career;
+                this.endDate = endDate;
+                this.skillList = skillList;
+                this.leftTime = leftTime;
+            }
         }
 
         @Getter
-        @Setter
+        @NoArgsConstructor
         public static class ResumeMatchOutDto {
             private Integer resumeId;
             private String title;
@@ -110,12 +124,34 @@ public class CompResp {
             private List<String> skillList;
             private UserDto userDto;
 
+            @Builder
+            public ResumeMatchOutDto(Integer resumeId, String title, String address, String education, String career,
+                    Integer state, List<String> skillList, UserDto userDto) {
+                this.resumeId = resumeId;
+                this.title = title;
+                this.address = address;
+                this.education = education;
+                this.career = career;
+                this.state = state;
+                this.skillList = skillList;
+                this.userDto = userDto;
+            }
+
+
+
             @Getter
-            @Setter
+            @NoArgsConstructor
             public static class UserDto {
                 private Integer userId;
                 private String name;
                 private String photo;
+
+                @Builder
+                public UserDto(Integer userId, String name, String photo) {
+                    this.userId = userId;
+                    this.name = name;
+                    this.photo = photo;
+                }
             }
         }
     }
