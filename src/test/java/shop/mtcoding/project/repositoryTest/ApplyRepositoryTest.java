@@ -22,10 +22,10 @@ public class ApplyRepositoryTest {
     @Transactional
     public void insert_test() throws Exception {
         // given
-        ApplyReqDto aDto = new ApplyReqDto();
-        aDto.setJobsId(1);
-        aDto.setResumeId(1);
-    
+        ApplyReqDto aDto = ApplyReqDto.builder()
+                        .resumeId(1)
+                        .jobsId(1)
+                        .build();
         // when
         System.out.println("테스트 : "+ applyRepository.insert(aDto)); 
     

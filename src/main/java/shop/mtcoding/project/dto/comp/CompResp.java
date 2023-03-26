@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.Builder;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class CompResp {
@@ -141,12 +142,23 @@ public class CompResp {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     public static class CompUpdateRespDto {
         private Integer compId;
         private String password;
         private String compName;
         private String representativeName;
         private String businessNumber;
+
+        @Builder
+        public CompUpdateRespDto(Integer compId, String password, String compName, String representativeName,
+                String businessNumber) {
+            this.compId = compId;
+            this.password = password;
+            this.compName = compName;
+            this.representativeName = representativeName;
+            this.businessNumber = businessNumber;
+        }
     }
 
     @Getter
