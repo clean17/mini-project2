@@ -172,7 +172,7 @@ public class JobsController {
         return new ResponseEntity<>(new ResponseDto<>(1, "수정 완료", jobdId), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/jobs/{id}/delete")
+    @DeleteMapping("/comp/jobs/{id}/delete")
     public ResponseEntity<?> deleteJobs(@PathVariable Integer id, @LoginComp LComp comp){
         if( ObjectUtils.isEmpty(jobsRepository.findById(id))){
             throw new CustomException("조회한 공고가 존재하지 않습니다.");

@@ -96,7 +96,7 @@ public class UserController {
 
     // 완료
     @PostMapping("/userlogin")
-    public @ResponseBody ResponseEntity<?> login(@Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult,
+    public @ResponseBody ResponseEntity<?> login(@Valid @RequestBody UserLoginReqDto userloginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
         UserLoginRespDto principal = userService.로그인(userloginReqDto);
 
@@ -182,7 +182,7 @@ public class UserController {
     @GetMapping("/user/update")
     public @ResponseBody ResponseEntity<?> updateForm(@LoginUser LUser user, UserUpdateReqDto userUpdateReqDto) {
         UserUpdateRespDto userPS = userRepository.findById1(user.getId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", userPS), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 페이지 조회 성공", userPS), HttpStatus.OK);
     }
 
 

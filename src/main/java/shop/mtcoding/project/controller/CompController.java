@@ -1,6 +1,7 @@
 package shop.mtcoding.project.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
@@ -68,7 +69,7 @@ public class CompController {
 
     // 완료
     @PostMapping("/compjoin")
-    public ResponseEntity<?> join(@Valid CompJoinReqDto compJoinReqDto, BindingResult bindingResult) {
+    public ResponseEntity<?> join(@Valid @RequestBody CompJoinReqDto compJoinReqDto, BindingResult bindingResult) {
         CompJoinReqDto compJoinOutDto = compService.회원가입(compJoinReqDto);
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", compJoinOutDto), HttpStatus.OK);
     }
@@ -81,8 +82,10 @@ public class CompController {
     }
 
     // 완료
-    @GetMapping("/comp/emailCheck")
-    public ResponseEntity<?> sameEmailCheck(@RequestBody String email) {
+    @PostMapping("/comp/emailCheck")
+    public ResponseEntity<?> sameEmailCheck(@RequestBody Map<String, String> emailcheck) {
+        String email = emailcheck.get("email");
+        System.out.println("테스트 : " + email);
         Comp compPS = compRepository.findByCompEmail(email);
         if (compPS != null) {
             throw new CustomApiException("동일한 email이 존재합니다.");
@@ -98,7 +101,7 @@ public class CompController {
 
     // 완료
     @PostMapping("/complogin")
-    public ResponseEntity<?> login(@Valid CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
+    public ResponseEntity<?> login(@Valid @RequestBody CompLoginReqDto compLoginReqDto, BindingResult bindingResult,
             HttpServletResponse httpServletResponse) {
         CompLoginRespDto principal = compService.로그인(compLoginReqDto);
         
@@ -177,7 +180,7 @@ public class CompController {
     @GetMapping("/comp/update")
     public @ResponseBody ResponseEntity<?> updateForm(@LoginComp LComp comp, CompUpdateRespDto compUpdateRespDto) {
         CompUpdateRespDto compPS = compRepository.findByCompId1(comp.getId());
-        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 완료", compPS), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원 수정 페이지 조회 완료", compPS), HttpStatus.OK);
     }
 
     // 완료
