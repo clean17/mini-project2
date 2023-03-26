@@ -1,5 +1,8 @@
 package shop.mtcoding.project.dtoControllerTest;
 
+import static org.mockito.Mockito.doAnswer;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,18 +14,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.project.config.auth.JwtProvider;
-import shop.mtcoding.project.dto.apply.ApplyReq.ApplyReqDto;
-import shop.mtcoding.project.dto.apply.ApplyReq.ApplyUpdateReqDto;
+import shop.mtcoding.project.dto.comp.CompReq.CompPasswordReqDto;
+import shop.mtcoding.project.dto.comp.CompResp.CompUpdateRespDto;
 import shop.mtcoding.project.model.comp.Comp;
-import shop.mtcoding.project.model.user.User;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
-public class ApplyControllerTest {
+@Transactional
+public class CompControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -32,14 +36,7 @@ public class ApplyControllerTest {
     MockHttpServletRequest request = new MockHttpServletRequest();
     String token;
 
-    // @BeforeEach
-    public void mockUserToken() {
-        User mockUser = User.builder()
-                .userId(1)
-                .build();
-        token = JwtProvider.create(mockUser);
-    }
-
+    @BeforeEach
     public void mockCompToken() {
         Comp mockUser = Comp.builder()
                 .compId(1)
@@ -48,19 +45,16 @@ public class ApplyControllerTest {
     }
 
     @Test
-    public void applyResume_test() throws Exception {
+    public void passwordCheck_test() throws Exception {
         // given
-        mockUserToken();
-        ApplyReqDto aDto = ApplyReqDto.builder()
-                .resumeId(1)
-                .jobsId(1)
-                .userId(1)
-                .applyId(1)
+        CompPasswordReqDto cDto = CompPasswordReqDto.builder()
+                .compId(1)
+                .password("1234")
                 .build();
-        String requestBody = om.writeValueAsString(aDto);
+        String requestBody = om.writeValueAsString(cDto);
 
         // when
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/apply/resume")
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/comp/passwordCheck")
                 .header(JwtProvider.HEADER, token)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
@@ -71,18 +65,19 @@ public class ApplyControllerTest {
     }
 
     @Test
-    public void updateApply_test() throws Exception {
+    public void updateComp_test() throws Exception {
         // given
-        mockCompToken();
-        ApplyUpdateReqDto aDto = ApplyUpdateReqDto.builder()
+        CompUpdateRespDto cDto = CompUpdateRespDto.builder()
                 .compId(1)
-                .applyId(1)
-                .state(1)
+                .password("123345")
+                .compName("카카오")
+                .representativeName("이정훈")
+                .businessNumber("123-12-1231")
                 .build();
-        String requestBody = om.writeValueAsString(aDto);
+        String requestBody = om.writeValueAsString(cDto);
 
         // when
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/comp/apply/update")
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/comp/update")
                 .header(JwtProvider.HEADER, token)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
@@ -91,4 +86,25 @@ public class ApplyControllerTest {
         // then
         System.out.println("테스트 : " + result.andReturn().getResponse().getContentAsString());
     }
+
+//     @Test
+//     public void profileUpdate_test() throws Exception {
+//         // given
+//         String = 
+//         byte[] in = String.
+//         CompPhotoUpdateDto cDto = CompPhotoUpdateDto.builder()
+//         .name("test.jpg")
+//         .type("image/jpeg")
+//         .data(null)
+
+//         // when
+//         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/comp/profileUpdate")
+//                 .header(JwtProvider.HEADER, token)
+//                 .content(requestBody)
+//                 .contentType(MediaType.APPLICATION_JSON_VALUE);
+//         ResultActions result = mvc.perform(requestBuilder);
+
+//         // then
+//         System.out.println("테스트 : " + result.andReturn().getResponse().getContentAsString());
+//     }
 }

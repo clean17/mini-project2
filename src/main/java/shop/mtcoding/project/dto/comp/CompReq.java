@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -64,9 +65,17 @@ public class CompReq {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     public static class CompPasswordReqDto {
         private Integer compId;
         private String password;
+        
+        @Builder
+        public CompPasswordReqDto(Integer compId, String password) {
+            this.compId = compId;
+            this.password = password;
+        }
+        
     }
 
 }

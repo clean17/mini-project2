@@ -37,6 +37,7 @@ public class ApplyReq {
 
     
 
+    @NoArgsConstructor
     @Getter
     @Setter
     public static class ApplyUpdateReqDto{
@@ -46,6 +47,14 @@ public class ApplyReq {
         private Integer compId;
         @NotNull(message = "상태정보가 필요합니다/")
         private Integer state;
+
+        @Builder
+        public ApplyUpdateReqDto(@NotNull(message = "지원아이디가 필요합니다/") Integer applyId,
+                @NotNull(message = "기업아이디가 필요합니다/") Integer compId, @NotNull(message = "상태정보가 필요합니다/") Integer state) {
+            this.applyId = applyId;
+            this.compId = compId;
+            this.state = state;
+        }
     }
     
 }

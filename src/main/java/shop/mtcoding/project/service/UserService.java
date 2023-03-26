@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.config.exception.CustomException;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
+import shop.mtcoding.project.dto.photo.PhotoReq.PhotoUpdateDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
@@ -93,9 +93,11 @@ public class UserService {
     }
 
     @Transactional
-    public String 프로필사진수정(MultipartFile photo, Integer pricipalId) {
-
-        String uuidImageName = PathUtil.writeImageFile(photo);
+    // public String 프로필사진수정(MultipartFile photo, Integer pricipalId) {
+    public String 프로필사진수정(PhotoUpdateDto pDto, Integer pricipalId) {
+        String photo = pDto.getPhoto();
+        String fileName = pDto.getFileName();
+        String uuidImageName = PathUtil.writeImageFile2(photo, fileName);
 
         User userPS = userRepository.findById(pricipalId);
         userPS.setPhoto(uuidImageName);

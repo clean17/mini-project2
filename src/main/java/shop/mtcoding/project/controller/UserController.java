@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.project.config.annotation.LoginUser;
@@ -25,6 +24,7 @@ import shop.mtcoding.project.config.auth.JwtProvider;
 import shop.mtcoding.project.config.auth.LUser;
 import shop.mtcoding.project.config.exception.CustomApiException;
 import shop.mtcoding.project.dto.common.ResponseDto;
+import shop.mtcoding.project.dto.photo.PhotoReq.PhotoUpdateDto;
 import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
 import shop.mtcoding.project.dto.user.UserReq.UserJoinReqDto;
 import shop.mtcoding.project.dto.user.UserReq.UserLoginReqDto;
@@ -229,9 +229,10 @@ public class UserController {
 
     // 완료
     @PutMapping("/user/profileUpdate")
-    public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser LUser user, MultipartFile photo) throws Exception {
-        CheckValid.inNullApi(photo, "사진이 전송 되지 않았습니다.");
-        String result = userService.프로필사진수정(photo, user.getId());
+    // public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser LUser user, MultipartFile photo) throws Exception {
+    public ResponseEntity<?> profileUpdate(@LoginUser LUser user, @RequestBody PhotoUpdateDto pDto) throws Exception {
+        CheckValid.inNullApi(pDto.getPhoto(), "사진이 전송 되지 않았습니다.");
+        String result = userService.프로필사진수정(pDto, user.getId());
         // user.setPhoto(result);  //  dto 에 사진 확인 필요
         UserUpdatePhotoOutDto update = UserUpdatePhotoOutDto.builder()
                 .userId(user.getId())

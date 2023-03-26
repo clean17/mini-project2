@@ -19,6 +19,7 @@ import shop.mtcoding.project.dto.comp.CompReq.CompUpdateReqDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto.JobsManageJobsRespDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompHomeOutDto.ResumeMatchOutDto;
+import shop.mtcoding.project.dto.photo.PhotoReq.PhotoUpdateDto;
 import shop.mtcoding.project.dto.comp.CompResp.CompLoginRespDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto.ResumeMatchDto;
@@ -86,9 +87,9 @@ public class CompService {
     }
 
     @Transactional
-    public String 프로필사진수정(MultipartFile photo, Integer compId) {
+    public String 프로필사진수정(PhotoUpdateDto pDto, Integer compId) {
 
-        String uuidImageName = PathUtil.writeImageFile(photo);
+        String uuidImageName = PathUtil.writeImageFile2(pDto.getPhoto(), pDto.getFileName());
 
         Comp compPS = compRepository.findByCompId(compId);
         compPS.setPhoto(uuidImageName);
