@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +43,6 @@ import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.resume.ResumeRepository;
 import shop.mtcoding.project.model.skill.SkillRepository;
 import shop.mtcoding.project.model.suggest.SuggestRepository;
-import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.ResumeService;
 
@@ -83,7 +83,7 @@ public class ResumeController {
 
     // 완료
     @PostMapping("/user/resume/write")
-    public ResponseEntity<?> writeResume(@LoginUser LUser user, @RequestBody @Valid ResumeWriteReqDto resumeWriteReqDto) {
+    public ResponseEntity<?> writeResume(@LoginUser LUser user, @RequestBody @Valid ResumeWriteReqDto resumeWriteReqDto, BindingResult bindingResult) {
 
         ResumeWriteOutDto rDto = resumeService.이력서쓰기(resumeWriteReqDto, user.getId());
 
@@ -92,7 +92,7 @@ public class ResumeController {
 
     //완료
     @PutMapping("/user/resume/update")
-    public ResponseEntity<?> saveTempResume(@LoginUser LUser user, @RequestBody @Valid ResumeUpdateReqDto resumeUpdateReqDto) {
+    public ResponseEntity<?> saveTempResume(@LoginUser LUser user, @RequestBody @Valid ResumeUpdateReqDto resumeUpdateReqDto, BindingResult bindingResult) {
 
         ResumeUpdateInDto rDto = resumeService.이력서수정(resumeUpdateReqDto, user.getId());
 

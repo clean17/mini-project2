@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +34,7 @@ public class ApplyController {
     }
 
     @PutMapping("/comp/apply/update")
-    public ResponseEntity<?> updateApply(@RequestBody @Valid ApplyUpdateReqDto aDto, @LoginComp LComp comp) {
+    public ResponseEntity<?> updateApply(@RequestBody @Valid ApplyUpdateReqDto aDto, BindingResult bindingResult,  @LoginComp LComp comp) {
         if (!(aDto.getState() == 1 || aDto.getState() == -1)) {
             throw new CustomApiException("상태정보가 다릅니다.");
         }

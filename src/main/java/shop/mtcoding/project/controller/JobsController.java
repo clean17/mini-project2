@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,6 @@ import shop.mtcoding.project.dto.comp.CompResp.CompWriteJobsRespDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsCheckBoxReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsUpdateReqDto;
 import shop.mtcoding.project.dto.jobs.JobsReq.JobsWriteReqDto;
-import shop.mtcoding.project.dto.jobs.JobsReq.SearchText;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsCheckOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsDetailOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainOutDto;
@@ -163,13 +163,13 @@ public class JobsController {
     
 
     @PostMapping("/comp/jobs/write")
-    public ResponseEntity<?> writeJobs(@Valid @RequestBody JobsWriteReqDto jDto, @LoginComp LComp comp) {
+    public ResponseEntity<?> writeJobs(@Valid @RequestBody JobsWriteReqDto jDto, BindingResult bindingResult, @LoginComp LComp comp) {
         JobsDetailOutDto jobsId = jobsService.공고작성(jDto, comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "저장 완료", jobsId), HttpStatus.CREATED);
     }
 
     @PutMapping("/comp/jobs/update")
-    public ResponseEntity<?> updateJobs(@Valid @RequestBody JobsUpdateReqDto jDto, @LoginComp LComp comp) {
+    public ResponseEntity<?> updateJobs(@Valid @RequestBody JobsUpdateReqDto jDto, BindingResult bindingResult, @LoginComp LComp comp) {
         JobsDetailOutDto jobdId = jobsService.공고수정(jDto, comp.getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "수정 완료", jobdId), HttpStatus.CREATED);
     }

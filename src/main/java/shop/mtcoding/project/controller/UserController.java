@@ -130,7 +130,7 @@ public class UserController {
 
     // 완료
     @PostMapping("/userlogin2")
-    public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto,
+    public ResponseEntity<?> login2(@RequestBody @Valid UserLoginReqDto userloginReqDto, BindingResult bindingResult, 
             HttpServletResponse httpServletResponse) {
         UserLoginRespDto principal = userService.ajax로그인(userloginReqDto);
 
