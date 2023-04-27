@@ -1,5 +1,19 @@
 # 구인구직 사이트 제작
 
+> ## 시연영상
+- post man 시연
+https://youtu.be/0UsQJWybmxE
+
+<br>
+
+> ## ppt 발표자료
+- [6조_미니프로젝트2_PPT.pdf](https://github.com/clean17/mini-project2/files/11340918/6._.2_PPT.pdf)
+
+<br>
+
+
+
+
 > ## 프로젝트 소개
 - 1차로 만든 구인구직 사이트를 Rest 서버로 바꾼뒤 model을 사용하지 않고 ResponseEntity를 이용해 Dto하나로 json 데이터를 리턴한다.
 
@@ -91,15 +105,12 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 <br>
 
 
-> ## 시연영상
-- post man 시연
-https://youtu.be/0UsQJWybmxE
 
-<br>
 
 > ## 보완점
 - i/o 를 줄이기 위해서 조회를 1번만 할 수 있도록 쿼리를 치밀하게 짜야한다.
 - ResultMap에 익숙하지 않아서 처음 매핑할때 시간이 너무 오래걸렸다.
+- REST API 규칙을 지키지 못하고 만들었다가 나중에 알아서 고치지 못했는데 다음에는 확실히 지켜서 만들것이다.
 
 <br>
 
@@ -107,6 +118,7 @@ https://youtu.be/0UsQJWybmxE
 - 박인우
 
   스프링의 새로운 기술들을 사용해봐서 좋았고, REST API를 직접 구현하면서 왜 REST아키텍처를 이용하는지 조금 알게 되어서 좋았다.
+
 
 - 김유현
 
