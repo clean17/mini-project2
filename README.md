@@ -1,20 +1,16 @@
 # 구인구직 사이트 제작 ( REST API server )
 
-> ## 시연영상
-- post man 시연
-https://youtu.be/0UsQJWybmxE
-
+> ## 시연영상 ( Youtube )
+<a href="https://youtu.be/0UsQJWybmxE">![image](https://user-images.githubusercontent.com/118657689/234799992-f20dea08-d827-4c57-ad99-e36270c6edef.png)</a>
 <br>
 
-> ## ppt 발표자료
+> ## 발표자료 ( PDF )
+![image](https://user-images.githubusercontent.com/118657689/234800218-e3c1444b-ef3e-46bb-877a-dabebe900d91.png)
+
 - [6조_미니프로젝트2_PPT.pdf](https://github.com/clean17/mini-project2/files/11340918/6._.2_PPT.pdf)
 
 <br>
 
-
-
-
-> ## 프로젝트 소개
 - 1차로 만든 구인구직 사이트를 Rest 서버로 바꾼뒤 model을 사용하지 않고 ResponseEntity를 이용해 Dto하나로 json 데이터를 리턴한다.
 
 <br>
@@ -78,7 +74,7 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 
 > ## 기술 블로그
 
-- 추가 예정
+- <a href="https://velog.io/@merci/series/Rest-Api-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8"> 블로그 링크 </a>
 
 <br>
 
