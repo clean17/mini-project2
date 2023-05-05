@@ -67,6 +67,7 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 
 > ## 테이블 모델링
 <br>
+
 ![mini-project-table (1)](https://user-images.githubusercontent.com/118657689/236441203-cf21bfc4-5dba-4996-a1af-554707407efa.jpg)
 
 <br>
