@@ -1,13 +1,15 @@
 # 구인구직 사이트 제작 ( REST API server )
 
 > ## 시연영상 ( Youtube )
+
 <a href="https://youtu.be/0UsQJWybmxE">![image](https://user-images.githubusercontent.com/118657689/234799992-f20dea08-d827-4c57-ad99-e36270c6edef.png)</a>
 <br>
 
 > ## 발표자료 ( PDF )
+
 ![image](https://user-images.githubusercontent.com/118657689/234800218-e3c1444b-ef3e-46bb-877a-dabebe900d91.png)
 
-- [6조_미니프로젝트2_PPT.pdf](https://github.com/clean17/mini-project2/files/11340918/6._.2_PPT.pdf)
+- <a href="https://github.com/clean17/mini-project2/files/11340918/6._.2_PPT.pdf">[6조_미니프로젝트2_PPT.pdf]</a>
 
 <br>
 
@@ -16,11 +18,13 @@
 <br>
 
 > ## 프로젝트 기간
+
 - 2023.03.14 ~ 2023.03.27
 
 <br>
 
 > ## 기술 스택
+
 - JDK 11
 - Spring Boot 2.7.8
 - MyBatis
@@ -31,6 +35,7 @@
 <br>
 
 > ## 기능정리
+
 - Rest Api 문서를 보고 프론트가 작업할 수 있도록 Rest서버로 변환
 - 여러개의 model을 하나의 Dto로 변환 및 Builder 패턴 사용
 - MyBatis resultMap 으로 Dto에 매핑
@@ -66,6 +71,7 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 <br>
 
 > ## 테이블 모델링
+
 <br>
 
 ![mini-project-table (1)](https://user-images.githubusercontent.com/118657689/236441203-cf21bfc4-5dba-4996-a1af-554707407efa.jpg)
@@ -80,6 +86,7 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 <br>
 
 > ## 담당 기능
+
 - 박인우 (팀장) 
   - 중복 코드 분리 및 로직 캡슐화를 통한 리팩토링
   - 세션이 필요할경우 `@LoginUser`로 세션 접근 및 `@Valid`로 유효성 검사 할 수 있는 AOP제공
@@ -105,6 +112,7 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 
 
 > ## 보완점
+
 - i/o 를 줄이기 위해서 조회를 1번만 할 수 있도록 쿼리를 치밀하게 짜야한다.
 - ResultMap에 익숙하지 않아서 처음 매핑할때 시간이 너무 오래걸렸다.
 - REST API 규칙을 지키지 못하고 만들었다가 나중에 알아서 고치지 못했는데 다음에는 확실히 지켜서 만들것이다.
@@ -112,6 +120,7 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 <br>
 
 > ## 후기
+
 - 박인우
 
   스프링의 새로운 기술들을 사용해봐서 좋았고, REST API를 직접 구현하면서 왜 REST아키텍처를 이용하는지 조금 알게 되어서 좋았다.
