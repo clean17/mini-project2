@@ -88,12 +88,14 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 > ## 담당 기능
 
 - 박인우 (팀장) 
-  - 중복 코드 분리 및 로직 캡슐화를 통한 리팩토링
-  - 세션이 필요할경우 `@LoginUser`로 세션 접근 및 `@Valid`로 유효성 검사 할 수 있는 AOP제공
-  - JWT를 발급해서 인증처리를 필터에서 처리, 권한검사는 세션을 잠시 생성해서 처리
-  - Base64로 인코딩된 json 데이터를 받아서 디코딩 및 uuid를 추가해서 저장 및 DB에 경로 저장
-  - Dto 생성 및 Rest Api 문서 작성
-  - EC2 클라우드 배포
+  - JWT 발급, JWT인증필터 만들어서 추가 <br>
+  - 필터에서 principal을 만들어서 세션에 추가한 뒤 <br>
+  - 세션에서 principal가져와 권한처리하는 @LoginUser( AOP )만들어서 중복코드 제거 <br>
+  - @Valid 로 유효성 검사 + 익셉션 핸들러 추가 ( alert )  <br>
+  - 사진( Base64 ) 받아서 디코딩 + UUID 추가해서 저장 <br>
+  - Rest Api 문서 작성 및 DTO 생성 <br>
+  - MyBatis의 Result Mapper로 ORM 적용<br>
+  - EC2에 jar 배포 + RDS 연결<br>
 
 - 이인화 
   - Dto 생성 및 Rest Api 문서 작성
