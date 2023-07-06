@@ -6,11 +6,6 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import shop.mtcoding.project.dto.apply.ApplyResp.ApplyStatusUserRespDto;
-import shop.mtcoding.project.dto.interest.InterestResp.InterestChangeRespDto;
-import shop.mtcoding.project.dto.jobs.JobsResp.JobsMainRecommendRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeManageRespDto;
-import shop.mtcoding.project.dto.suggest.SuggestResp.SuggestToCompRespDto;
 
 public class UserResp {
 

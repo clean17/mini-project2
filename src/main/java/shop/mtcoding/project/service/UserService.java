@@ -18,7 +18,6 @@ import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.dto.user.UserResp.UserHomeOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.model.jobs.JobsRepository;
-import shop.mtcoding.project.model.skill.SkillRepository;
 import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.util.DateUtil;
@@ -30,7 +29,6 @@ import shop.mtcoding.project.util.Sha256;
 public class UserService {
     private final UserRepository userRepository;
     private final JobsRepository jobsRepository;
-    private final SkillRepository skillRepository;
 
     @Transactional
     public UserJoinReqDto 회원가입(UserJoinReqDto userJoinReqDto) {

@@ -1,7 +1,5 @@
 package shop.mtcoding.project.dtoControllerTest;
 
-import static org.mockito.Mockito.doAnswer;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

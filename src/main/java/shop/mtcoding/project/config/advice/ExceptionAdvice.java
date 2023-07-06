@@ -18,7 +18,6 @@ public class ExceptionAdvice {
     public ResponseEntity<?> error(MyValidationException e){
         String errMsg = e.getErroMap().toString();
         String devideMsg = errMsg.split("/")[0].split("=")[1];
-        // System.out.println("테스트 : "+ devideMsg);
         return new ResponseEntity<>(Script.back(devideMsg), HttpStatus.BAD_REQUEST);
     }
 

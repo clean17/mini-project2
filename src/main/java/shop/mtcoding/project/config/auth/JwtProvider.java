@@ -19,6 +19,7 @@ public class JwtProvider {
     public static final String HEADER = "Authorization";
 
     public static String create(Object obj) {
+        // 각각의 토큰을 생성
         if (obj instanceof User) {
             User user = (User) obj;
             String jwt = JWT.create().withSubject(SUBJECT)

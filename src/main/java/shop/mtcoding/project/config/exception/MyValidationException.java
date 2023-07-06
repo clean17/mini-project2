@@ -1,6 +1,5 @@
 package shop.mtcoding.project.config.exception;
 
-import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;

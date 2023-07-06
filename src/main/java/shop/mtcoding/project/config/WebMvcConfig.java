@@ -12,6 +12,7 @@ import shop.mtcoding.project.config.interceptor.LoginInterceptor;
 import shop.mtcoding.project.config.resolver.CompLoginArgumentResolver;
 import shop.mtcoding.project.config.resolver.MyLoginArgumentResolver;
 
+
 @RequiredArgsConstructor
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -20,6 +21,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final CompLoginArgumentResolver compLoginArgumentResolver;
     private final LoginInterceptor loginInterceptor;
 
+    // 인터셉터 등록
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
@@ -31,6 +33,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         ); // 인터셉터를 수행하지 않도록 설정합니다.
     }
 
+    // 리졸버 등록
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(myLoginArgumentResolver);

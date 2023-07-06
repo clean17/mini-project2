@@ -19,6 +19,11 @@ import shop.mtcoding.project.config.exception.MyValidationException;
 @Component
 public class ValidAdvice {
 
+    // AOP를 구현함으로써 비즈니스 로직과 인증, 인가 코드를 분리시킨다. -> 각 코드의 역할을 명확히
+    // 여러 에러들이 오더라도 여기서 타입을 정제하고 여러 익셉션으로 분화시킬수 있다.
+    
+    // 특정 예외를 잡아서 공통된 로직을 실행해보자
+    // Pointcut - 리플렉션 이용
     @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")
     public void postMapping() {
     }
@@ -44,6 +49,6 @@ public class ValidAdvice {
                 }
             }
         }
-        return proceedingJoinPoint.proceed(); // 정상적으로 해당 메서드를 실행해라!!
+        return proceedingJoinPoint.proceed(); // 정상적으로 해당 메서드를 실행 
     }
 }

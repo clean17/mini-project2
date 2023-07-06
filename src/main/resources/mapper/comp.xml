@@ -8,10 +8,6 @@
         select * from comp_tb
     </select>
 
-    <!-- <select id="findCompDescAndMatchResume">
-
-    </select> -->
-
     <!-- <select id="findByIdToJobs" resultType="shop.mtcoding.project.dto.comp.CompResp$CompWriteJobsRespDto">
       SELECT comp_name, representative_name, photo, homepage FROM comp_tb where comp_id = #{compId}
     </select> -->
@@ -45,7 +41,6 @@
                 <id property="userId" column="user_id"/>
                 <result property="name" column="name"/>
               </association>
-
           </association>
 
           <association property="jobsDto" javaType="shop.mtcoding.project.dto.comp.CompResp$CompApplyOutDto$ApplyDto$JobsDto">
@@ -75,7 +70,6 @@
                   <id property="userId" column="user_id"/>
                   <result property="name" column="name"/>
                 </association>
-  
             </association>
     </resultMap>
 
@@ -164,11 +158,4 @@
     <delete id="deleteById">
 
     </delete>
-
-
-   
-
-
-  
-
 </mapper>

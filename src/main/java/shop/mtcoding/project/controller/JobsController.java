@@ -2,7 +2,6 @@ package shop.mtcoding.project.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -38,8 +37,6 @@ import shop.mtcoding.project.dto.jobs.JobsResp.JobsSearchkeyOutDto;
 import shop.mtcoding.project.dto.jobs.JobsResp.JobsSuggestRespDto;
 import shop.mtcoding.project.model.comp.CompRepository;
 import shop.mtcoding.project.model.jobs.JobsRepository;
-import shop.mtcoding.project.model.resume.ResumeRepository;
-import shop.mtcoding.project.model.skill.SkillRepository;
 import shop.mtcoding.project.service.JobsService;
 import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.DateUtil;
@@ -49,10 +46,7 @@ import shop.mtcoding.project.util.DateUtil;
 public class JobsController {
     private final JobsRepository jobsRepository;
     private final CompRepository compRepository;
-    private final SkillRepository skillRepository;    
-    private final ResumeRepository resumeRepository;
     private final JobsService jobsService;
-    private final HttpSession session;
 
     @GetMapping("/comp/request/jobs")
     @ResponseBody
@@ -117,7 +111,7 @@ public class JobsController {
 
     @GetMapping("/jobs/{id}")
     public ResponseEntity<?> viewJobs(@LoginUser LUser user, @PathVariable Integer id) {
-        CheckValid.inNull(jobsRepository.findById(id), "조회한 공고가 존재하지 않습니다.");
+        CheckValid.isNull(jobsRepository.findById(id), "조회한 공고가 존재하지 않습니다.");
         Integer num = null;
         if( user != null ) num = user.getId();
         JobsDetailOutDto jDto = jobsRepository.findByJobsDetail(id, num);
@@ -129,13 +123,13 @@ public class JobsController {
     @GetMapping("/comp/jobs/write")
     public ResponseEntity<?> writeJobs(@LoginComp LComp comp) {
         CompWriteJobsRespDto cDto = compRepository.findByIdToJobs(comp.getId());
-        CheckValid.inNullApi(cDto, "회사정보가 없습니다.");
+        CheckValid.isNullApi(cDto, "회사정보가 없습니다.");
         return new ResponseEntity<>(new ResponseDto<>(1, "공고 작성 양식 불러오기 성공", cDto), HttpStatus.OK);
     }
 
     @GetMapping("/jobs/{id}/update")
     public ResponseEntity<?> updateJobs(@PathVariable Integer id) {
-        CheckValid.inNull(jobsRepository.findById(id), "조회한 공고가 존재하지 않습니다.");
+        CheckValid.isNull(jobsRepository.findById(id), "조회한 공고가 존재하지 않습니다.");
         JobsDetailOutDto jDto = jobsRepository.findByJobsDetail(id, null);
         jDto.setLeftTime(DateUtil.dDay(jDto.getEndDate()));
         jDto.setFormatEndDate(DateUtil.format(jDto.getEndDate()));

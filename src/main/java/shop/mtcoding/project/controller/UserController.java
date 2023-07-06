@@ -35,13 +35,7 @@ import shop.mtcoding.project.dto.user.UserResp.UserHomeOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserLoginRespDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdatePhotoOutDto;
 import shop.mtcoding.project.dto.user.UserResp.UserUpdateRespDto;
-import shop.mtcoding.project.model.apply.ApplyRepository;
-import shop.mtcoding.project.model.interest.InterestRepository;
-import shop.mtcoding.project.model.jobs.JobsRepository;
-import shop.mtcoding.project.model.resume.ResumeRepository;
 import shop.mtcoding.project.model.scrap.ScrapRepository;
-import shop.mtcoding.project.model.skill.SkillRepository;
-import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.model.user.User;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.UserService;
@@ -55,13 +49,7 @@ public class UserController {
     private final HttpSession session;
     private final UserService userService;
     private final UserRepository userRepository;
-    private final ApplyRepository applyRepository;
-    private final SuggestRepository suggestRepository;
     private final ScrapRepository scrapRepository;
-    private final ResumeRepository resumeRepository;
-    private final SkillRepository skillRepository;
-    private final InterestRepository interestRepository;
-    private final JobsRepository jobsRepository;
 
     // 완료
     @PostMapping("/userjoin")
@@ -73,12 +61,12 @@ public class UserController {
     // 완료
     @GetMapping("/user/emailCheck")
     public ResponseEntity<?> sameEmailCheck(String email) {
-        CheckValid.inNullApi(email, "이메일을 입력해주세요.");
+        CheckValid.isNullApi(email, "이메일을 입력해주세요.");
         User userPS = userRepository.findByUserEmail(email);
         if (userPS != null) {
             throw new CustomApiException("동일한 email이 존재합니다.");
         }
-        // CheckValid.inNullApi(userPS, "동일한 email이 존재합니다.");
+        // CheckValid.isNullApi(userPS, "동일한 email이 존재합니다.");
         return new ResponseEntity<>(new ResponseDto<>(1, "해당 email은 사용 가능합니다.", email), HttpStatus.OK);
     }
 
@@ -231,7 +219,7 @@ public class UserController {
     @PutMapping("/user/profileUpdate")
     // public @ResponseBody ResponseEntity<?> profileUpdate(@LoginUser LUser user, MultipartFile photo) throws Exception {
     public ResponseEntity<?> profileUpdate(@LoginUser LUser user, @RequestBody PhotoUpdateDto pDto) throws Exception {
-        CheckValid.inNullApi(pDto.getPhoto(), "사진이 전송 되지 않았습니다.");
+        CheckValid.isNullApi(pDto.getPhoto(), "사진이 전송 되지 않았습니다.");
         String result = userService.프로필사진수정(pDto, user.getId());
         // user.setPhoto(result);  //  dto 에 사진 확인 필요
         UserUpdatePhotoOutDto update = UserUpdatePhotoOutDto.builder()

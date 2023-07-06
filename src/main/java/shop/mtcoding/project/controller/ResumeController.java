@@ -2,7 +2,6 @@ package shop.mtcoding.project.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -41,8 +40,6 @@ import shop.mtcoding.project.dto.user.UserResp.UserDataRespDto;
 import shop.mtcoding.project.model.apply.Apply;
 import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.resume.ResumeRepository;
-import shop.mtcoding.project.model.skill.SkillRepository;
-import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.model.user.UserRepository;
 import shop.mtcoding.project.service.ResumeService;
 
@@ -53,10 +50,7 @@ public class ResumeController {
     private final UserRepository userRepository;
     private final ResumeService resumeService;
     private final ResumeRepository resumeRepository;
-    private final SkillRepository skillRepository;
-    private final SuggestRepository suggestRepository;
     private final ApplyRepository applyRepository;
-    private final HttpSession session;
 
     // 완료
     @DeleteMapping("/user/resume/{id}/delete")

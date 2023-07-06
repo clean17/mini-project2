@@ -1,15 +1,11 @@
 package shop.mtcoding.project.repositoryTest;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import shop.mtcoding.project.dto.resume.ResumeReq.ResumeWriteReqDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeDetailRespDto;
-import shop.mtcoding.project.dto.resume.ResumeResp.ResumeReadRespDto;
 import shop.mtcoding.project.model.resume.ResumeRepository;
 
 @MybatisTest

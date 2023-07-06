@@ -6,8 +6,8 @@ server:
       charset: utf-8
       force: true
     session:
-      timeout: 1
-      tracking-modes: cookie
+      timeout: 1s
+      tracking-modes: cookie # jwt set-cookie
 
 spring:
   datasource:

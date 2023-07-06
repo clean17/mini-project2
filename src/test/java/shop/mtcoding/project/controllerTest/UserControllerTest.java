@@ -1,14 +1,13 @@
 package shop.mtcoding.project.controllerTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Timestamp;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,11 +16,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import shop.mtcoding.project.config.auth.JwtProvider;
 import shop.mtcoding.project.dto.user.UserReq.UserUpdateReqDto;
 import shop.mtcoding.project.model.user.User;
 
@@ -32,13 +33,15 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private MockHttpSession mockSession;
+
+    private String jwtToken = "";
 
     @Autowired
     private ObjectMapper om;
 
+    // 인증 방식의 변화로 테스트 코드로 수정되어야 한다.
     @BeforeEach
-    private void mockUserSession() {
+    public void setup() {
         User mockUser = new User(
                 1,
                 "ssar@nate.com",
@@ -49,15 +52,13 @@ public class UserControllerTest {
                 "/images/default_profile.png",
                 "부산시 부산진구",
                 new Timestamp(System.currentTimeMillis()));
-        mockSession = new MockHttpSession();
-        mockSession.setAttribute("principal", mockUser);
+        jwtToken = JwtProvider.create(mockUser);
     }
 
     @Test
     @Transactional
     public void update_test() throws Exception {
         // given
-
         UserUpdateReqDto userUpdateReqDto = new UserUpdateReqDto();
         userUpdateReqDto.setUserId(1);
         userUpdateReqDto.setName("dddd");
@@ -77,9 +78,9 @@ public class UserControllerTest {
         // when
         ResultActions resultActions = mvc.perform(
                 put("/user/update")
+                        .header("Authorization", jwtToken)
                         .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .session(mockSession));
+                        .contentType(MediaType.APPLICATION_JSON_VALUE));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
@@ -92,14 +93,25 @@ public class UserControllerTest {
     @Transactional
     public void join_test() throws Exception {
         // given
-        String requestBody = "email=&password=1234&name=쌀&birth=11111&tel=11111&Address=busan";
+        String requestBody = "email=at@21&password=1234&name=쌀&birth=11111&tel=11111";
+
+        String[] keyValuePairs = requestBody.split("&");
+        Map<String, String> dataMap = new HashMap<>();
+        for (String pair : keyValuePairs) {
+            String[] entry = pair.split("=");
+            String key = entry[0];
+            String value = entry[1];
+            dataMap.put(key, value);
+        }
+        String json = om.writeValueAsString(dataMap);
 
         // when
-        ResultActions resultActions = mvc.perform(post("/user/join").content(requestBody)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+        ResultActions resultActions = mvc.perform(post("/userjoin")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
 
         // then
-        resultActions.andExpect(status().is3xxRedirection());
+        resultActions.andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -107,17 +119,21 @@ public class UserControllerTest {
     public void login_test() throws Exception {
         // given
         String requestBody = "email=ssar@nate.com&password=1234";
-
+        String[] keyValuePairs = requestBody.split("&");
+        Map<String, String> dataMap = new HashMap<>();
+        for (String pair : keyValuePairs) {
+            String[] entry = pair.split("=");
+            String key = entry[0];
+            String value = entry[1];
+            dataMap.put(key, value);
+        }
+        String json = om.writeValueAsString(dataMap);
         // when
-        ResultActions resultActions = mvc.perform(post("/user/login").content(requestBody)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-        HttpSession session = resultActions.andReturn().getRequest().getSession();
-        User principal = (User) session.getAttribute("principal");
+        ResultActions resultActions = mvc.perform(post("/userlogin").content(json)
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
 
         // then
-        assertThat(principal.getEmail()).isEqualTo("ssar@nate.com");
-        resultActions.andExpect(status().is3xxRedirection());
+        resultActions.andExpect(status().is2xxSuccessful());
     }
 
 }

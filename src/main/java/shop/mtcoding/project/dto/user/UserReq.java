@@ -3,7 +3,6 @@ package shop.mtcoding.project.dto.user;
 import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 import lombok.Getter;
 import lombok.Setter;

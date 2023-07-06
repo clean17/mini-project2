@@ -3,10 +3,8 @@ package shop.mtcoding.project.dto.scrap;
 import java.sql.Timestamp;
 import java.util.List;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import shop.mtcoding.project.dto.scrap.UserScrapResp.UserScrapRespDto;
 
 public class UserScrapResp {
 

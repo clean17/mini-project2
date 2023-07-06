@@ -1,6 +1,5 @@
 package shop.mtcoding.project.dto.resume;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import javax.validation.constraints.NotEmpty;

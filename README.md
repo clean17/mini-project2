@@ -144,3 +144,202 @@ testImplementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-
 
   지난 시간에 못한 부분을 채울 수 있는 시간 같아서 다행이라고 생각했습니다. 부족하기도 했지만, 많이 배운 시간이라고 생각합니다.
 
+<br>
+
+> ## Valid AOP
+
+익셉션 핸들러를 통해 `BindException `을 핸들링 했었지만 AOP를 구현해서 에러 처리를 분리시켰습니다.<br>
+`Aspect`를 이용해서 AOP를 구현하면 스프링 실행시 자동으로 `AOP Proxy`를 만들어 비즈니스 로직을 감싸게 됩니다. 이때 리플렉션이 사용됩니다. <br>
+
+```java
+@Aspect
+@Component
+public class ValidAdvice {
+
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")
+    public void postMapping() {
+    }
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.PutMapping)")
+    public void putMapping() {
+    }
+
+    @Around("postMapping() || putMapping()")
+    public Object validationAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        Object[] args = proceedingJoinPoint.getArgs();
+        for (Object arg : args) {
+            if (arg instanceof BindingResult) {
+                BindingResult bindingResult = (BindingResult) arg;
+                if (bindingResult.hasErrors()) {
+                    Map<String, String> errorMap = new HashMap<>();
+                    for (FieldError error : bindingResult.getFieldErrors()) {
+                        errorMap.put(error.getField(),error.getDefaultMessage());
+                    }
+                    throw new MyValidationException(errorMap);
+                }
+            }
+        }
+        return proceedingJoinPoint.proceed();
+    }
+}
+```
+
+<br>
+
+> ## Session AOP
+
+일반 회원과 기업 회원을 각각 `User`와 `Comp`로 나눴기에 로그인시 세션을 검증하는 코드를 AOP로 분리시켜서 중복된 코드를 작성하지 않도록 했습니다.<br>
+세션 정보를 가져오도록 어노테이션을 만들고 로그인 되어 있을때 해당 세션을 `Aspect`로 등록된 클래스가 바인딩합니다.<br>
+마찬가지로 따로 등록하지 않아도 됩니다.<br>
+
+```java
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface LoginUser {
+}
+```
+
+```java
+@Aspect
+@Component
+public class LoginAdvice {
+
+    @Around("execution(* shop.mtcoding.aopstudy.controller..*.*(..))")
+    public Object loginUserAdvice(ProceedingJoinPoint jp) throws Throwable {
+        Object[] args = jp.getArgs();
+
+        MethodSignature signature = (MethodSignature) jp.getSignature();
+        Method method = signature.getMethod();
+
+        Annotation[][] annotationsPA = method.getParameterAnnotations();
+
+        for (int i = 0; i < args.length; i++) {
+            Annotation[] annotations = annotationsPA[i];
+            for (Annotation anno : annotations) {
+                if (anno instanceof LoginUser) {
+                    HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                            .getRequest();
+                    HttpSession session = req.getSession();
+                    User principal = (User) session.getAttribute("principal");
+                    if (principal != null) {
+                    }
+                    return jp.proceed(new Object[] { principal });
+                }
+            }
+        }
+        return jp.proceed();
+    }
+}
+```
+
+<br>
+
+> ## HandlerMethodArgumentResolver
+
+위와 유사한 방법으로 리졸버를 이용해서 세션에서 데이터를 가져와서 바인딩하는 방법입니다.<br>
+`AOP`와는 다르게 컴포넌트로 등록되어 있지 않으므로 인터셉터와 마찬가지로 직접 등록해야 합니다.
+
+```java
+@RequiredArgsConstructor
+@Configuration
+public class MyLoginArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private final HttpSession session;
+
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        boolean check1 = parameter.getParameterAnnotation(LoginUser.class) != null;
+        boolean check2 = LUser.class.equals(parameter.getParameterType());
+        return check1 && check2;
+    }
+
+    @Override
+    @Nullable
+    public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
+        return session.getAttribute("principal");
+    }
+}
+```
+```java
+@RequiredArgsConstructor
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final MyLoginArgumentResolver myLoginArgumentResolver;
+    private final CompLoginArgumentResolver compLoginArgumentResolver;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(myLoginArgumentResolver);
+        resolvers.add(compLoginArgumentResolver);
+    }
+}   
+```
+
+<br>
+
+> ## JWT 필터
+인증 방식을 쿠키에서 JWT로 변경했습니다.<br>
+일반 회원과 기업 회원으로 Role을 분리시키고 각각의 JWT를 생성해서 반환했습니다.<br>
+인증이 되면 서버 내부에서 요청주기 동안 유효한 세션을 생셩하도록 했습니다. <br>
+직접 만든 JWT필터를 서블릿 컨테이너의 필터체인에 등롭합니다.
+
+```java
+public class JwtVerifyFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse resp = (HttpServletResponse) response;
+        String prefixJwt = req.getHeader(JwtProvider.HEADER);
+        String jwt = prefixJwt.replace(JwtProvider.TOKEN_PREFIX, "");
+        try {
+            DecodedJWT decodedJWT = JwtProvider.verify(jwt);
+            int id = decodedJWT.getClaim("id").asInt();
+            String email = decodedJWT.getClaim("email").asString();
+            String role = decodedJWT.getClaim("role").asString();
+            if (role.equals("user")){
+                HttpSession session =  req.getSession();
+                LUser loginUser = LUser.builder().id(id).email(email).role(role).build();
+                session.setAttribute("principal", loginUser);
+                session.setMaxInactiveInterval(1);
+                chain.doFilter(req, resp);
+            }else{
+                HttpSession session =  req.getSession();
+                LComp loginComp = LComp.builder().id(id).email(email).role(role).build();
+                session.setAttribute("compSession", loginComp);
+                session.setMaxInactiveInterval(1);
+                chain.doFilter(req, resp);
+            }
+        }catch (SignatureVerificationException sve){
+            resp.setStatus(401);
+            resp.setContentType("text/plain; charset=utf-8");
+            resp.getWriter().println("가짜 토큰");
+        }catch (TokenExpiredException tee){
+            resp.setStatus(401);
+            resp.setContentType("text/plain; charset=utf-8");
+            resp.getWriter().println("토큰 만료");
+        }
+    }
+}
+```
+```java
+@Configuration
+public class FilterRegisterConfig {
+    
+    @Bean 
+    public FilterRegistrationBean<?> jwtVerifyFilterRegister(){
+        FilterRegistrationBean<JwtVerifyFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new JwtVerifyFilter());
+        registration.addUrlPatterns("/user/*"); // user 일때만 토큰 검사
+        registration.addUrlPatterns("/comp/*"); // comp 일때만 토큰 검사
+        registration.setOrder(1);
+        return registration;
+    }
+}
+```
+

@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import shop.mtcoding.project.config.filter.JwtVerifyFilter;
 
-
-
+// JWT필터 등록
 @Configuration
 public class FilterRegisterConfig {
     

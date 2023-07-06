@@ -1,7 +1,6 @@
 package shop.mtcoding.project.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
@@ -40,14 +39,11 @@ import shop.mtcoding.project.dto.photo.PhotoReq.PhotoUpdateDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumeMatchPageOutDto;
 import shop.mtcoding.project.dto.resume.ResumeResp.ResumePublicOutDto;
 import shop.mtcoding.project.dto.scrap.CompScrapResp.CompScrapPageOutDto;
-import shop.mtcoding.project.model.apply.ApplyRepository;
 import shop.mtcoding.project.model.comp.Comp;
 import shop.mtcoding.project.model.comp.CompRepository;
 import shop.mtcoding.project.model.jobs.JobsRepository;
 import shop.mtcoding.project.model.resume.ResumeRepository;
 import shop.mtcoding.project.model.scrap.ScrapRepository;
-import shop.mtcoding.project.model.skill.SkillRepository;
-import shop.mtcoding.project.model.suggest.SuggestRepository;
 import shop.mtcoding.project.service.CompService;
 import shop.mtcoding.project.util.CheckValid;
 import shop.mtcoding.project.util.DateUtil;
@@ -57,13 +53,10 @@ import shop.mtcoding.project.util.Sha256;
 @RequiredArgsConstructor
 public class CompController {
 
-    private final SkillRepository skillRepository;
     private final HttpSession session;
     private final ResumeRepository resumeRepository;
     private final JobsRepository jobsRepository;
-    private final ApplyRepository applyRepository;
     private final ScrapRepository scrapRepository;
-    private final SuggestRepository suggestRepository;
     private final CompService compService;
     private final CompRepository compRepository;
 
@@ -84,7 +77,7 @@ public class CompController {
     // 완료
     @GetMapping("/comp/emailCheck")
     public ResponseEntity<?> sameEmailCheck(String email) {
-        CheckValid.inNullApi(email, "이메일을 입력해주세요.");
+        CheckValid.isNullApi(email, "이메일을 입력해주세요.");
         Comp compPS = compRepository.findByCompEmail(email);
         if (compPS != null) {
             throw new CustomApiException("동일한 email이 존재합니다.");
@@ -184,7 +177,7 @@ public class CompController {
     // 완료
     @PutMapping("/comp/profileUpdate")
     public  ResponseEntity<?> profileUpdate(@LoginComp LComp comp, @RequestBody PhotoUpdateDto pDto) throws Exception {
-        CheckValid.inNullApi(pDto.getPhoto(), "사진이 전송 되지 않았습니다.");
+        CheckValid.isNullApi(pDto.getPhoto(), "사진이 전송 되지 않았습니다.");
         String result = compService.프로필사진수정(pDto, comp.getId());
         // comp.setPhoto(result); // 사진 DTo 추가 바람
         CompUpdatePhotoOutDto update = CompUpdatePhotoOutDto.builder()

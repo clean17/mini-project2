@@ -32,7 +32,6 @@ public class JwtVerifyFilter implements Filter {
             int id = decodedJWT.getClaim("id").asInt();
             String email = decodedJWT.getClaim("email").asString();
             String role = decodedJWT.getClaim("role").asString();
-            // 내부에서 권한처리 세션
             if (role.equals("user")){
                 HttpSession session =  req.getSession();
                 LUser loginUser = LUser.builder().id(id).email(email).role(role).build();
@@ -49,11 +48,11 @@ public class JwtVerifyFilter implements Filter {
         }catch (SignatureVerificationException sve){
             resp.setStatus(401);
             resp.setContentType("text/plain; charset=utf-8");
-            resp.getWriter().println("로그인 다시해1");
+            resp.getWriter().println("가짜 토큰");
         }catch (TokenExpiredException tee){
             resp.setStatus(401);
             resp.setContentType("text/plain; charset=utf-8");
-            resp.getWriter().println("로그인 다시해2");
+            resp.getWriter().println("토큰 만료");
         }
     }
 }
